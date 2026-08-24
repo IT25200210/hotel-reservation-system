@@ -1,11 +1,14 @@
 package com.hotel.reservation.service;
+
 import com.hotel.reservation.entity.Role;
 import com.hotel.reservation.entity.User;
 import com.hotel.reservation.repository.RoleRepository;
 import com.hotel.reservation.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -39,9 +42,10 @@ public class UserService {
         user.setRole(role);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus("ACTIVE");
-        return userRepository.save(user);
+        User saved = userRepository.save(user);
         auditLogService.log("system", "CREATE", "User", saved.getId(),
                 "Created user: " + saved.getUsername());
+        return saved;
     }
 
     public User updateUser(Long id, User updated, Long roleId) {
