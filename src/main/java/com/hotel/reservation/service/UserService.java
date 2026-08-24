@@ -11,12 +11,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuditLogService auditLogService;
 
     public UserService(UserRepository userRepository, RoleRepository roleRepository,
-                       PasswordEncoder passwordEncoder) {
+                       PasswordEncoder passwordEncoder, AuditLogService auditLogService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.auditLogService = auditLogService;
     }
 
     public List<User> getAllUsers() {
@@ -38,6 +40,8 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus("ACTIVE");
         return userRepository.save(user);
+        auditLogService.log("system", "CREATE", "User", saved.getId(),
+                "Created user: " + saved.getUsername());
     }
 
     public User updateUser(Long id, User updated, Long roleId) {
@@ -60,6 +64,8 @@ public class UserService {
         User user = getUserById(id);
         user.setStatus("DEACTIVATED");
         userRepository.save(user);
+        auditLogService.log("system", "DEACTIVATE", "User", id,
+                "Deactivated user id: " + id);
     }
 
     public void activateUser(Long id) {
