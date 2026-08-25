@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>General Manager Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f8f9fa; }
+        .container { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #dee2e6; padding: 12px; text-align: left; }
+        th { background-color: #e9ecef; }
+        .btn { padding: 8px 12px; text-decoration: none; border-radius: 4px; color: white; background-color: #0d6efd; display: inline-block; }
+        .btn-danger { background-color: #dc3545; }
+    </style>
+</head>
+<body>
+<!--/*@thymesVar id="employees" type="java.util.List<com.hotel.reservation.entity.Employee>"*/-->
+<div class="container">
+    <h2>Staff Management Dashboard</h2>
+    <a th:href="@{/manager/employee/new}" class="btn">Add New Employee</a>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Position</th>
+            <th>Salary</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="employee : ${employees}">
+            <td th:text="${employee.id}"></td>
+            <td th:text="${employee.name}"></td>
+            <td th:text="${employee.position}"></td>
+            <td th:text="${employee.salary}"></td>
+            <td>
+                <a th:href="@{/manager/employee/edit/{id}(id=${employee.id})}" class="btn">Edit</a>
+                <a th:href="@{/manager/employee/delete/{id}(id=${employee.id})}" class="btn btn-danger"
+                   onclick="return confirm('Are you sure you want to delete this employee?');">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
