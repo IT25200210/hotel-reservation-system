@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Form</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f8f9fa; }
+        .container { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 500px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], input[type="number"] { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        .btn { padding: 10px 15px; text-decoration: none; border-radius: 4px; color: white; border: none; cursor: pointer; display: inline-block; }
+        .btn-success { background-color: #198754; }
+        .btn-secondary { background-color: #6c757d; }
+        .error { color: #dc3545; font-size: 0.9em; margin-top: 5px; display: block; }
+    </style>
+</head>
+<body>
+<!--/*@thymesVar id="employee" type="com.hotel.reservation.entity.Employee"*/-->
+<div class="container">
+    <h2>Save Employee Details</h2>
+
+    <form th:action="@{/manager/employee/save}" th:object="${employee}" method="post">
+        <input type="hidden" th:field="*{id}" />
+
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input id="name" type="text" th:field="*{name}" placeholder="Enter employee name"/>
+            <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="position">Position:</label>
+            <input id="position" type="text" th:field="*{position}" placeholder="Enter job title"/>
+            <span class="error" th:if="${#fields.hasErrors('position')}" th:errors="*{position}"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="salary">Salary:</label>
+            <input id="salary" type="number" step="0.01" th:field="*{salary}" placeholder="Enter salary amount"/>
+            <span class="error" th:if="${#fields.hasErrors('salary')}" th:errors="*{salary}"></span>
+        </div>
+
+        <button type="submit" class="btn btn-success">Save Employee</button>
+        <a th:href="@{/manager/dashboard}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+</body>
+</html>
