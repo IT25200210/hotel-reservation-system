@@ -2,33 +2,86 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Login - Hotel Reservation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Portal · The Grand Horizon</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/css/housekeeping.css}" rel="stylesheet">
 </head>
-<body class="bg-light">
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-4">
-            <div class="card shadow">
-                <div class="card-body">
-                    <h3 class="card-title text-center mb-4">Staff Login</h3>
-                    <div th:if="${param.error}" class="alert alert-danger">Invalid username or password</div>
-                    <div th:if="${param.logout}" class="alert alert-success">You have been logged out</div>
-                    <form th:action="@{/login}" method="post">
-                        <div class="mb-3">
-                            <label class="form-label">Username</label>
-                            <input type="text" name="username" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Login</button>
-                    </form>
+<body>
+<div class="hk-login-wrapper">
+    <div class="card hk-card hk-login-card border-0 shadow-lg hk-fade-in">
+        <div class="card-body p-0 text-center">
+            
+            <!-- Apple Style Minimalist Crest -->
+            <div class="hk-login-crest">
+                <i class="bi bi-buildings"></i>
+            </div>
+            <h3 class="fw-bold text-white mb-1 tracking-tight">The Grand Horizon</h3>
+            <p class="text-secondary small mb-4">Operations & Staff Management Console</p>
+
+            <!-- Quick Demo Sign-In Selector -->
+            <div class="hk-demo-credentials-box text-start">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <span class="text-uppercase small fw-semibold text-secondary" style="font-size: 0.72rem; letter-spacing: 0.08em;">
+                        <i class="bi bi-lightning-charge-fill text-white me-1"></i>Demo Accounts
+                    </span>
+                    <span class="text-secondary" style="font-size: 0.7rem;">Click to autofill</span>
+                </div>
+                <div class="d-flex flex-wrap">
+                    <div class="demo-chip" data-user="admin" data-pass="admin123" title="System Administrator">
+                        <i class="bi bi-shield-lock-fill text-white"></i>
+                        <span>Admin</span>
+                        <code class="text-secondary small ms-1">admin123</code>
+                    </div>
+                    <div class="demo-chip" data-user="hkstaff" data-pass="hk123" title="Housekeeping Staff">
+                        <i class="bi bi-stars text-info"></i>
+                        <span>Housekeeper</span>
+                        <code class="text-secondary small ms-1">hk123</code>
+                    </div>
                 </div>
             </div>
+
+            <!-- Alerts -->
+            <div th:if="${param.error}" class="alert alert-danger py-2 px-3 small border-0 mb-3" style="background: rgba(255, 69, 58, 0.18); color: #ff6961;">
+                <i class="bi bi-exclamation-circle me-1"></i> Invalid username or password.
+            </div>
+            <div th:if="${param.logout}" class="alert alert-success py-2 px-3 small border-0 mb-3" style="background: rgba(48, 209, 88, 0.18); color: #5fe080;">
+                <i class="bi bi-check-circle me-1"></i> Successfully logged out.
+            </div>
+
+            <!-- Login Form -->
+            <form th:action="@{/login}" method="post" class="text-start">
+                <div class="mb-3">
+                    <label class="form-label text-secondary">
+                        <i class="bi bi-person me-1"></i>Username
+                    </label>
+                    <input type="text" name="username" class="form-control" placeholder="admin or hkstaff" required autofocus>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-secondary">
+                        <i class="bi bi-key me-1"></i>Password
+                    </label>
+                    <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                    <i class="bi bi-arrow-right-circle me-1"></i>Sign In
+                </button>
+            </form>
+
+            <div class="mt-4 pt-3 border-top border-white border-opacity-10">
+                <span class="text-secondary small" style="font-size: 0.75rem;">
+                    SE2030 Software Engineering · Group 2026-Y2-S1-MLB-WEB3G1-06
+                </span>
+            </div>
+
         </div>
     </div>
 </div>
+
+<script th:src="@{/js/housekeeping.js}"></script>
 </body>
 </html>

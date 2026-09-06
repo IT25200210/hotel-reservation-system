@@ -44,6 +44,20 @@ public class DataLoader implements CommandLineRunner {
             userRepository.save(admin);
             System.out.println(">>> Default admin created: username=admin / password=admin123");
         }
+
+        // Create default housekeeping staff user if not exists
+        if (!userRepository.existsByUsername("hkstaff")) {
+            Role hkRole = roleRepository.findByName("ROLE_HOUSEKEEPING").orElseThrow();
+            User hk = new User();
+            hk.setUsername("hkstaff");
+            hk.setPassword(passwordEncoder.encode("hk123"));
+            hk.setFullName("Demo Housekeeper");
+            hk.setEmail("hk@hotel.com");
+            hk.setStatus("ACTIVE");
+            hk.setRole(hkRole);
+            userRepository.save(hk);
+            System.out.println(">>> Default housekeeping user created: username=hkstaff / password=hk123");
+        }
     }
 
     private void createRoleIfNotFound(String name, String description) {

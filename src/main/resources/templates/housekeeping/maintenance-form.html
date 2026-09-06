@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Housekeeping · Report Maintenance Defect</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/css/housekeeping.css}" rel="stylesheet">
+</head>
+<body>
+
+<!-- Apple Frosted Glass Navbar -->
+<nav class="navbar navbar-dark hk-navbar">
+    <div class="container-fluid">
+        <a th:href="@{/housekeeping/tasks}" class="navbar-brand text-decoration-none">
+            <span class="hk-brand-crest"><i class="bi bi-buildings"></i></span>
+            <span>The Grand Horizon <span class="badge bg-white text-dark rounded-pill ms-2 fw-semibold" style="font-size: 0.72rem;">Housekeeping</span></span>
+        </a>
+        <div class="d-flex align-items-center gap-2">
+            <a th:href="@{/housekeeping/maintenance}" class="btn btn-sm hk-nav-btn"><i class="bi bi-arrow-left me-1"></i>Back to Maintenance</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-5">
+    <div class="card hk-card form-card border-0 shadow-lg hk-fade-in">
+        <div class="card-body p-4">
+            
+            <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom border-white border-opacity-10">
+                <div class="stat-icon danger">
+                    <i class="bi" th:classappend="${request.id == null} ? 'bi-wrench' : 'bi-pencil-square'"></i>
+                </div>
+                <div>
+                    <h3 class="page-title fs-4" th:text="${request.id == null} ? 'Log Maintenance Defect' : 'Edit Maintenance Request'"></h3>
+                    <p class="text-secondary small mb-0">Report broken fixtures, plumbing, or AC defects found during room cleaning</p>
+                </div>
+            </div>
+
+            <form th:action="${request.id == null} ? @{/housekeeping/maintenance} : @{/housekeeping/maintenance/update/{id}(id=${request.id})}"
+                  th:object="${request}" method="post">
+                
+                <div class="mb-3">
+                    <label class="form-label"><i class="bi bi-door-closed text-white"></i>Room Number</label>
+                    <input type="text" th:field="*{roomNumber}" class="form-control font-monospace"
+                           placeholder="e.g. 103, 205, 401" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><i class="bi bi-exclamation-triangle text-white"></i>Defect / Issue Description</label>
+                    <textarea th:field="*{issue}" class="form-control" rows="3"
+                              placeholder="Describe the issue (e.g. AC unit leaking, rattling noise, bathroom fixture broken)" required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><i class="bi bi-person text-white"></i>Reported By</label>
+                    <input type="text" th:field="*{reportedBy}" class="form-control" required>
+                </div>
+
+                <div class="mb-4" th:if="${request.id != null}">
+                    <label class="form-label"><i class="bi bi-flag text-white"></i>Status</label>
+                    <select th:field="*{status}" class="form-select">
+                        <option value="OPEN" th:selected="${request.status == 'OPEN'}">Open Defect</option>
+                        <option value="IN_PROGRESS" th:selected="${request.status == 'IN_PROGRESS'}">Under Repair</option>
+                        <option value="RESOLVED" th:selected="${request.status == 'RESOLVED'}">Resolved</option>
+                    </select>
+                </div>
+
+                <div class="d-flex gap-2 pt-2">
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-check-lg me-1"></i>Save Ticket
+                    </button>
+                    <a th:href="@{/housekeeping/maintenance}" class="btn btn-outline-light px-3">
+                        <i class="bi bi-x-lg me-1"></i>Cancel
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/housekeeping.js}"></script>
+</body>
+</html>

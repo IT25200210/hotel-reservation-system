@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Housekeeping · Task Dispatch Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/css/housekeeping.css}" rel="stylesheet">
+</head>
+<body>
+
+<!-- Apple Frosted Glass Navbar -->
+<nav class="navbar navbar-dark hk-navbar">
+    <div class="container-fluid">
+        <a th:href="@{/housekeeping/tasks}" class="navbar-brand text-decoration-none">
+            <span class="hk-brand-crest"><i class="bi bi-buildings"></i></span>
+            <span>The Grand Horizon <span class="badge bg-white text-dark rounded-pill ms-2 fw-semibold" style="font-size: 0.72rem;">Housekeeping</span></span>
+        </a>
+        <div class="d-flex align-items-center gap-2">
+            <a th:href="@{/housekeeping/tasks}" class="btn btn-sm hk-nav-btn"><i class="bi bi-arrow-left me-1"></i>Back to Tasks</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-5">
+    <div class="card hk-card form-card border-0 shadow-lg hk-fade-in">
+        <div class="card-body p-4">
+            
+            <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom border-white border-opacity-10">
+                <div class="stat-icon neutral">
+                    <i class="bi" th:classappend="${task.id == null} ? 'bi-plus-circle' : 'bi-pencil-square'"></i>
+                </div>
+                <div>
+                    <h3 class="page-title fs-4" th:text="${task.id == null} ? 'Assign Cleaning Task' : 'Edit Cleaning Task'"></h3>
+                    <p class="text-secondary small mb-0">Dispatch housekeeping duties to staff members</p>
+                </div>
+            </div>
+
+            <form th:action="${task.id == null} ? @{/housekeeping/tasks} : @{/housekeeping/tasks/update/{id}(id=${task.id})}"
+                  th:object="${task}" method="post">
+                
+                <div class="mb-3">
+                    <label class="form-label"><i class="bi bi-door-closed text-white"></i>Room Number</label>
+                    <input type="text" th:field="*{roomNumber}" class="form-control font-monospace"
+                           placeholder="e.g. 101, 204, 310" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><i class="bi bi-person-badge text-white"></i>Assigned Staff Member</label>
+                    <input type="text" th:field="*{assignedTo}" class="form-control"
+                           placeholder="e.g. hkstaff or Staff Name" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><i class="bi bi-journal-text text-white"></i>Cleaning Notes & Instructions</label>
+                    <textarea th:field="*{notes}" class="form-control" rows="3"
+                              placeholder="e.g. Checkout turnover, replace bed linens, replenish luxury toiletries"></textarea>
+                </div>
+
+                <div class="mb-4" th:if="${task.id != null}">
+                    <label class="form-label"><i class="bi bi-flag text-white"></i>Task Status</label>
+                    <select th:field="*{status}" class="form-select">
+                        <option value="PENDING" th:selected="${task.status == 'PENDING'}">Pending Dispatch</option>
+                        <option value="IN_PROGRESS" th:selected="${task.status == 'IN_PROGRESS'}">In Progress</option>
+                        <option value="COMPLETED" th:selected="${task.status == 'COMPLETED'}">Completed</option>
+                    </select>
+                </div>
+
+                <div class="d-flex gap-2 pt-2">
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-check-lg me-1"></i>Save Task
+                    </button>
+                    <a th:href="@{/housekeeping/tasks}" class="btn btn-outline-light px-3">
+                        <i class="bi bi-x-lg me-1"></i>Cancel
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/housekeeping.js}"></script>
+</body>
+</html>

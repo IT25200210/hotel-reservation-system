@@ -1,41 +1,101 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Audit Logs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · Audit Logs</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/css/housekeeping.css}" rel="stylesheet">
 </head>
 <body>
-<nav class="navbar navbar-dark bg-dark mb-4">
+
+<!-- Apple Frosted Glass Navbar -->
+<nav class="navbar navbar-dark hk-navbar">
     <div class="container-fluid">
-        <span class="navbar-brand">Hotel Admin - Audit Logs</span>
-        <a th:href="@{/admin/users}" class="btn btn-outline-light btn-sm">Back to Users</a>
+        <a th:href="@{/admin/users}" class="navbar-brand text-decoration-none">
+            <span class="hk-brand-crest"><i class="bi bi-shield-lock-fill"></i></span>
+            <span>The Grand Horizon <span class="badge bg-white text-dark rounded-pill ms-2 fw-semibold" style="font-size: 0.72rem;">System Admin</span></span>
+        </a>
+        <div class="d-flex align-items-center gap-2">
+            <a th:href="@{/admin/users}" class="btn btn-sm hk-nav-btn"><i class="bi bi-people me-1"></i>User Accounts</a>
+            <a th:href="@{/admin/audit-logs}" class="btn btn-sm hk-nav-btn active"><i class="bi bi-journal-text me-1"></i>Audit Logs</a>
+            <a th:href="@{/housekeeping/tasks}" class="btn btn-sm hk-nav-btn"><i class="bi bi-stars me-1"></i>Housekeeping Console</a>
+            
+            <div class="hk-user-pill ms-2 d-none d-md-flex">
+                <i class="bi bi-shield-shaded text-white"></i>
+                <span sec:authentication="name">Admin</span>
+            </div>
+            <a th:href="@{/logout}" class="btn btn-sm btn-outline-light ms-1"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
+        </div>
     </div>
 </nav>
-<div class="container">
-    <h2>Audit Log</h2>
-    <table class="table table-sm table-bordered table-striped mt-3">
-        <thead class="table-dark">
-        <tr>
-            <th>Time</th>
-            <th>User</th>
-            <th>Action</th>
-            <th>Entity</th>
-            <th>ID</th>
-            <th>Details</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="log : ${logs}">
-            <td th:text="${log.createdAt}"></td>
-            <td th:text="${log.username}"></td>
-            <td th:text="${log.action}"></td>
-            <td th:text="${log.entityName}"></td>
-            <td th:text="${log.entityId}"></td>
-            <td th:text="${log.details}"></td>
-        </tr>
-        </tbody>
-    </table>
+
+<div class="container-xl py-4">
+
+    <!-- Header & Action -->
+    <div class="hk-header-row hk-fade-in">
+        <div>
+            <h2 class="page-title"><i class="bi bi-journal-text text-white"></i>System Audit Trail</h2>
+            <p class="page-subtitle">Security log of all administrative actions and entity modifications</p>
+        </div>
+        <div>
+            <a th:href="@{/admin/users}" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-arrow-left me-1"></i>Back to Users
+            </a>
+        </div>
+    </div>
+
+    <!-- Logs Table Card -->
+    <div class="card hk-card border-0 shadow-lg hk-fade-in delay-1">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table hk-table mb-0">
+                    <thead>
+                    <tr>
+                        <th class="ps-4">Timestamp</th>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>Target Entity</th>
+                        <th>Entity ID</th>
+                        <th class="pe-4">Operation Details</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${logs.isEmpty()}">
+                        <td colspan="6" class="text-center text-secondary py-5">
+                            <i class="bi bi-clipboard-check fs-2 text-secondary d-block mb-2"></i>
+                            <h6 class="text-white">No audit records found</h6>
+                        </td>
+                    </tr>
+                    <tr th:each="log : ${logs}">
+                        <td class="ps-4 font-monospace text-secondary small" th:text="${log.createdAt}"></td>
+                        <td class="fw-bold text-white font-monospace">
+                            <i class="bi bi-person text-secondary me-1"></i>
+                            <span th:text="${log.username}"></span>
+                        </td>
+                        <td>
+                            <span class="badge" style="background: rgba(255, 255, 255, 0.1); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.2);"
+                                  th:text="${log.action}">
+                            </span>
+                        </td>
+                        <td class="text-white" th:text="${log.entityName}"></td>
+                        <td class="font-monospace text-secondary" th:text="${'#' + log.entityId}"></td>
+                        <td class="pe-4 text-secondary small" th:text="${log.details}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+<!-- Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/housekeeping.js}"></script>
 </body>
 </html>

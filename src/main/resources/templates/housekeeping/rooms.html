@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Housekeeping · Room Status</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/css/housekeeping.css}" rel="stylesheet">
+</head>
+<body>
+
+<!-- Apple Frosted Glass Navbar -->
+<nav class="navbar navbar-dark hk-navbar">
+    <div class="container-fluid">
+        <a th:href="@{/housekeeping/tasks}" class="navbar-brand text-decoration-none">
+            <span class="hk-brand-crest"><i class="bi bi-buildings"></i></span>
+            <span>The Grand Horizon <span class="badge bg-white text-dark rounded-pill ms-2 fw-semibold" style="font-size: 0.72rem;">Housekeeping</span></span>
+        </a>
+        <div class="d-flex align-items-center gap-2">
+            <a th:href="@{/housekeeping/dashboard}" class="btn btn-sm hk-nav-btn"><i class="bi bi-chart-pie me-1"></i>Analytics</a>
+            <a th:href="@{/housekeeping/tasks}" class="btn btn-sm hk-nav-btn"><i class="bi bi-list-check me-1"></i>Tasks</a>
+            <a th:href="@{/housekeeping/rooms}" class="btn btn-sm hk-nav-btn active"><i class="bi bi-door-open me-1"></i>Room Status</a>
+            <a th:href="@{/housekeeping/maintenance}" class="btn btn-sm hk-nav-btn"><i class="bi bi-tools me-1"></i>Maintenance</a>
+            
+            <div class="hk-user-pill ms-2 d-none d-md-flex">
+                <i class="bi bi-person-circle"></i>
+                <span sec:authentication="name">User</span>
+            </div>
+            <a th:href="@{/logout}" class="btn btn-sm btn-outline-light ms-1"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container-xl py-4">
+
+    <!-- Header & Actions -->
+    <div class="hk-header-row hk-fade-in">
+        <div>
+            <h2 class="page-title"><i class="bi bi-door-open text-white"></i>Room Status Board</h2>
+            <p class="page-subtitle">Real-time room cleanliness and turnover readiness</p>
+        </div>
+        <div>
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#addRoomCollapse" aria-expanded="false">
+                <i class="bi bi-plus-lg me-1"></i>Add Room
+            </button>
+        </div>
+    </div>
+
+    <!-- Error Alert -->
+    <div th:if="${error}" class="alert alert-danger border-0 shadow-sm mb-4" style="background: rgba(255, 69, 58, 0.18); color: #ff6961;">
+        <i class="bi bi-exclamation-triangle me-2"></i><span th:text="${error}"></span>
+    </div>
+
+    <!-- Expandable Add Room Bar -->
+    <div class="collapse mb-4" id="addRoomCollapse">
+        <div class="card hk-card p-4">
+            <form th:action="@{/housekeeping/rooms/add}" method="post" class="row g-3 align-items-center">
+                <div class="col-md-4">
+                    <label class="form-label text-secondary small"><i class="bi bi-hash me-1"></i>Room Number</label>
+                    <input type="text" name="roomNumber" class="form-control" placeholder="e.g. 105, 201, 304" required>
+                </div>
+                <div class="col-md-auto align-self-end">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Save Room</button>
+                </div>
+                <div class="col-md text-secondary small align-self-end pb-2">
+                    <i class="bi bi-info-circle me-1 text-white"></i>New rooms initialize as <span class="badge badge-dirty">Dirty</span> until inspected.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Apple Bento Stats Grid (Generous Padding, Zero Overlap) -->
+    <div class="hk-stats-row hk-fade-in delay-1" th:with="totalRooms=${dirtyCount + inProgressCount + cleanCount + inspectedCount}">
+        
+        <!-- Dirty -->
+        <div class="card stat-card">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-number" th:text="${dirtyCount}">0</div>
+                    <div class="stat-label">Dirty</div>
+                </div>
+                <div class="stat-icon danger"><i class="bi bi-exclamation-circle"></i></div>
+            </div>
+            <div class="stat-bar-wrapper">
+                <div class="stat-bar"><i class="danger" th:style="|width: ${totalRooms > 0 ? (dirtyCount * 100.0 / totalRooms) : 0}%|"></i></div>
+                <div class="stat-pct">
+                    <span th:text="${totalRooms > 0 ? #numbers.formatDecimal(dirtyCount * 100.0 / totalRooms, 1, 0) + '% of total' : '0%'}"></span>
+                    <span class="text-secondary" th:text="${dirtyCount + ' rooms'}"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- In Progress -->
+        <div class="card stat-card">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-number" th:text="${inProgressCount}">0</div>
+                    <div class="stat-label">In Progress</div>
+                </div>
+                <div class="stat-icon warning"><i class="bi bi-arrow-repeat"></i></div>
+            </div>
+            <div class="stat-bar-wrapper">
+                <div class="stat-bar"><i class="warning" th:style="|width: ${totalRooms > 0 ? (inProgressCount * 100.0 / totalRooms) : 0}%|"></i></div>
+                <div class="stat-pct">
+                    <span th:text="${totalRooms > 0 ? #numbers.formatDecimal(inProgressCount * 100.0 / totalRooms, 1, 0) + '% of total' : '0%'}"></span>
+                    <span class="text-secondary" th:text="${inProgressCount + ' rooms'}"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clean -->
+        <div class="card stat-card">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-number" th:text="${cleanCount}">0</div>
+                    <div class="stat-label">Clean</div>
+                </div>
+                <div class="stat-icon success"><i class="bi bi-check-circle"></i></div>
+            </div>
+            <div class="stat-bar-wrapper">
+                <div class="stat-bar"><i class="success" th:style="|width: ${totalRooms > 0 ? (cleanCount * 100.0 / totalRooms) : 0}%|"></i></div>
+                <div class="stat-pct">
+                    <span th:text="${totalRooms > 0 ? #numbers.formatDecimal(cleanCount * 100.0 / totalRooms, 1, 0) + '% of total' : '0%'}"></span>
+                    <span class="text-secondary" th:text="${cleanCount + ' rooms'}"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inspected -->
+        <div class="card stat-card">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-number" th:text="${inspectedCount}">0</div>
+                    <div class="stat-label">Inspected</div>
+                </div>
+                <div class="stat-icon info"><i class="bi bi-patch-check"></i></div>
+            </div>
+            <div class="stat-bar-wrapper">
+                <div class="stat-bar"><i class="info" th:style="|width: ${totalRooms > 0 ? (inspectedCount * 100.0 / totalRooms) : 0}%|"></i></div>
+                <div class="stat-pct">
+                    <span th:text="${totalRooms > 0 ? #numbers.formatDecimal(inspectedCount * 100.0 / totalRooms, 1, 0) + '% of total' : '0%'}"></span>
+                    <span class="text-secondary" th:text="${inspectedCount + ' rooms'}"></span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Filter & View Switcher Toolbar -->
+    <div class="card hk-card hk-toolbar-card mb-4 hk-fade-in delay-2">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-secondary small fw-medium me-1"><i class="bi bi-funnel me-1"></i>Filter:</span>
+                <div class="hk-filter-tabs">
+                    <button type="button" class="hk-filter-pill active" onclick="filterRooms('ALL', this)">
+                        All <span class="badge bg-secondary ms-1" th:text="${rooms.size()}">0</span>
+                    </button>
+                    <button type="button" class="hk-filter-pill" onclick="filterRooms('DIRTY', this)">
+                        Dirty <span class="badge badge-dirty ms-1" th:text="${dirtyCount}">0</span>
+                    </button>
+                    <button type="button" class="hk-filter-pill" onclick="filterRooms('IN_PROGRESS', this)">
+                        In Progress <span class="badge badge-progress ms-1" th:text="${inProgressCount}">0</span>
+                    </button>
+                    <button type="button" class="hk-filter-pill" onclick="filterRooms('CLEAN', this)">
+                        Clean <span class="badge badge-clean ms-1" th:text="${cleanCount}">0</span>
+                    </button>
+                    <button type="button" class="hk-filter-pill" onclick="filterRooms('INSPECTED', this)">
+                        Inspected <span class="badge badge-inspected ms-1" th:text="${inspectedCount}">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- View Switcher -->
+            <div class="hk-view-switch">
+                <button type="button" id="btnGridView" class="hk-view-btn active" title="Visual Room Floor Grid">
+                    <i class="bi bi-grid-fill me-1"></i>Floor Grid
+                </button>
+                <button type="button" id="btnTableView" class="hk-view-btn" title="Detailed Table">
+                    <i class="bi bi-table me-1"></i>Table
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 1. VISUAL ROOM FLOOR GRID VIEW -->
+    <div id="roomsGridView" class="hk-room-grid hk-fade-in delay-3">
+        <div th:if="${rooms.isEmpty()}" class="card hk-card p-5 text-center w-100 grid-column-all">
+            <i class="bi bi-door-closed text-secondary fs-1 mb-2"></i>
+            <h5 class="text-white">No rooms currently recorded</h5>
+            <p class="text-secondary small">Add your first hotel room above to track cleaning status.</p>
+        </div>
+
+        <div th:each="r : ${rooms}" 
+             class="card hk-room-tile" 
+             th:classappend="|status-${r.status.toLowerCase().replace('_', '-')}|"
+             th:attr="data-status=${r.status}">
+            
+            <div>
+                <div class="room-tile-header">
+                    <div class="room-number-display">
+                        <i class="bi bi-door-closed text-secondary me-1 fs-5"></i>
+                        <span th:text="${r.roomNumber}">101</span>
+                    </div>
+                    <div>
+                        <span th:if="${r.status == 'DIRTY'}" class="badge badge-dirty">
+                            <span class="pulse-dot"></span>Dirty
+                        </span>
+                        <span th:if="${r.status == 'IN_PROGRESS'}" class="badge badge-progress">
+                            <span class="pulse-dot"></span>In Progress
+                        </span>
+                        <span th:if="${r.status == 'CLEAN'}" class="badge badge-clean">
+                            <i class="bi bi-check-circle-fill me-1"></i>Clean
+                        </span>
+                        <span th:if="${r.status == 'INSPECTED'}" class="badge badge-inspected">
+                            <i class="bi bi-patch-check-fill me-1"></i>Inspected
+                        </span>
+                    </div>
+                </div>
+
+                <div class="room-timestamp">
+                    <i class="bi bi-clock-history"></i>
+                    <span th:text="${r.updatedAtFormatted}">Just now</span>
+                </div>
+            </div>
+
+            <!-- 1-Click Status Set -->
+            <div>
+                <div class="room-quick-actions">
+                    <a th:href="@{/housekeeping/rooms/status/{id}/{status}(id=${r.id},status='DIRTY')}"
+                       class="room-action-btn" th:classappend="${r.status == 'DIRTY'} ? 'active-status' : ''"
+                       title="Mark as Dirty">Dirty</a>
+                    <a th:href="@{/housekeeping/rooms/status/{id}/{status}(id=${r.id},status='IN_PROGRESS')}"
+                       class="room-action-btn" th:classappend="${r.status == 'IN_PROGRESS'} ? 'active-status' : ''"
+                       title="Mark In Progress">Progress</a>
+                    <a th:href="@{/housekeeping/rooms/status/{id}/{status}(id=${r.id},status='CLEAN')}"
+                       class="room-action-btn" th:classappend="${r.status == 'CLEAN'} ? 'active-status' : ''"
+                       title="Mark Clean">Clean</a>
+                    <a th:href="@{/housekeeping/rooms/status/{id}/{status}(id=${r.id},status='INSPECTED')}"
+                       class="room-action-btn" th:classappend="${r.status == 'INSPECTED'} ? 'active-status' : ''"
+                       title="Mark Inspected">Inspect</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 2. DATA TABLE VIEW -->
+    <div id="roomsTableView" class="card hk-card mb-4" style="display: none;">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table hk-table mb-0">
+                    <thead>
+                    <tr>
+                        <th class="ps-4">Room</th>
+                        <th>Status</th>
+                        <th>Last Cleaned / Updated</th>
+                        <th class="text-end pe-4">Set Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${rooms.isEmpty()}">
+                        <td colspan="4" class="text-center text-secondary py-5">
+                            <i class="bi bi-inbox fs-3 d-block mb-2"></i>No rooms recorded yet.
+                        </td>
+                    </tr>
+                    <tr th:each="r : ${rooms}" th:attr="data-status=${r.status}">
+                        <td class="ps-4 fw-bold fs-5">
+                            <i class="bi bi-door-closed hk-room-icon"></i>
+                            <span class="hk-room-number" th:text="${r.roomNumber}"></span>
+                        </td>
+                        <td>
+                            <span th:if="${r.status == 'DIRTY'}" class="badge badge-dirty">Dirty</span>
+                            <span th:if="${r.status == 'IN_PROGRESS'}" class="badge badge-progress"><span class="pulse-dot"></span>In Progress</span>
+                            <span th:if="${r.status == 'CLEAN'}" class="badge badge-clean">Clean</span>
+                            <span th:if="${r.status == 'INSPECTED'}" class="badge badge-inspected">Inspected</span>
+                        </td>
+                        <td class="hk-timestamp" th:text="${r.updatedAtFormatted}"></td>
+                        <td class="text-end pe-4">
+                            <div class="btn-group btn-group-sm">
+                                <a th:href="@{/housekeeping/rooms/status/{id}/{status}(id=${r.id},status='DIRTY')}"
+                                   class="btn btn-outline-light btn-sm" th:classappend="${r.status == 'DIRTY'} ? 'disabled'">Dirty</a>
+                                <a th:href="@{/housekeeping/rooms/status/{id}/{status}(id=${r.id},status='IN_PROGRESS')}"
+                                   class="btn btn-outline-light btn-sm" th:classappend="${r.status == 'IN_PROGRESS'} ? 'disabled'">In Progress</a>
+                                <a th:href="@{/housekeeping/rooms/status/{id}/{status}(id=${r.id},status='CLEAN')}"
+                                   class="btn btn-outline-light btn-sm" th:classappend="${r.status == 'CLEAN'} ? 'disabled'">Clean</a>
+                                <a th:href="@{/housekeeping/rooms/status/{id}/{status}(id=${r.id},status='INSPECTED')}"
+                                   class="btn btn-outline-light btn-sm" th:classappend="${r.status == 'INSPECTED'} ? 'disabled'">Inspected</a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lifecycle Roadmap Stepper Footer -->
+    <div class="d-flex justify-content-center my-4">
+        <div class="hk-lifecycle-strip text-secondary">
+            <span class="text-white fw-semibold me-1"><i class="bi bi-signpost-split me-1 text-white"></i>Lifecycle:</span>
+            <span class="badge badge-dirty">Dirty</span>
+            <i class="bi bi-arrow-right"></i>
+            <span class="badge badge-progress">In Progress</span>
+            <i class="bi bi-arrow-right"></i>
+            <span class="badge badge-clean">Clean</span>
+            <i class="bi bi-arrow-right"></i>
+            <span class="badge badge-inspected">Inspected</span>
+            <span class="text-secondary ms-1" style="font-size: 0.78rem;">→ Ready for Check-in</span>
+        </div>
+    </div>
+
+</div>
+
+<!-- VengeanceUI Animated Liquid Glass Footer -->
+<footer class="hk-animated-footer">
+    <canvas id="hkFooterCanvas"></canvas>
+    <div class="container-xl hk-footer-container">
+        <div class="hk-footer-grid">
+            <div>
+                <div class="hk-footer-brand-title">
+                    <span class="hk-brand-crest"><i class="bi bi-buildings"></i></span>
+                    <span>The Grand Horizon</span>
+                </div>
+                <p class="hk-footer-desc">
+                    Next-generation luxury hospitality housekeeping & facilities operations, engineered with Apple visionOS liquid glass aesthetics and zero-lag micro-interactions.
+                </p>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge" style="background: rgba(48, 209, 88, 0.16); color: #30d158; border: 1px solid rgba(48, 209, 88, 0.35);">
+                        <span class="pulse-dot" style="background: #30d158; box-shadow: 0 0 8px #30d158;"></span> System Online
+                    </span>
+                    <span class="badge bg-secondary" style="font-size: 0.75rem;">v2.4.0 High-Perf</span>
+                </div>
+            </div>
+
+            <div>
+                <h6 class="hk-footer-heading"><i class="bi bi-grid-1x2 text-secondary"></i>Navigation</h6>
+                <ul class="hk-footer-links">
+                    <li><a th:href="@{/housekeeping/dashboard}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Analytics Dashboard</a></li>
+                    <li><a th:href="@{/housekeeping/tasks}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Task Queue</a></li>
+                    <li><a th:href="@{/housekeeping/rooms}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Room Status Board</a></li>
+                    <li><a th:href="@{/housekeeping/maintenance}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Maintenance Logs</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h6 class="hk-footer-heading"><i class="bi bi-shield-check text-secondary"></i>Operations</h6>
+                <ul class="hk-footer-links">
+                    <li><a th:href="@{/housekeeping/tasks(status='PENDING')}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Pending Cleans</a></li>
+                    <li><a th:href="@{/housekeeping/tasks(status='IN_PROGRESS')}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Active Turnovers</a></li>
+                    <li><a th:href="@{/housekeeping/maintenance(status='OPEN')}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Open Defects</a></li>
+                    <li><a th:href="@{/housekeeping/rooms}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Floor Inspection</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h6 class="hk-footer-heading"><i class="bi bi-cpu text-secondary"></i>Tech Engine</h6>
+                <ul class="hk-footer-links">
+                    <li><span class="hk-footer-link text-secondary"><i class="bi bi-terminal"></i>Spring Boot 4.1.1</span></li>
+                    <li><span class="hk-footer-link text-secondary"><i class="bi bi-apple"></i>Apple Liquid Glass</span></li>
+                    <li><span class="hk-footer-link text-secondary"><i class="bi bi-lightning-charge"></i>VengeanceUI Motion</span></li>
+                    <li><span class="hk-footer-link text-secondary"><i class="bi bi-cpu-fill"></i>Java 26 / OpenJDK</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Big Display Character Reveal Headline (VengeanceUI) -->
+        <div class="hk-footer-display-wrap text-center">
+            <div class="hk-footer-display-title">THE GRAND HORIZON</div>
+        </div>
+
+        <div class="hk-footer-meta-row">
+            <div>&copy; 2026 The Grand Horizon Luxury Resort & Suites. All rights reserved.</div>
+            <div class="d-flex align-items-center gap-3">
+                <span>Housekeeping & Facility Operations</span>
+                <span>·</span>
+                <span>visionOS Glass Interface</span>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/housekeeping.js}"></script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Housekeeping · Cleaning Tasks</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/css/housekeeping.css}" rel="stylesheet">
+</head>
+<body>
+
+<!-- Apple Frosted Glass Navbar -->
+<nav class="navbar navbar-dark hk-navbar">
+    <div class="container-fluid">
+        <a th:href="@{/housekeeping/tasks}" class="navbar-brand text-decoration-none">
+            <span class="hk-brand-crest"><i class="bi bi-buildings"></i></span>
+            <span>The Grand Horizon <span class="badge bg-white text-dark rounded-pill ms-2 fw-semibold" style="font-size: 0.72rem;">Housekeeping</span></span>
+        </a>
+        <div class="d-flex align-items-center gap-2">
+            <a th:href="@{/housekeeping/dashboard}" class="btn btn-sm hk-nav-btn"><i class="bi bi-chart-pie me-1"></i>Analytics</a>
+            <a th:href="@{/housekeeping/tasks}" class="btn btn-sm hk-nav-btn active"><i class="bi bi-list-check me-1"></i>Tasks</a>
+            <a th:href="@{/housekeeping/rooms}" class="btn btn-sm hk-nav-btn"><i class="bi bi-door-open me-1"></i>Room Status</a>
+            <a th:href="@{/housekeeping/maintenance}" class="btn btn-sm hk-nav-btn"><i class="bi bi-tools me-1"></i>Maintenance</a>
+            
+            <div class="hk-user-pill ms-2 d-none d-md-flex">
+                <i class="bi bi-person-circle"></i>
+                <span sec:authentication="name">User</span>
+            </div>
+            <a th:href="@{/logout}" class="btn btn-sm btn-outline-light ms-1"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container-xl py-4">
+
+    <!-- Header & Action -->
+    <div class="hk-header-row hk-fade-in">
+        <div>
+            <h2 class="page-title"><i class="bi bi-list-check text-white"></i>Cleaning Tasks</h2>
+            <p class="page-subtitle">Track, assign, and verify hotel housekeeping operations</p>
+        </div>
+        <div>
+            <a th:href="@{/housekeeping/tasks/new}" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-1"></i>New Task
+            </a>
+        </div>
+    </div>
+
+    <!-- Apple Bento Stats Grid (Stable, No Overlap) -->
+    <div class="hk-stats-row hk-fade-in delay-1" th:with="totalCount=${pendingCount + inProgressCount + completedCount}">
+        
+        <!-- Pending -->
+        <div class="card stat-card">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-number" th:text="${pendingCount}">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-icon neutral"><i class="bi bi-hourglass-split"></i></div>
+            </div>
+            <div class="stat-bar-wrapper">
+                <div class="stat-bar"><i class="neutral" th:style="|width: ${totalCount > 0 ? (pendingCount * 100.0 / totalCount) : 0}%|"></i></div>
+                <div class="stat-pct">
+                    <span th:text="${totalCount > 0 ? #numbers.formatDecimal(pendingCount * 100.0 / totalCount, 1, 0) + '% of tasks' : '0%'}"></span>
+                    <span class="text-secondary" th:text="${pendingCount + ' queued'}"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- In Progress -->
+        <div class="card stat-card">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-number" th:text="${inProgressCount}">0</div>
+                    <div class="stat-label">In Progress</div>
+                </div>
+                <div class="stat-icon warning"><i class="bi bi-arrow-repeat"></i></div>
+            </div>
+            <div class="stat-bar-wrapper">
+                <div class="stat-bar"><i class="warning" th:style="|width: ${totalCount > 0 ? (inProgressCount * 100.0 / totalCount) : 0}%|"></i></div>
+                <div class="stat-pct">
+                    <span th:text="${totalCount > 0 ? #numbers.formatDecimal(inProgressCount * 100.0 / totalCount, 1, 0) + '% of tasks' : '0%'}"></span>
+                    <span class="text-secondary" th:text="${inProgressCount + ' active'}"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed -->
+        <div class="card stat-card">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-number" th:text="${completedCount}">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-icon success"><i class="bi bi-check2-circle"></i></div>
+            </div>
+            <div class="stat-bar-wrapper">
+                <div class="stat-bar"><i class="success" th:style="|width: ${totalCount > 0 ? (completedCount * 100.0 / totalCount) : 0}%|"></i></div>
+                <div class="stat-pct">
+                    <span th:text="${totalCount > 0 ? #numbers.formatDecimal(completedCount * 100.0 / totalCount, 1, 0) + '% of tasks' : '0%'}"></span>
+                    <span class="text-secondary" th:text="${completedCount + ' done'}"></span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Filter Toolbar -->
+    <div class="card hk-card hk-toolbar-card mb-4 hk-fade-in delay-2">
+        <form th:action="@{/housekeeping/tasks}" method="get" class="row g-2 align-items-center">
+            <div class="col-auto">
+                <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="" th:selected="${statusFilter == null or statusFilter.isEmpty()}">All Statuses</option>
+                    <option value="PENDING" th:selected="${statusFilter == 'PENDING'}">Pending</option>
+                    <option value="IN_PROGRESS" th:selected="${statusFilter == 'IN_PROGRESS'}">In Progress</option>
+                    <option value="COMPLETED" th:selected="${statusFilter == 'COMPLETED'}">Completed</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-transparent border-end-0 text-secondary" style="border-color: var(--ios-glass-border);">
+                        <i class="bi bi-door-closed"></i>
+                    </span>
+                    <input type="text" name="roomNumber" class="form-control border-start-0" placeholder="Filter by Room..." th:value="${roomFilter}">
+                </div>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-sm btn-outline-primary"><i class="bi bi-search me-1"></i>Filter</button>
+                <a th:if="${(statusFilter != null and !statusFilter.isEmpty()) or (roomFilter != null and !roomFilter.isEmpty())}" 
+                   th:href="@{/housekeeping/tasks}" class="btn btn-sm btn-outline-light ms-1">Reset</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tasks Data Table -->
+    <div class="card hk-card border-0 shadow-lg hk-fade-in delay-3">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table hk-table mb-0">
+                    <thead>
+                    <tr>
+                        <th class="ps-4" style="width: 85px;">Task #</th>
+                        <th style="width: 130px;">Room</th>
+                        <th>Assigned Staff</th>
+                        <th>Status</th>
+                        <th>Instructions / Notes</th>
+                        <th>Logged At</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    
+                    <tr th:if="${tasks.isEmpty()}">
+                        <td colspan="7" class="text-center text-secondary py-5">
+                            <i class="bi bi-clipboard-check fs-2 text-secondary d-block mb-2"></i>
+                            <h6 class="text-white">No cleaning tasks found</h6>
+                            <p class="small text-secondary mb-3">All assigned tasks are completed or no tasks match filter criteria.</p>
+                            <a th:href="@{/housekeeping/tasks/new}" class="btn btn-sm btn-primary">
+                                <i class="bi bi-plus-lg me-1"></i>Assign a Task
+                            </a>
+                        </td>
+                    </tr>
+
+                    <tr th:each="t : ${tasks}">
+                        <td class="ps-4 hk-task-id" th:text="${'#' + t.id}"></td>
+                        <td class="fw-bold font-monospace fs-6">
+                            <i class="bi bi-door-closed hk-room-icon"></i>
+                            <span class="hk-room-number" th:text="${t.roomNumber}"></span>
+                        </td>
+                        <td>
+                            <span class="hk-staff-badge">
+                                <i class="bi bi-person"></i>
+                                <span th:text="${t.assignedTo}"></span>
+                            </span>
+                        </td>
+                        <td>
+                            <span th:if="${t.status == 'PENDING'}" class="badge badge-pending">Pending</span>
+                            <span th:if="${t.status == 'IN_PROGRESS'}" class="badge badge-progress"><span class="pulse-dot"></span>In Progress</span>
+                            <span th:if="${t.status == 'COMPLETED'}" class="badge badge-clean">Completed</span>
+                        </td>
+                        <td class="hk-task-notes" th:text="${t.notes}"></td>
+                        <td class="hk-timestamp" th:text="${t.createdAtFormatted}"></td>
+                        <td class="text-end pe-4">
+                            <div class="btn-group btn-group-sm">
+                                <a th:if="${t.status == 'PENDING'}"
+                                   th:href="@{/housekeeping/tasks/status/{id}/{status}(id=${t.id},status='IN_PROGRESS')}"
+                                   class="btn btn-sm btn-outline-light" title="Start Task">
+                                    <i class="bi bi-play-fill me-1 text-success"></i>Start
+                                </a>
+                                <a th:if="${t.status == 'IN_PROGRESS'}"
+                                   th:href="@{/housekeeping/tasks/status/{id}/{status}(id=${t.id},status='COMPLETED')}"
+                                   class="btn btn-sm btn-outline-light" title="Mark Complete">
+                                    <i class="bi bi-check-lg me-1 text-info"></i>Done
+                                </a>
+                                <a th:href="@{/housekeeping/tasks/edit/{id}(id=${t.id})}" 
+                                   class="btn btn-sm btn-outline-light" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a th:href="@{/housekeeping/tasks/delete/{id}(id=${t.id})}" 
+                                   class="btn btn-sm btn-outline-light text-danger" title="Delete"
+                                   onclick="return confirm('Delete this cleaning task?')">
+                                    <i class="bi bi-trash3"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- VengeanceUI Animated Liquid Glass Footer -->
+<footer class="hk-animated-footer">
+    <canvas id="hkFooterCanvas"></canvas>
+    <div class="container-xl hk-footer-container">
+        <div class="hk-footer-grid">
+            <div>
+                <div class="hk-footer-brand-title">
+                    <span class="hk-brand-crest"><i class="bi bi-buildings"></i></span>
+                    <span>The Grand Horizon</span>
+                </div>
+                <p class="hk-footer-desc">
+                    Next-generation luxury hospitality housekeeping & facilities operations, engineered with Apple visionOS liquid glass aesthetics and zero-lag micro-interactions.
+                </p>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge" style="background: rgba(48, 209, 88, 0.16); color: #30d158; border: 1px solid rgba(48, 209, 88, 0.35);">
+                        <span class="pulse-dot" style="background: #30d158; box-shadow: 0 0 8px #30d158;"></span> System Online
+                    </span>
+                    <span class="badge bg-secondary" style="font-size: 0.75rem;">v2.4.0 High-Perf</span>
+                </div>
+            </div>
+
+            <div>
+                <h6 class="hk-footer-heading"><i class="bi bi-grid-1x2 text-secondary"></i>Navigation</h6>
+                <ul class="hk-footer-links">
+                    <li><a th:href="@{/housekeeping/dashboard}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Analytics Dashboard</a></li>
+                    <li><a th:href="@{/housekeeping/tasks}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Task Queue</a></li>
+                    <li><a th:href="@{/housekeeping/rooms}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Room Status Board</a></li>
+                    <li><a th:href="@{/housekeeping/maintenance}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Maintenance Logs</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h6 class="hk-footer-heading"><i class="bi bi-shield-check text-secondary"></i>Operations</h6>
+                <ul class="hk-footer-links">
+                    <li><a th:href="@{/housekeeping/tasks(status='PENDING')}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Pending Cleans</a></li>
+                    <li><a th:href="@{/housekeeping/tasks(status='IN_PROGRESS')}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Active Turnovers</a></li>
+                    <li><a th:href="@{/housekeeping/maintenance(status='OPEN')}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Open Defects</a></li>
+                    <li><a th:href="@{/housekeeping/rooms}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Floor Inspection</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h6 class="hk-footer-heading"><i class="bi bi-cpu text-secondary"></i>Tech Engine</h6>
+                <ul class="hk-footer-links">
+                    <li><span class="hk-footer-link text-secondary"><i class="bi bi-terminal"></i>Spring Boot 4.1.1</span></li>
+                    <li><span class="hk-footer-link text-secondary"><i class="bi bi-apple"></i>Apple Liquid Glass</span></li>
+                    <li><span class="hk-footer-link text-secondary"><i class="bi bi-lightning-charge"></i>VengeanceUI Motion</span></li>
+                    <li><span class="hk-footer-link text-secondary"><i class="bi bi-cpu-fill"></i>Java 26 / OpenJDK</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Big Display Character Reveal Headline (VengeanceUI) -->
+        <div class="hk-footer-display-wrap text-center">
+            <div class="hk-footer-display-title">THE GRAND HORIZON</div>
+        </div>
+
+        <div class="hk-footer-meta-row">
+            <div>&copy; 2026 The Grand Horizon Luxury Resort & Suites. All rights reserved.</div>
+            <div class="d-flex align-items-center gap-3">
+                <span>Housekeeping & Facility Operations</span>
+                <span>·</span>
+                <span>visionOS Glass Interface</span>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/housekeeping.js}"></script>
+</body>
+</html>

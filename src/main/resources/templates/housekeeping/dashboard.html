@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Housekeeping · Analytics Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href="@{/css/housekeeping.css}" rel="stylesheet">
+</head>
+<body>
+
+<!-- Apple Frosted Glass Navbar -->
+<nav class="navbar navbar-dark hk-navbar">
+    <div class="container-fluid">
+        <a th:href="@{/housekeeping/tasks}" class="navbar-brand text-decoration-none">
+            <span class="hk-brand-crest"><i class="bi bi-buildings"></i></span>
+            <span>The Grand Horizon <span class="badge bg-white text-dark rounded-pill ms-2 fw-semibold" style="font-size: 0.72rem;">Housekeeping</span></span>
+        </a>
+        <div class="d-flex align-items-center gap-2">
+            <a th:href="@{/housekeeping/dashboard}" class="btn btn-sm hk-nav-btn active"><i class="bi bi-chart-pie me-1"></i>Analytics</a>
+            <a th:href="@{/housekeeping/tasks}" class="btn btn-sm hk-nav-btn"><i class="bi bi-list-check me-1"></i>Tasks</a>
+            <a th:href="@{/housekeeping/rooms}" class="btn btn-sm hk-nav-btn"><i class="bi bi-door-open me-1"></i>Room Status</a>
+            <a th:href="@{/housekeeping/maintenance}" class="btn btn-sm hk-nav-btn"><i class="bi bi-tools me-1"></i>Maintenance</a>
+            
+            <div class="hk-user-pill ms-2 d-none d-md-flex">
+                <i class="bi bi-person-circle"></i>
+                <span sec:authentication="name">User</span>
+            </div>
+            <a th:href="@{/logout}" class="btn btn-sm btn-outline-light ms-1"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container-xl py-4">
+
+    <!-- Header & Subtitle -->
+    <div class="hk-header-row hk-fade-in">
+        <div>
+            <h2 class="page-title"><i class="bi bi-graph-up-arrow text-white"></i>Analytics & Reporting</h2>
+            <p class="page-subtitle">Real-time reports on room turnover, task velocity, and maintenance health</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/housekeeping/tasks/new}" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-plus-lg me-1"></i>New Task
+            </a>
+            <a th:href="@{/housekeeping/maintenance/new}" class="btn btn-primary btn-sm">
+                <i class="bi bi-tools me-1"></i>Report Defect
+            </a>
+        </div>
+    </div>
+
+    <!-- Apple Bento Stats Grid (Stable, No Overlap) -->
+    <div class="hk-stats-row hk-fade-in delay-1" th:with="readyRooms=${cleanRooms + inspectedRooms}, totalTasks=${pendingTasks + inProgressTasks + completedTasks}">
+        
+        <!-- Total Rooms -->
+        <div class="card stat-card">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-number" th:text="${totalRooms}">0</div>
+                    <div class="stat-label">Total Rooms</div>
+                </div>
+                <div class="stat-icon neutral"><i class="bi bi-buildings"></i></div>
+            </div>
+            <div class="stat-pct">
+                <span class="text-secondary">Monitored inventory</span>
+                <a th:href="@{/housekeeping/rooms}" class="text-white text-decoration-none small">View Board →</a>
+            </div>
+        </div>
+
+        <!-- Check-in Ready Rate -->
+        <div class="card stat-card">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-number" th:text="${totalRooms > 0 ? #numbers.formatDecimal(readyRooms * 100.0 / totalRooms, 1, 0) + '%' : '0%'}">0%</div>
+                    <div class="stat-label">Ready for Check-in</div>
+                </div>
+                <div class="stat-icon success"><i class="bi bi-patch-check"></i></div>
+            </div>
+            <div class="stat-pct">
+                <span class="text-secondary" th:text="${readyRooms + ' of ' + totalRooms + ' clean'}"></span>
+                <span class="text-success small">Available</span>
+            </div>
+        </div>
+
+        <!-- Active Tasks -->
+        <div class="card stat-card">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-number" th:text="${inProgressTasks}">0</div>
+                    <div class="stat-label">Tasks in Flight</div>
+                </div>
+                <div class="stat-icon warning"><i class="bi bi-arrow-repeat"></i></div>
+            </div>
+            <div class="stat-pct">
+                <span class="text-secondary" th:text="${pendingTasks + ' queued'}"></span>
+                <a th:href="@{/housekeeping/tasks}" class="text-white text-decoration-none small">Dispatch →</a>
+            </div>
+        </div>
+
+        <!-- Open Maintenance Defect Tickets -->
+        <div class="card stat-card">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-number" th:text="${openMaintenance}">0</div>
+                    <div class="stat-label">Open Repairs</div>
+                </div>
+                <div class="stat-icon danger"><i class="bi bi-exclamation-octagon"></i></div>
+            </div>
+            <div class="stat-pct">
+                <span class="text-secondary" th:text="${inProgressMaintenance + ' fixing'}"></span>
+                <a th:href="@{/housekeeping/maintenance}" class="text-danger text-decoration-none small">Resolve →</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4 hk-fade-in delay-2">
+        
+        <!-- Room Status Breakdown Donut Chart -->
+        <div class="col-lg-6">
+            <div class="card hk-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="text-white fw-bold mb-0">
+                        <i class="bi bi-pie-chart text-secondary me-2"></i>Room Turnover Distribution
+                    </h5>
+                    <span class="badge bg-secondary" th:text="${totalRooms + ' Rooms'}"></span>
+                </div>
+                <p class="text-secondary small mb-3">Breakdown of Dirty, In-Progress, Clean, and Inspected inventory.</p>
+                <div style="height: 280px; position: relative;">
+                    <canvas id="roomsDoughnutChart" 
+                            th:attr="data-dirty=${dirtyRooms},data-inprogress=${inProgressRooms},data-clean=${cleanRooms},data-inspected=${inspectedRooms}">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tasks by Status Bar Chart -->
+        <div class="col-lg-6">
+            <div class="card hk-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="text-white fw-bold mb-0">
+                        <i class="bi bi-bar-chart-line text-secondary me-2"></i>Cleaning Task Velocity
+                    </h5>
+                    <span class="badge bg-secondary" th:text="${(pendingTasks + inProgressTasks + completedTasks) + ' Tasks'}"></span>
+                </div>
+                <p class="text-secondary small mb-3">Comparison of pending requests, active cleanings, and completed operations.</p>
+                <div style="height: 280px; position: relative;">
+                    <canvas id="tasksBarChart"
+                            th:attr="data-pending=${pendingTasks},data-inprogress=${inProgressTasks},data-completed=${completedTasks}">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Secondary Row: Maintenance Chart + Recent Activity Feed -->
+    <div class="row g-4 hk-fade-in delay-3">
+        
+        <!-- Maintenance Health Chart -->
+        <div class="col-lg-5">
+            <div class="card hk-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="text-white fw-bold mb-0">
+                        <i class="bi bi-tools text-secondary me-2"></i>Maintenance Tickets
+                    </h5>
+                    <span class="badge bg-secondary" th:text="${(openMaintenance + inProgressMaintenance + resolvedMaintenance) + ' Total'}"></span>
+                </div>
+                <p class="text-secondary small mb-3">Room repair requests categorized by active and resolved states.</p>
+                <div style="height: 240px; position: relative;">
+                    <canvas id="maintenanceChart"
+                            th:attr="data-open=${openMaintenance},data-inprogress=${inProgressMaintenance},data-resolved=${resolvedMaintenance}">
+                    </canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Operations Feed -->
+        <div class="col-lg-7">
+            <div class="card hk-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="text-white fw-bold mb-0">
+                        <i class="bi bi-activity text-secondary me-2"></i>Recent Cleaning Tasks
+                    </h5>
+                    <a th:href="@{/housekeeping/tasks}" class="text-white text-decoration-none small">View all →</a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table hk-table mb-0">
+                        <thead>
+                        <tr>
+                            <th class="ps-3">Room</th>
+                            <th>Staff</th>
+                            <th>Status</th>
+                            <th>Logged</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${recentTasks.isEmpty()}">
+                            <td colspan="4" class="text-center text-secondary py-4">No recent task activity recorded.</td>
+                        </tr>
+                        <tr th:each="t : ${recentTasks}">
+                            <td class="ps-3 fw-bold font-monospace">
+                                <i class="bi bi-door-closed hk-room-icon"></i>
+                                <span class="hk-room-number" th:text="${'Room ' + t.roomNumber}"></span>
+                            </td>
+                            <td>
+                                <span class="hk-staff-badge">
+                                    <i class="bi bi-person"></i>
+                                    <span th:text="${t.assignedTo}"></span>
+                                </span>
+                            </td>
+                            <td>
+                                <span th:if="${t.status == 'PENDING'}" class="badge badge-pending">Pending</span>
+                                <span th:if="${t.status == 'IN_PROGRESS'}" class="badge badge-progress"><span class="pulse-dot"></span>Active</span>
+                                <span th:if="${t.status == 'COMPLETED'}" class="badge badge-clean">Completed</span>
+                            </td>
+                            <td class="hk-timestamp" th:text="${t.createdAtFormatted}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- VengeanceUI Animated Liquid Glass Footer -->
+<footer class="hk-animated-footer">
+    <canvas id="hkFooterCanvas"></canvas>
+    <div class="container-xl hk-footer-container">
+        <div class="hk-footer-grid">
+            <div>
+                <div class="hk-footer-brand-title">
+                    <span class="hk-brand-crest"><i class="bi bi-buildings"></i></span>
+                    <span>The Grand Horizon</span>
+                </div>
+                <p class="hk-footer-desc">
+                    Next-generation luxury hospitality housekeeping & facilities operations, engineered with Apple visionOS liquid glass aesthetics and zero-lag micro-interactions.
+                </p>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge" style="background: rgba(48, 209, 88, 0.16); color: #30d158; border: 1px solid rgba(48, 209, 88, 0.35);">
+                        <span class="pulse-dot" style="background: #30d158; box-shadow: 0 0 8px #30d158;"></span> System Online
+                    </span>
+                    <span class="badge bg-secondary" style="font-size: 0.75rem;">v2.4.0 High-Perf</span>
+                </div>
+            </div>
+
+            <div>
+                <h6 class="hk-footer-heading"><i class="bi bi-grid-1x2 text-secondary"></i>Navigation</h6>
+                <ul class="hk-footer-links">
+                    <li><a th:href="@{/housekeeping/dashboard}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Analytics Dashboard</a></li>
+                    <li><a th:href="@{/housekeeping/tasks}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Task Queue</a></li>
+                    <li><a th:href="@{/housekeeping/rooms}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Room Status Board</a></li>
+                    <li><a th:href="@{/housekeeping/maintenance}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Maintenance Logs</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h6 class="hk-footer-heading"><i class="bi bi-shield-check text-secondary"></i>Operations</h6>
+                <ul class="hk-footer-links">
+                    <li><a th:href="@{/housekeeping/tasks(status='PENDING')}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Pending Cleans</a></li>
+                    <li><a th:href="@{/housekeeping/tasks(status='IN_PROGRESS')}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Active Turnovers</a></li>
+                    <li><a th:href="@{/housekeeping/maintenance(status='OPEN')}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Open Defects</a></li>
+                    <li><a th:href="@{/housekeeping/rooms}" class="hk-footer-link"><i class="bi bi-chevron-right"></i>Floor Inspection</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h6 class="hk-footer-heading"><i class="bi bi-cpu text-secondary"></i>Tech Engine</h6>
+                <ul class="hk-footer-links">
+                    <li><span class="hk-footer-link text-secondary"><i class="bi bi-terminal"></i>Spring Boot 4.1.1</span></li>
+                    <li><span class="hk-footer-link text-secondary"><i class="bi bi-apple"></i>Apple Liquid Glass</span></li>
+                    <li><span class="hk-footer-link text-secondary"><i class="bi bi-lightning-charge"></i>VengeanceUI Motion</span></li>
+                    <li><span class="hk-footer-link text-secondary"><i class="bi bi-cpu-fill"></i>Java 26 / OpenJDK</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Big Display Character Reveal Headline (VengeanceUI) -->
+        <div class="hk-footer-display-wrap text-center">
+            <div class="hk-footer-display-title">THE GRAND HORIZON</div>
+        </div>
+
+        <div class="hk-footer-meta-row">
+            <div>&copy; 2026 The Grand Horizon Luxury Resort & Suites. All rights reserved.</div>
+            <div class="d-flex align-items-center gap-3">
+                <span>Housekeeping & Facility Operations</span>
+                <span>·</span>
+                <span>visionOS Glass Interface</span>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script th:src="@{/js/housekeeping.js}"></script>
+</body>
+</html>
