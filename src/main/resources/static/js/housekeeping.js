@@ -44,53 +44,143 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 10. SKIPER-UI: @skiper-ui/skiper87 SCROLL WITH FADE EFFECT & PROGRESS
     initScrollAnimations();
+
+    // 11. SKIPER-UI: @skiper-ui/skiper103 BOUNCY ACCORDION (SPRING-PHYSICS INTERACTIVE)
+    initBouncyAccordion();
+
+    // 12. OMNIPRESENT SCROLL MOTION & FLUID VELOCITY ENGINE (EVERYTHING REACTS TO SCROLL)
+    initOmnipresentScrollMotion();
+
+    // 13. INTERACTIVE ARCHITECTURAL CANVAS POINTER BEAM
+    window.addEventListener('mousemove', (e) => {
+        document.body.style.setProperty('--mouse-x', `${e.clientX}px`);
+        document.body.style.setProperty('--mouse-y', `${e.clientY}px`);
+    }, { passive: true });
 });
 
 /**
- * VengeanceUI: Spotlight Navbar
- * Uses requestAnimationFrame to calculate cursor coordinates smoothly without GPU lag.
+ * VengeanceUI: Spotlight Navbar (@Ashutoshx7/VengeanceUI)
+ * - Direct mouse tracking for immediate cursor spotlight response (--spotlight-x)
+ * - Persistent active-item ambient luminous beam (--ambience-x)
+ * - Physics spring return to the active tab on mouseleave
  */
 function initSpotlightNavbar() {
-    const navbar = document.querySelector('.hk-navbar');
-    if (!navbar) return;
+    const nav = document.getElementById('spotlightNav');
+    if (!nav) return;
 
-    let rafId = null;
+    const activeItem = nav.querySelector('.spotlight-nav-link.active') || nav.querySelector('.spotlight-nav-link');
+    
+    let currentSpotlightX = 0;
+    let targetSpotlightX = 0;
+    let velocity = 0;
+    let isHovered = false;
+    let springRafId = null;
 
-    navbar.addEventListener('mousemove', (e) => {
-        if (rafId) return;
-        rafId = requestAnimationFrame(() => {
-            const rect = navbar.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            navbar.style.setProperty('--spotlight-x', `${x}px`);
-            navbar.style.setProperty('--spotlight-y', `${y}px`);
-            rafId = null;
-        });
+    function getActiveCenter() {
+        if (!activeItem) return nav.offsetWidth / 2;
+        const navRect = nav.getBoundingClientRect();
+        const itemRect = activeItem.getBoundingClientRect();
+        return itemRect.left - navRect.left + itemRect.width / 2;
+    }
+
+    function updatePositions() {
+        const center = getActiveCenter();
+        nav.style.setProperty('--ambience-x', `${center}px`);
+        if (!isHovered) {
+            targetSpotlightX = center;
+            currentSpotlightX = center;
+            velocity = 0;
+            nav.style.setProperty('--spotlight-x', `${center}px`);
+        }
+    }
+
+    // Spring physics simulation (stiffness: 200, damping: 20 equivalent)
+    function runSpring() {
+        if (isHovered) return;
+
+        const k = 0.18; // Spring stiffness
+        const d = 0.78; // Damping factor
+        const force = (targetSpotlightX - currentSpotlightX) * k;
+        velocity = (velocity + force) * d;
+        currentSpotlightX += velocity;
+
+        nav.style.setProperty('--spotlight-x', `${currentSpotlightX}px`);
+
+        if (Math.abs(targetSpotlightX - currentSpotlightX) > 0.1 || Math.abs(velocity) > 0.05) {
+            springRafId = requestAnimationFrame(runSpring);
+        } else {
+            currentSpotlightX = targetSpotlightX;
+            nav.style.setProperty('--spotlight-x', `${currentSpotlightX}px`);
+            springRafId = null;
+        }
+    }
+
+    nav.addEventListener('mousemove', (e) => {
+        isHovered = true;
+        if (springRafId) {
+            cancelAnimationFrame(springRafId);
+            springRafId = null;
+        }
+        nav.classList.add('has-hover');
+        const rect = nav.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        currentSpotlightX = x;
+        velocity = 0;
+        nav.style.setProperty('--spotlight-x', `${x}px`);
     }, { passive: true });
 
-    navbar.addEventListener('mouseleave', () => {
-        if (rafId) cancelAnimationFrame(rafId);
-        rafId = null;
+    nav.addEventListener('mouseleave', () => {
+        isHovered = false;
+        nav.classList.remove('has-hover');
+        targetSpotlightX = getActiveCenter();
+        if (!springRafId) {
+            springRafId = requestAnimationFrame(runSpring);
+        }
     });
+
+    // Run initial setup after layout settles
+    requestAnimationFrame(updatePositions);
+    setTimeout(updatePositions, 50);
+    window.addEventListener('resize', updatePositions, { passive: true });
+
+    // Sticky Nav Scroll state & Dynamic Breadcrumb Reveal (@skiper-ui/skiper57)
+    const stickyNav = document.getElementById('hkNavSticky') || nav.closest('.hk-nav-sticky') || document.querySelector('.hk-spotlight-header');
+    if (stickyNav) {
+        let wasScrolled = false;
+        const handleStickyScroll = () => {
+            const isScrolled = window.scrollY > 25;
+            if (isScrolled !== wasScrolled) {
+                wasScrolled = isScrolled;
+                if (isScrolled) {
+                    stickyNav.classList.add('is-scrolled', 'scrolled');
+                } else {
+                    stickyNav.classList.remove('is-scrolled', 'scrolled');
+                }
+                // Recalculate spotlight and ambience center after breadcrumb expansion transition completes
+                setTimeout(updatePositions, 160);
+                setTimeout(updatePositions, 380);
+            }
+        };
+        window.addEventListener('scroll', handleStickyScroll, { passive: true });
+        handleStickyScroll();
+    }
 }
 
 /**
- * VengeanceUI + Skiper52: 3D Perspective Tilt & Fluid Hover Elevation
- * Harmonizes 3D perspective tilt with Skiper52 hover elevation (-8px translateY + 1.035 scale)
- * Eliminates sluggish transition interpolation during active mouse tracking for true 0ms tactile response.
+ * Clean VisionOS Flat-Glass: Gentle Hover Elevation & Specular Reflection
+ * Eliminates aggressive 3D perspective tilt and heavy shadows.
+ * Applies a smooth, subtle -3px vertical hover lift with responsive specular light catch.
  */
 function init3DTiltAndSpecularShine() {
-    const tiltCards = document.querySelectorAll('.stat-card, .hk-room-tile, .hk-card-tilt, .bento-card');
+    const cards = document.querySelectorAll('.stat-card, .hk-room-tile, .hk-card-tilt, .bento-card, .hk-card');
     
-    tiltCards.forEach((card) => {
+    cards.forEach((card) => {
         let isHovered = false;
         let rafId = null;
 
         card.addEventListener('mouseenter', () => {
             isHovered = true;
-            card.style.willChange = 'transform, box-shadow';
-            // Disable transition on transform so tracking is 100% instant and tactile
-            card.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease';
+            card.style.setProperty('--hover-lift', '-3px');
         });
 
         card.addEventListener('mousemove', (e) => {
@@ -105,15 +195,6 @@ function init3DTiltAndSpecularShine() {
                 // Update specular refraction highlight coordinates
                 card.style.setProperty('--mouse-x', `${x}px`);
                 card.style.setProperty('--mouse-y', `${y}px`);
-
-                // Calculate 3D tilt angles (capped at ±6.5 degrees)
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = ((y - centerY) / centerY) * -6.5;
-                const rotateY = ((x - centerX) / centerX) * 6.5;
-
-                // Combine 3D Tilt WITH Skiper52 Fluid Hover Elevation (-8px translateY & 1.035 scale)
-                card.style.transform = `perspective(1000px) translateY(-8px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.035, 1.035, 1.035)`;
                 rafId = null;
             });
         }, { passive: true });
@@ -124,12 +205,7 @@ function init3DTiltAndSpecularShine() {
                 cancelAnimationFrame(rafId);
                 rafId = null;
             }
-            // Smooth spring return to rest state with Apple visionOS spring
-            card.style.transition = 'transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease';
-            card.style.transform = 'perspective(1000px) translateY(0) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-            setTimeout(() => {
-                if (!isHovered) card.style.willChange = 'auto';
-            }, 400);
+            card.style.setProperty('--hover-lift', '0px');
         });
     });
 }
@@ -289,20 +365,20 @@ function initVisualCharts() {
                 datasets: [{
                     data: [dirty, inProgress, clean, inspected],
                     backgroundColor: [
-                        '#ff375f', // Apple Neon Coral
-                        '#ff9f0a', // Apple Electric Amber
-                        '#30d158', // Apple Spring Emerald
-                        '#00c7be'  // Apple Liquid Cyan
+                        '#f43f5e', // Refined Rose (Dirty)
+                        '#f59e0b', // Warm Amber (In Progress)
+                        '#10b981', // Emerald (Clean)
+                        '#cbd5e1'  // Frosted Titanium (Inspected)
                     ],
-                    borderColor: '#06080e',
-                    borderWidth: 4,
-                    hoverOffset: 8
+                    borderColor: '#090c13',
+                    borderWidth: 3,
+                    hoverOffset: 6
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                cutout: '72%',
+                cutout: '74%',
                 plugins: {
                     legend: {
                         position: 'bottom',
@@ -310,7 +386,7 @@ function initVisualCharts() {
                             padding: 16,
                             usePointStyle: true,
                             boxWidth: 8,
-                            color: '#f5f5f7'
+                            color: '#e2e8f0'
                         }
                     }
                 }
@@ -333,18 +409,18 @@ function initVisualCharts() {
                     label: 'Tasks',
                     data: [pending, inProg, completed],
                     backgroundColor: [
-                        'rgba(255, 255, 255, 0.28)',
-                        '#ff9f0a',
-                        '#30d158'
+                        'rgba(255, 255, 255, 0.20)',
+                        '#f59e0b',
+                        '#10b981'
                     ],
                     borderColor: [
-                        'rgba(255, 255, 255, 0.45)',
-                        '#ff9f0a',
-                        '#30d158'
+                        'rgba(255, 255, 255, 0.35)',
+                        '#f59e0b',
+                        '#10b981'
                     ],
                     borderWidth: 1,
-                    borderRadius: 10,
-                    maxBarThickness: 46
+                    borderRadius: 8,
+                    maxBarThickness: 42
                 }]
             },
             options: {
@@ -356,12 +432,12 @@ function initVisualCharts() {
                 scales: {
                     x: {
                         grid: { display: false },
-                        ticks: { color: '#a1a1a6' }
+                        ticks: { color: '#94a3b8' }
                     },
                     y: {
                         beginAtZero: true,
-                        grid: { color: 'rgba(255, 255, 255, 0.06)' },
-                        ticks: { precision: 0, color: '#a1a1a6' }
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: { precision: 0, color: '#94a3b8' }
                     }
                 }
             }
@@ -382,13 +458,13 @@ function initVisualCharts() {
                 datasets: [{
                     data: [open, inProg, resolved],
                     backgroundColor: [
-                        '#ff375f', // Coral
-                        '#ff9f0a', // Amber
-                        '#30d158'  // Emerald
+                        '#f43f5e', // Rose
+                        '#f59e0b', // Amber
+                        '#10b981'  // Emerald
                     ],
-                    borderColor: '#06080e',
-                    borderWidth: 4,
-                    hoverOffset: 8
+                    borderColor: '#090c13',
+                    borderWidth: 3,
+                    hoverOffset: 6
                 }]
             },
             options: {
@@ -697,7 +773,7 @@ function initScrollAnimations() {
         document.body.appendChild(progressBar);
     }
 
-    const navbar = document.querySelector('.hk-navbar');
+    const stickyNavs = document.querySelectorAll('.hk-nav-sticky, .hk-navbar');
     let scrollRafId = null;
 
     function handleWindowScroll() {
@@ -708,13 +784,11 @@ function initScrollAnimations() {
             const progress = docHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
             progressBar.style.width = `${progress}%`;
 
-            if (navbar) {
-                if (scrollTop > 25) {
-                    navbar.classList.add('scrolled');
-                } else {
-                    navbar.classList.remove('scrolled');
-                }
-            }
+            const isScrolled = scrollTop > 35;
+            stickyNavs.forEach((nav) => {
+                nav.classList.toggle('is-scrolled', isScrolled);
+                nav.classList.toggle('scrolled', isScrolled);
+            });
             scrollRafId = null;
         });
     }
@@ -745,4 +819,145 @@ function initScrollAnimations() {
         container.addEventListener('scroll', updateTableMask, { passive: true });
         updateTableMask();
     });
+}
+
+/**
+ * SKIPER-UI: @skiper-ui/skiper103 Bouncy Accordion System
+ * - Spring-physics expansion with cubic-bezier(0.34, 1.56, 0.64, 1)
+ * - Accessible keyboard triggers (Enter / Space)
+ * - Mutually exclusive or independent toggling via data-accordion-single
+ * - Zero layout thrashing
+ */
+function initBouncyAccordion() {
+    const headers = document.querySelectorAll('.bouncy-accordion-header');
+    if (!headers.length) return;
+
+    headers.forEach((header) => {
+        const item = header.closest('.bouncy-accordion-item');
+        if (!item) return;
+
+        function toggleItem(e) {
+            if (e) e.preventDefault();
+            const isOpen = item.classList.contains('is-open');
+            const parentAccordion = item.closest('.bouncy-accordion');
+            const isSingleMode = parentAccordion && parentAccordion.hasAttribute('data-accordion-single');
+
+            if (isSingleMode && !isOpen) {
+                // Smoothly close siblings in the same single-mode accordion
+                const siblings = parentAccordion.querySelectorAll('.bouncy-accordion-item.is-open');
+                siblings.forEach((sibling) => {
+                    if (sibling !== item) {
+                        sibling.classList.remove('is-open');
+                        const sibHeader = sibling.querySelector('.bouncy-accordion-header');
+                        if (sibHeader) sibHeader.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+
+            if (isOpen) {
+                item.classList.remove('is-open');
+                header.setAttribute('aria-expanded', 'false');
+            } else {
+                item.classList.add('is-open');
+                header.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+        header.addEventListener('click', toggleItem);
+        header.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                toggleItem(e);
+            }
+        });
+    });
+}
+
+/**
+ * OMNIPRESENT SCROLL MOTION & FLUID VELOCITY ENGINE
+ * - Tracks instantaneous scroll velocity (v = deltaY / deltaTime) with lerp smoothing
+ * - Directly influences all viewport cards, stats, and accordions:
+ *   1. Dynamic Momentum 3D Tilt: cards subtly pitch along the X-axis during scroll
+ *   2. Velocity Scale Compression: subtle spring elastic feel during rapid scrolling
+ *   3. Differential Spatial Depth: elements on different layers move at distinct parallax rates
+ *   4. Specular Highlight Drift: moves light reflection across liquid glass edges
+ * - Springs smoothly back to rest (0deg, scale 1) with Apple visionOS spring physics when scroll stops
+ */
+function initOmnipresentScrollMotion() {
+    const reactiveElements = document.querySelectorAll('.stat-card, .hk-card, .hk-room-tile, .bouncy-accordion-item, .hk-header-row');
+    if (!reactiveElements.length) return;
+
+    let lastScrollY = window.scrollY || document.documentElement.scrollTop;
+    let lastTime = performance.now();
+    let currentVelocity = 0;
+    let targetVelocity = 0;
+    let scrollRafId = null;
+    let stopTimeout = null;
+
+    function onScroll() {
+        const now = performance.now();
+        const currentScrollY = window.scrollY || document.documentElement.scrollTop;
+        const dt = Math.max(1, now - lastTime);
+        const dy = currentScrollY - lastScrollY;
+
+        // Raw velocity in px/ms, scaled for subtle, elegant physical motion
+        const rawVelocity = (dy / dt) * 16; 
+        targetVelocity = Math.max(-20, Math.min(20, rawVelocity));
+
+        lastScrollY = currentScrollY;
+        lastTime = now;
+
+        if (!scrollRafId) {
+            scrollRafId = requestAnimationFrame(updateScrollPhysics);
+        }
+
+        // Clear stopping timer
+        if (stopTimeout) clearTimeout(stopTimeout);
+        stopTimeout = setTimeout(() => {
+            targetVelocity = 0;
+        }, 80);
+    }
+
+    function updateScrollPhysics() {
+        // Smooth lerp velocity towards target
+        currentVelocity += (targetVelocity - currentVelocity) * 0.18;
+
+        const isResting = Math.abs(currentVelocity) < 0.05 && Math.abs(targetVelocity) < 0.05;
+
+        // Calculate pitch angle: scrolling down pitches cards forward, up pitches backward (capped at ±1.4deg)
+        const pitchDeg = Math.max(-1.4, Math.min(1.4, currentVelocity * 0.12));
+        // Subtle vertical compression scale at high velocity (0.992 to 1.0)
+        const scaleVal = 1 - Math.min(0.008, Math.abs(currentVelocity) * 0.0005);
+
+        const winH = window.innerHeight;
+
+        reactiveElements.forEach((el) => {
+            const rect = el.getBoundingClientRect();
+            // Only update elements visible in or near viewport
+            if (rect.bottom >= -100 && rect.top <= winH + 100) {
+                // Viewport center parallax offset: items higher up or lower down have subtle differential depth
+                const centerDiff = (winH / 2 - (rect.top + rect.height / 2)) / (winH / 2);
+                const parallaxY = centerDiff * 6; // subtle ±6px depth parallax
+
+                if (isResting) {
+                    el.style.setProperty('--scroll-velocity-pitch', '0deg');
+                    el.style.setProperty('--scroll-velocity-scale', '1');
+                    el.style.setProperty('--scroll-parallax-y', `${parallaxY.toFixed(1)}px`);
+                } else {
+                    el.style.setProperty('--scroll-velocity-pitch', `${pitchDeg.toFixed(2)}deg`);
+                    el.style.setProperty('--scroll-velocity-scale', scaleVal.toFixed(3));
+                    el.style.setProperty('--scroll-parallax-y', `${parallaxY.toFixed(1)}px`);
+                }
+            }
+        });
+
+        if (!isResting) {
+            scrollRafId = requestAnimationFrame(updateScrollPhysics);
+        } else {
+            scrollRafId = null;
+        }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    // Initial run
+    onScroll();
 }

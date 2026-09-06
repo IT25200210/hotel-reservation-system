@@ -13,15 +13,65 @@
 </head>
 <body>
 
-<!-- Apple Frosted Glass Navbar -->
-<nav class="navbar navbar-dark hk-navbar">
-    <div class="container-fluid">
-        <a th:href="@{/housekeeping/tasks}" class="navbar-brand text-decoration-none">
+<!-- SKIPER-UI: @skiper-ui/skiper57 VERCEL-STYLE NAVIGATION + VENGEANCE-UI SPOTLIGHT NAVBAR -->
+<!-- Tier 1: Hotel Name & Global Brand Bar (In natural flow, scrolls away smoothly) -->
+<header class="hk-nav-top">
+    <div class="container-fluid px-3 px-lg-4 d-flex align-items-center justify-content-between">
+        <a th:href="@{/housekeeping/dashboard}" class="hk-brand-link text-decoration-none">
             <span class="hk-brand-crest"><i class="bi bi-buildings"></i></span>
-            <span>The Grand Horizon <span class="badge bg-white text-dark rounded-pill ms-2 fw-semibold" style="font-size: 0.72rem;">Housekeeping</span></span>
+            <div class="d-flex align-items-center">
+                <span class="hk-brand-title">The Grand Horizon</span>
+                <span class="badge bg-white text-dark rounded-pill ms-2 fw-semibold" style="font-size: 0.72rem;">Housekeeping</span>
+            </div>
         </a>
         <div class="d-flex align-items-center gap-2">
-            <a th:href="@{/housekeeping/maintenance}" class="btn btn-sm hk-nav-btn"><i class="bi bi-arrow-left me-1"></i>Back to Maintenance</a>
+            <div class="hk-user-pill d-none d-md-flex">
+                <i class="bi bi-person-circle"></i>
+                <span sec:authentication="name">User</span>
+            </div>
+            <a th:href="@{/logout}" class="spotlight-logout-btn" title="Logout" aria-label="Logout">
+                <i class="bi bi-box-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</header>
+
+<!-- Tier 2: Sticky Frosted Glass Rail with VengeanceUI Spotlight Navbar (PINNED AT TOP: 0) -->
+<nav class="hk-nav-sticky" id="hkNavSticky">
+    <div class="container-fluid px-3 px-lg-4 d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+            <!-- Dynamic Breadcrumb: Fades & slides in smoothly when Tier 1 scrolls away -->
+            <div class="hk-nav-breadcrumb-wrap">
+                <a th:href="@{/housekeeping/dashboard}" class="hk-nav-breadcrumb-logo text-decoration-none" title="The Grand Horizon">
+                    <i class="bi bi-buildings"></i>
+                </a>
+                <span class="hk-nav-breadcrumb-scope">The Grand Horizon</span>
+                <span class="hk-nav-breadcrumb-sep">/</span>
+                <span class="hk-nav-breadcrumb-current">Report Defect</span>
+            </div>
+
+            <!-- VengeanceUI Spotlight Nav Capsule -->
+            <div class="spotlight-nav" id="spotlightNav" aria-label="Housekeeping Navigation">
+                <ul class="spotlight-nav-list">
+                    <li><a th:href="@{/housekeeping/dashboard}" class="spotlight-nav-link" data-index="0"><i class="bi bi-chart-pie me-1"></i><span>Analytics</span></a></li>
+                    <li><a th:href="@{/housekeeping/tasks}" class="spotlight-nav-link" data-index="1"><i class="bi bi-list-check me-1"></i><span>Tasks</span></a></li>
+                    <li><a th:href="@{/housekeeping/rooms}" class="spotlight-nav-link" data-index="2"><i class="bi bi-door-open me-1"></i><span>Room Status</span></a></li>
+                    <li><a th:href="@{/housekeeping/maintenance}" class="spotlight-nav-link active" data-index="3"><i class="bi bi-tools me-1"></i><span>Maintenance</span></a></li>
+                </ul>
+                <div class="spotlight-beam" aria-hidden="true"></div>
+                <div class="ambience-beam" aria-hidden="true"></div>
+            </div>
+        </div>
+
+        <!-- Mini User Pill & Logout Button (Fades in when Tier 1 scrolls away) -->
+        <div class="hk-nav-scrolled-actions d-flex align-items-center gap-2">
+            <div class="hk-user-pill-mini d-none d-md-flex">
+                <i class="bi bi-person-circle"></i>
+                <span sec:authentication="name">User</span>
+            </div>
+            <a th:href="@{/logout}" class="spotlight-logout-btn-mini" title="Logout" aria-label="Logout">
+                <i class="bi bi-box-arrow-right"></i>
+            </a>
         </div>
     </div>
 </nav>

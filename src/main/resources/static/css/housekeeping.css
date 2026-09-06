@@ -30,27 +30,27 @@
     --bs-border-color: rgba(255, 255, 255, 0.12) !important;
     --bs-border-color-translucent: rgba(255, 255, 255, 0.12) !important;
 
-    /* Base Obsidian & Midnight Space Canvas */
-    --ios-bg: #06080e;
-    --ios-surface-solid: #0d111d;
+    /* Base Obsidian & Architectural Slate Canvas */
+    --ios-bg: #090c13;
+    --ios-surface-solid: #111622;
     
-    /* Authentic High-Translucency Apple Liquid Glass (visionOS / iOS 18) */
-    --ios-glass-surface: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 40%, rgba(255, 255, 255, 0.01) 100%), rgba(12, 17, 30, 0.72);
-    --ios-glass-surface-hover: linear-gradient(135deg, rgba(255, 255, 255, 0.20) 0%, rgba(255, 255, 255, 0.06) 40%, rgba(255, 255, 255, 0.02) 100%), rgba(16, 22, 40, 0.78);
-    --ios-glass-elevated: linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.04) 100%), rgba(14, 19, 36, 0.82);
+    /* VengeanceUI Inspired Crystal Liquid Glass (Monochrome Obsidian Translucency) */
+    --ios-glass-surface: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.015) 100%), rgba(8, 11, 18, 0.58);
+    --ios-glass-surface-hover: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.025) 100%), rgba(11, 15, 25, 0.65);
+    --ios-glass-elevated: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.02) 100%), rgba(10, 14, 22, 0.68);
 
-    /* Physical Specular Glass Chamfer Edges (Overhead room-light catch) */
-    --ios-glass-border: rgba(255, 255, 255, 0.13);
-    --ios-glass-border-hover: rgba(255, 255, 255, 0.35);
-    --ios-glass-specular-top: rgba(255, 255, 255, 0.65);
-    --ios-glass-specular-left: rgba(255, 255, 255, 0.30);
-    --ios-glass-specular-right: rgba(255, 255, 255, 0.10);
-    --ios-glass-specular-bottom: rgba(0, 0, 0, 0.45);
+    /* Fine Specular Chamfer Edges (Crisp 1px Light Catch matching Spotlight Navbar) */
+    --ios-glass-border: rgba(255, 255, 255, 0.12);
+    --ios-glass-border-hover: rgba(255, 255, 255, 0.26);
+    --ios-glass-specular-top: rgba(255, 255, 255, 0.35);
+    --ios-glass-specular-left: rgba(255, 255, 255, 0.18);
+    --ios-glass-specular-right: rgba(255, 255, 255, 0.06);
+    --ios-glass-specular-bottom: rgba(0, 0, 0, 0.20);
 
-    /* Internal Fresnel Sheen & Deep Spatial Shadow */
-    --ios-glass-inner: inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.38), inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.50);
-    --ios-glass-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.78), 0 4px 16px rgba(0, 0, 0, 0.45);
-    --ios-glass-shadow-hover: 0 32px 64px -10px rgba(0, 0, 0, 0.88), 0 0 32px rgba(99, 102, 241, 0.22);
+    /* Soft Diffused Ambient Rim & Clean Drop Shadow (No Muddy Heavy Bevels) */
+    --ios-glass-inner: inset 0 1px 1px 0 rgba(255, 255, 255, 0.18);
+    --ios-glass-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.40);
+    --ios-glass-shadow-hover: 0 14px 32px -4px rgba(0, 0, 0, 0.50), 0 0 1px 1px rgba(255, 255, 255, 0.18);
 
     /* Apple System Typography */
     --ios-text-primary: #ffffff;
@@ -59,46 +59,37 @@
     --ios-font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Sora", "Plus Jakarta Sans", "Helvetica Neue", sans-serif;
     --ios-font-mono: "JetBrains Mono", SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-    /* Apple iOS 18 System Semantic Palette */
-    --ios-coral: #ff375f;        /* Dirty Status */
-    --ios-amber: #ff9f0a;        /* In Progress Status */
-    --ios-emerald: #30d158;      /* Clean Status */
-    --ios-cyan: #00c7be;         /* Inspected Status */
-    --ios-indigo: #6366f1;       /* Ambient Indigo Accent */
-    --ios-violet: #8b5cf6;       /* Ambient Violet Glow */
-    --ios-teal: #06b6d4;         /* Ambient Cyan Aurora */
+    /* Restrained, Sophisticated Semantic Palette (Clean, Muted, No Neon Clutter) */
+    --badge-dirty-bg: rgba(244, 63, 94, 0.12);
+    --badge-dirty-text: #fda4af;
+    --badge-dirty-border: rgba(244, 63, 94, 0.30);
+    --badge-dirty-glow: none;
 
-    /* Semantic Status Badges (Frosted Neon Capsules) */
-    --badge-dirty-bg: rgba(255, 55, 95, 0.20);
-    --badge-dirty-text: #fb7185;
-    --badge-dirty-border: rgba(255, 55, 95, 0.48);
-    --badge-dirty-glow: 0 0 14px rgba(255, 55, 95, 0.30);
+    --badge-progress-bg: rgba(251, 191, 36, 0.12);
+    --badge-progress-text: #fde047;
+    --badge-progress-border: rgba(251, 191, 36, 0.30);
+    --badge-progress-glow: none;
 
-    --badge-progress-bg: rgba(255, 159, 10, 0.20);
-    --badge-progress-text: #fbbf24;
-    --badge-progress-border: rgba(255, 159, 10, 0.48);
-    --badge-progress-glow: 0 0 14px rgba(255, 159, 10, 0.30);
+    --badge-clean-bg: rgba(52, 211, 153, 0.12);
+    --badge-clean-text: #6ee7b7;
+    --badge-clean-border: rgba(52, 211, 153, 0.30);
+    --badge-clean-glow: none;
 
-    --badge-clean-bg: rgba(48, 209, 88, 0.20);
-    --badge-clean-text: #4ade80;
-    --badge-clean-border: rgba(48, 209, 88, 0.48);
-    --badge-clean-glow: 0 0 14px rgba(48, 209, 88, 0.30);
+    --badge-inspected-bg: rgba(255, 255, 255, 0.10);
+    --badge-inspected-text: #f1f5f9;
+    --badge-inspected-border: rgba(255, 255, 255, 0.28);
+    --badge-inspected-glow: none;
 
-    --badge-inspected-bg: rgba(0, 199, 190, 0.20);
-    --badge-inspected-text: #2dd4bf;
-    --badge-inspected-border: rgba(0, 199, 190, 0.48);
-    --badge-inspected-glow: 0 0 14px rgba(0, 199, 190, 0.30);
-
-    --badge-pending-bg: rgba(99, 102, 241, 0.20);
-    --badge-pending-text: #a5b4fc;
-    --badge-pending-border: rgba(99, 102, 241, 0.48);
-    --badge-pending-glow: 0 0 14px rgba(99, 102, 241, 0.25);
+    --badge-pending-bg: rgba(255, 255, 255, 0.08);
+    --badge-pending-text: #cbd5e1;
+    --badge-pending-border: rgba(255, 255, 255, 0.20);
+    --badge-pending-glow: none;
 
     /* Spatial Dimensions & Spring Physics */
-    --ios-radius-xl: 24px;
-    --ios-radius-lg: 18px;
-    --ios-radius-md: 12px;
-    --ios-radius-sm: 8px;
+    --ios-radius-xl: 20px;
+    --ios-radius-lg: 16px;
+    --ios-radius-md: 10px;
+    --ios-radius-sm: 6px;
     --ios-radius-pill: 9999px;
     --ios-spring: cubic-bezier(0.16, 1, 0.3, 1);
     --ios-spring-snappy: cubic-bezier(0.2, 0.9, 0.3, 1.2);
@@ -115,28 +106,33 @@ html {
 
 /* Custom Sleek Translucent macOS Glass Scrollbars */
 ::-webkit-scrollbar {
-    width: 9px;
-    height: 9px;
+    width: 8px;
+    height: 8px;
 }
 ::-webkit-scrollbar-track {
-    background: rgba(6, 8, 14, 0.6);
+    background: rgba(9, 12, 19, 0.6);
 }
 ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.20);
+    background: rgba(255, 255, 255, 0.18);
     border-radius: var(--ios-radius-pill);
-    border: 2px solid rgba(6, 8, 14, 0.6);
+    border: 2px solid rgba(9, 12, 19, 0.6);
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.38);
+    background: rgba(255, 255, 255, 0.32);
 }
 
 /* ==========================================================================
-   LUMINOUS AMBIENT AURORA CANVAS (ZERO-LAG HARDWARE ACCELERATED)
+   CYBER-ARCHITECTURAL CROSSHAIR MATRIX & AMBIENT CAUSTIC BEAMS
+   - Precision CAD blueprint grid (64px major / 16px minor)
+   - Luminous SVG crosshairs (+) at grid intersections (Linear / Vercel design)
+   - Dual angled celestial ambient rays (130deg & 45deg)
+   - Deep perimeter optical vignette
+   - Real-time refraction through liquid glass material
    ========================================================================== */
 
 body {
     font-family: var(--ios-font-display);
-    background-color: var(--ios-bg) !important;
+    background-color: #07090e !important;
     color: var(--ios-text-primary);
     min-height: 100vh;
     letter-spacing: -0.015em;
@@ -144,42 +140,58 @@ body {
     position: relative;
 }
 
-/* Multi-layer Organic Luminous Mesh (GPU Layer = 0% Paint Invalidation) */
+/* Precision Geometric Blueprint Grid with Intersecting Crosshairs (+) */
 body::before {
     content: "";
     position: fixed;
     inset: 0;
     pointer-events: none;
-    background:
-        radial-gradient(950px circle at 85% 12%, rgba(99, 102, 241, 0.26), transparent 60%),
-        radial-gradient(900px circle at 10% 88%, rgba(6, 182, 212, 0.22), transparent 60%),
-        radial-gradient(750px circle at 22% 18%, rgba(236, 72, 153, 0.18), transparent 62%),
-        radial-gradient(750px circle at 82% 78%, rgba(48, 209, 88, 0.15), transparent 62%),
-        radial-gradient(600px circle at 50% 50%, rgba(139, 92, 246, 0.14), transparent 65%),
-        linear-gradient(180deg, #06080e 0%, #0c101c 45%, #06080d 100%);
+    background-color: #07090e;
+    background-image:
+        /* Crisp Luminous SVG Crosshairs (+) at every 64px node */
+        url("data:image/svg+xml,%3Csvg width='64' height='64' viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M32 27v10M27 32h10' stroke='rgba(255,255,255,0.18)' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E"),
+        /* Major 64px Architectural Grid Lines */
+        linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+        /* Minor 16px Micro-Mesh Subdivisions */
+        linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        /* Interactive Cursor Spotlight Beam (smoothly tracks pointer) */
+        radial-gradient(450px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.06), transparent 70%),
+        /* Top Overhead Ambient Focal Aurora */
+        radial-gradient(1200px circle at 50% -10%, rgba(255, 255, 255, 0.08), transparent 70%),
+        /* Angled Celestial Caustic Ray 1 (130deg) */
+        linear-gradient(130deg, transparent 36%, rgba(255, 255, 255, 0.018) 46%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0.018) 54%, transparent 64%),
+        /* Deep Base Canvas & Horizon Vignette */
+        radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(5, 7, 12, 0.85) 100%),
+        linear-gradient(180deg, #07090e 0%, #0c101a 50%, #06080d 100%);
+    background-size: 
+        64px 64px,
+        64px 64px,
+        64px 64px,
+        16px 16px,
+        16px 16px,
+        100% 100%,
+        100% 100%,
+        100% 100%,
+        100% 100%,
+        100% 100%;
     z-index: 0;
     transform: translateZ(0);
     will-change: transform;
 }
 
-/* Subtle Floating Glow Overlay (GPU Transform Only) */
+/* Secondary Ambient Diagonal Ray (45deg) */
 body::after {
     content: "";
     position: fixed;
-    top: -20%;
-    left: -20%;
-    width: 140%;
-    height: 140%;
+    inset: 0;
     pointer-events: none;
-    background: radial-gradient(circle at 60% 40%, rgba(124, 58, 237, 0.08) 0%, transparent 60%);
+    background: 
+        linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.02) 49%, rgba(255, 255, 255, 0.045) 50%, rgba(255, 255, 255, 0.02) 51%, transparent 60%),
+        radial-gradient(800px circle at 85% 75%, rgba(255, 255, 255, 0.025), transparent 70%);
     z-index: 0;
     transform: translate3d(0, 0, 0);
-    animation: gentleOrbFloat 26s infinite alternate ease-in-out;
-}
-
-@keyframes gentleOrbFloat {
-    0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(25px, -30px, 0); }
 }
 
 .container, .container-fluid, .container-xl {
@@ -188,7 +200,7 @@ body::after {
 }
 
 /* ==========================================================================
-   AUTHENTIC APPLE LIQUID GLASS MATERIAL (visionOS Optics)
+   AUTHENTIC APPLE LIQUID GLASS MATERIAL (VisionOS Flat-Glass Optics)
    ========================================================================== */
 
 .hk-card,
@@ -196,8 +208,8 @@ body::after {
 .form-card,
 .hk-room-tile {
     background: var(--ios-glass-surface) !important;
-    backdrop-filter: blur(22px) saturate(210%) brightness(112%) !important;
-    -webkit-backdrop-filter: blur(22px) saturate(210%) brightness(112%) !important;
+    backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
     border: 1px solid var(--ios-glass-border) !important;
     border-top: 1.5px solid var(--ios-glass-specular-top) !important;
     border-left: 1.2px solid var(--ios-glass-specular-left) !important;
@@ -212,7 +224,6 @@ body::after {
         background 0.25s ease;
     position: relative;
     overflow: visible; /* Never clip content or text */
-    transform-style: preserve-3d;
 }
 
 /* Interactive Cursor Specular Sheen (VengeanceUI Glare Hotspot) */
@@ -224,7 +235,7 @@ body::after {
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    background: radial-gradient(380px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.04) 40%, transparent 70%);
+    background: radial-gradient(350px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03) 40%, transparent 70%);
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: 2;
@@ -240,124 +251,366 @@ body::after {
    VENGEANCE-UI: SPOTLIGHT NAVBAR (Cursor Refraction Tracking)
    ========================================================================== */
 
-.hk-navbar {
-    background: rgba(13, 17, 28, 0.60) !important;
-    backdrop-filter: blur(28px) saturate(220%) brightness(110%) !important;
-    -webkit-backdrop-filter: blur(28px) saturate(220%) brightness(110%) !important;
-    border-bottom: 1px solid var(--ios-glass-border);
-    box-shadow: 
-        inset 0 1.5px 0 rgba(255, 255, 255, 0.30),
-        0 14px 40px rgba(0, 0, 0, 0.55);
-    min-height: 70px;
-    padding: 0.8rem 2.2rem;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    overflow: hidden;
-}
+/* ==========================================================================
+   SKIPER-UI: @skiper-ui/skiper57 VERCEL-STYLE DYNAMIC NAVIGATION SYSTEM
+   - Tier 1: Hotel Name & Global Brand Bar (In natural flow, scrolls away smoothly)
+   - Tier 2: Sticky Frosted Glass Tab Rail (Pinned at top: 0, compact 48px height)
+   - Dynamic Breadcrumb Reveal: Slides in on the left when Tier 1 scrolls away
+   - Sliding Tab Indicator with Monochrome Obsidian Frosted Glass
+   ========================================================================== */
 
-/* Cursor spotlight tracking beam along navbar */
-.hk-navbar::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: radial-gradient(550px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%), rgba(255, 255, 255, 0.20), rgba(255, 255, 255, 0.05) 45%, transparent 68%);
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    z-index: 1;
-}
+/* ==========================================================================
+   SKIPER-UI (@skiper-ui/skiper57) + VENGEANCE-UI (Spotlight Navbar)
+   - Tier 1: Hotel Name & Global Brand Bar (In natural flow, scrolls away smoothly)
+   - Tier 2: Sticky Frosted Glass Tab Rail (Pinned at top: 0, compact 48px height)
+   - Dynamic Breadcrumb Reveal: Slides in on the left when Tier 1 scrolls away
+   - VengeanceUI Spotlight Nav Capsule with moving mouse spotlight and active ambience
+   ========================================================================== */
 
-.hk-navbar:hover::before {
-    opacity: 1;
-}
-
-.hk-navbar .container-fluid {
+/* Tier 1: Hotel Name & Global Brand Bar (Natural Flow - Scrolls away smoothly) */
+.hk-nav-top {
     position: relative;
-    z-index: 2;
+    z-index: 100;
+    width: 100%;
+    padding: 0.75rem 0;
+    background: rgba(7, 9, 14, 0.40);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    transition: opacity 0.25s ease;
 }
 
-.hk-navbar .navbar-brand {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #ffffff !important;
-    display: flex;
+.hk-brand-link {
+    display: inline-flex;
     align-items: center;
     gap: 0.75rem;
-    letter-spacing: -0.025em;
+    color: #ffffff !important;
 }
 
 .hk-brand-crest {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.20), rgba(255, 255, 255, 0.05));
-    border: 1px solid rgba(255, 255, 255, 0.30);
-    border-top: 1.5px solid rgba(255, 255, 255, 0.75);
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.03));
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    border-top: 1.5px solid rgba(255, 255, 255, 0.60);
     color: #ffffff;
-    font-size: 1.2rem;
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.45), 0 4px 14px rgba(0, 0, 0, 0.35);
+    font-size: 1.05rem;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35);
     transition: transform 0.2s var(--ios-spring);
 }
 
-.hk-brand-crest:hover {
-    transform: scale(1.08) rotate(-2deg);
+.hk-brand-link:hover .hk-brand-crest {
+    transform: scale(1.08);
 }
 
-.hk-nav-btn {
+.hk-brand-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: #ffffff;
+    display: block;
+    line-height: 1.1;
+}
+
+/* Tier 2: Sticky Frosted Glass Tab Rail (PINNED AT TOP: 0) */
+.hk-nav-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    padding: 0.45rem 0;
+    background: rgba(7, 9, 14, 0.50);
+    backdrop-filter: blur(8px) saturate(130%) brightness(104%);
+    -webkit-backdrop-filter: blur(8px) saturate(130%) brightness(104%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hk-nav-sticky.is-scrolled {
+    background: rgba(7, 9, 14, 0.82);
+    border-bottom-color: rgba(255, 255, 255, 0.14);
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+/* Dynamic Breadcrumb: Fades & slides in smoothly when Tier 1 scrolls away! */
+.hk-nav-breadcrumb-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.85rem;
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    transform: translateX(-12px);
+    pointer-events: none;
+    margin-right: 0;
+    transition: 
+        max-width 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+        margin-right 0.3s ease;
+}
+
+.hk-nav-sticky.is-scrolled .hk-nav-breadcrumb-wrap {
+    max-width: 380px;
+    opacity: 1;
+    overflow: visible;
+    transform: translateX(0);
+    pointer-events: auto;
+    margin-right: 1.25rem;
+}
+
+.hk-nav-breadcrumb-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-top: 1px solid rgba(255, 255, 255, 0.35);
+    color: #ffffff;
+    font-size: 0.85rem;
+    transition: transform 0.2s ease;
+}
+
+.hk-nav-breadcrumb-logo:hover {
+    transform: scale(1.08);
+}
+
+.hk-nav-breadcrumb-scope {
     color: var(--ios-text-secondary);
-    border: 1px solid transparent;
-    border-radius: var(--ios-radius-md);
-    padding: 0.48rem 1.05rem;
     font-weight: 500;
-    font-size: 0.88rem;
-    transition: all 0.2s var(--ios-spring);
+}
+
+.hk-nav-breadcrumb-sep {
+    color: rgba(255, 255, 255, 0.30);
+}
+
+.hk-nav-breadcrumb-current {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Scrolled Mini User Pill & Logout Button */
+.hk-nav-scrolled-actions {
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+    transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hk-nav-sticky.is-scrolled .hk-nav-scrolled-actions {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.hk-user-pill-mini {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 0.26rem 0.70rem;
+    border-radius: var(--ios-radius-pill);
+    font-size: 0.78rem;
+    color: var(--ios-text-secondary);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.spotlight-logout-btn-mini {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    color: var(--ios-text-secondary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.spotlight-logout-btn-mini:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    transform: scale(1.06);
+}
+
+/* The VengeanceUI Spotlight Nav Capsule */
+.spotlight-nav {
+    position: relative;
+    height: 42px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(8px) saturate(130%) brightness(104%);
+    -webkit-backdrop-filter: blur(8px) saturate(130%) brightness(104%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.30);
+    box-shadow: 
+        inset 0 1px 1px rgba(255, 255, 255, 0.20),
+        0 8px 24px -4px rgba(0, 0, 0, 0.40);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: inline-flex;
+    align-items: center;
+}
+
+.spotlight-nav:hover {
+    border-color: rgba(255, 255, 255, 0.22);
+    border-top-color: rgba(255, 255, 255, 0.55);
+}
+
+.spotlight-nav-list {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin: 0;
+    padding: 0 0.30rem;
+    list-style: none;
+    gap: 0.1rem;
+}
+
+.spotlight-nav-list li {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.spotlight-nav-link {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    position: relative;
-    z-index: 2;
+    padding: 0.38rem 0.95rem;
+    font-size: 0.84rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.60);
+    text-decoration: none !important;
+    border-radius: 9999px;
+    transition: color 0.2s ease, transform 0.15s ease;
+    white-space: nowrap;
+    user-select: none;
 }
 
-.hk-nav-btn:hover {
+.spotlight-nav-link:hover {
     color: #ffffff;
-    background: rgba(255, 255, 255, 0.10);
-    border-color: rgba(255, 255, 255, 0.20);
-    transform: translateY(-1px);
 }
 
-.hk-nav-btn:active {
-    transform: scale(0.96);
-}
-
-/* Nav button active: Frosted Liquid Glass Capsule */
-.hk-nav-btn.active {
+.spotlight-nav-link.active {
     color: #ffffff;
-    background: rgba(255, 255, 255, 0.18);
     font-weight: 600;
-    border: 1px solid rgba(255, 255, 255, 0.40);
-    border-top: 1.5px solid rgba(255, 255, 255, 0.80);
-    box-shadow: 
-        inset 0 1px 1px rgba(255, 255, 255, 0.4),
-        0 4px 18px rgba(0, 0, 0, 0.35),
-        0 0 16px rgba(255, 255, 255, 0.12);
+}
+
+/* 1. Moving Spotlight (Follows mouse immediately with radial gradient) */
+.spotlight-beam {
+    pointer-events: none;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: radial-gradient(120px circle at var(--spotlight-x, 50%) 100%, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
+}
+
+.spotlight-nav.has-hover .spotlight-beam {
+    opacity: 1;
+}
+
+/* 2. Active State Ambience (Bottom luminous beam on active tab) */
+.ambience-beam {
+    pointer-events: none;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    z-index: 2;
+    background: radial-gradient(60px circle at var(--ambience-x, 50%) 0%, #ffffff 0%, transparent 100%);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4);
+    transition: transform 0.2s ease;
 }
 
 .hk-user-pill {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid var(--ios-glass-border);
-    border-top: 1px solid rgba(255, 255, 255, 0.35);
-    padding: 0.42rem 0.95rem;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 0.34rem 0.82rem;
     border-radius: var(--ios-radius-pill);
-    font-size: 0.82rem;
+    font-size: 0.80rem;
     color: var(--ios-text-secondary);
     display: flex;
     align-items: center;
     gap: 0.45rem;
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12);
+}
+
+.spotlight-logout-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-top: 1px solid rgba(255, 255, 255, 0.30);
+    color: var(--ios-text-secondary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.spotlight-logout-btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .hk-nav-sticky .container-fluid {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding-top: 0.3rem;
+        padding-bottom: 0.3rem;
+    }
+    .spotlight-nav {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .spotlight-nav::-webkit-scrollbar {
+        display: none;
+    }
+    .spotlight-nav-link {
+        padding: 0.35rem 0.65rem;
+        font-size: 0.78rem;
+    }
+    .hk-nav-breadcrumb-wrap {
+        display: none !important;
+    }
+}
+
+/* Fallback aliases for any legacy markup */
+.hk-navbar {
+    background: rgba(7, 9, 14, 0.65) !important;
+    backdrop-filter: blur(8px) saturate(130%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(130%) !important;
 }
 
 /* ==========================================================================
@@ -501,11 +754,11 @@ body::after {
     transition: width 0.75s var(--ios-spring);
 }
 
-.stat-bar i.danger { background: linear-gradient(90deg, #ff375f, #ff758c); }
-.stat-bar i.warning { background: linear-gradient(90deg, #ff9f0a, #ffc066); }
-.stat-bar i.success { background: linear-gradient(90deg, #30d158, #6ee7b7); }
-.stat-bar i.info { background: linear-gradient(90deg, #00c7be, #38bdf8); }
-.stat-bar i.neutral { background: linear-gradient(90deg, #ffffff, #94a3b8); }
+.stat-bar i.danger { background: #f43f5e; }
+.stat-bar i.warning { background: #f59e0b; }
+.stat-bar i.success { background: #10b981; }
+.stat-bar i.info { background: #cbd5e1; }
+.stat-bar i.neutral { background: #94a3b8; }
 
 .stat-pct {
     font-size: 0.8rem;
@@ -526,7 +779,6 @@ body::after {
     grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
     gap: 1.45rem;
     margin-bottom: 2.8rem;
-    perspective: 1000px;
 }
 
 .hk-room-tile {
@@ -535,30 +787,30 @@ body::after {
     flex-direction: column;
     justify-content: space-between;
     min-height: 205px;
-    border-left: 3.5px solid transparent !important;
+    border-left: 3px solid transparent !important;
     cursor: default;
 }
 
 .hk-room-tile:hover {
     background: var(--ios-glass-surface-hover) !important;
-    border-top-color: rgba(255, 255, 255, 0.85) !important;
+    border-top-color: rgba(255, 255, 255, 0.75) !important;
     box-shadow: 
         var(--ios-glass-inner),
-        var(--ios-glass-shadow-hover);
+        0 12px 28px -4px rgba(0, 0, 0, 0.40);
     z-index: 5;
 }
 
 .hk-room-tile.status-dirty { 
-    border-left-color: var(--ios-coral) !important;
+    border-left-color: #f43f5e !important;
 }
 .hk-room-tile.status-in-progress { 
-    border-left-color: var(--ios-amber) !important; 
+    border-left-color: #f59e0b !important; 
 }
 .hk-room-tile.status-clean { 
-    border-left-color: var(--ios-emerald) !important; 
+    border-left-color: #10b981 !important; 
 }
 .hk-room-tile.status-inspected { 
-    border-left-color: var(--ios-cyan) !important; 
+    border-left-color: #cbd5e1 !important; 
 }
 
 .room-tile-header {
@@ -681,8 +933,8 @@ body::after {
 /* Navbar Elevation on Scroll */
 .hk-navbar.scrolled {
     background: rgba(8, 11, 20, 0.84) !important;
-    backdrop-filter: blur(28px) saturate(210%) !important;
-    -webkit-backdrop-filter: blur(28px) saturate(210%) !important;
+    backdrop-filter: blur(8px) saturate(130%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(130%) !important;
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.70), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
 }
 
@@ -787,8 +1039,8 @@ body::after {
 
 .hk-table thead,
 .hk-table thead tr {
-    background: linear-gradient(180deg, rgba(20, 27, 48, 0.85) 0%, rgba(13, 17, 30, 0.85) 100%) !important;
-    border-bottom: 1.5px solid rgba(255, 255, 255, 0.14) !important;
+    background: rgba(255, 255, 255, 0.035) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10) !important;
 }
 
 .hk-table thead th {
@@ -949,63 +1201,72 @@ body::after {
    ========================================================================== */
 
 .btn {
-    border-radius: var(--ios-radius-md);
+    border-radius: var(--ios-radius-pill) !important;
     font-weight: 600;
-    font-size: 0.88rem;
-    padding: 0.58rem 1.25rem;
+    font-size: 0.86rem;
+    padding: 0.52rem 1.25rem;
     transition: all 0.2s var(--ios-spring);
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
     position: relative;
+    user-select: none;
 }
 
 .btn:active {
-    transform: scale(0.95) !important;
+    transform: scale(0.96) !important;
     transition: transform 0.08s ease;
 }
 
-/* Apple Crisp Diamond White Action Button */
+/* VengeanceUI Style Liquid Glass Action Button */
 .btn-primary {
-    background: #ffffff !important;
-    border: 1px solid #ffffff !important;
-    color: #000000 !important;
-    box-shadow: 0 4px 16px rgba(255, 255, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    border-top: 1.5px solid rgba(255, 255, 255, 0.65) !important;
+    color: #ffffff !important;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35), 0 8px 24px -4px rgba(0, 0, 0, 0.45) !important;
 }
 
 .btn-primary:hover {
-    background: #f4f4f6 !important;
-    border-color: #f4f4f6 !important;
-    color: #000000 !important;
+    background: rgba(255, 255, 255, 0.24) !important;
+    border-color: rgba(255, 255, 255, 0.38) !important;
+    border-top-color: #ffffff !important;
+    color: #ffffff !important;
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.50), 0 12px 30px -4px rgba(0, 0, 0, 0.60), 0 0 16px rgba(255, 255, 255, 0.20) !important;
 }
 
 .btn-outline-primary {
     color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.25);
-    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.20) !important;
+    border-top: 1.2px solid rgba(255, 255, 255, 0.45) !important;
+    background: rgba(255, 255, 255, 0.06);
     box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15);
 }
 
 .btn-outline-primary:hover {
-    background: rgba(255, 255, 255, 0.20);
-    border-color: rgba(255, 255, 255, 0.50);
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.35) !important;
+    border-top-color: rgba(255, 255, 255, 0.70) !important;
     color: #ffffff;
     transform: translateY(-1px);
     box-shadow: 0 4px 16px rgba(255, 255, 255, 0.15);
 }
 
 .btn-outline-light {
-    color: var(--ios-text-secondary);
-    border-color: var(--ios-glass-border);
-    background: rgba(255, 255, 255, 0.06);
+    color: var(--ios-text-secondary) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.28) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
 }
 
 .btn-outline-light:hover {
-    color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.35);
-    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.26) !important;
+    border-top-color: rgba(255, 255, 255, 0.60) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
     transform: translateY(-1px);
 }
 
@@ -1030,8 +1291,8 @@ body::after {
 
 .hk-toolbar-card {
     background: var(--ios-glass-surface) !important;
-    backdrop-filter: blur(24px) saturate(210%) brightness(112%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(210%) brightness(112%) !important;
+    backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
     border: 1px solid var(--ios-glass-border) !important;
     border-top: 1.5px solid var(--ios-glass-specular-top) !important;
     border-left: 1.2px solid var(--ios-glass-specular-left) !important;
@@ -1050,44 +1311,44 @@ body::after {
 
 /* Inactive Filter Pill */
 .hk-filter-pill {
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid var(--ios-glass-border);
-    border-top: 1px solid rgba(255, 255, 255, 0.28);
-    color: var(--ios-text-secondary);
-    padding: 0.44rem 1rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-top: 1px solid rgba(255, 255, 255, 0.22);
+    color: rgba(255, 255, 255, 0.60);
+    padding: 0.40rem 1rem;
     border-radius: var(--ios-radius-pill);
-    font-size: 0.83rem;
+    font-size: 0.82rem;
     font-weight: 500;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
     transition: all 0.2s var(--ios-spring);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
 }
 
 .hk-filter-pill:hover {
     color: #ffffff;
-    background: rgba(255, 255, 255, 0.13);
-    border-color: rgba(255, 255, 255, 0.32);
+    background: rgba(255, 255, 255, 0.09);
+    border-color: rgba(255, 255, 255, 0.22);
+    border-top-color: rgba(255, 255, 255, 0.45);
     transform: translateY(-1px);
 }
 
 .hk-filter-pill:active {
-    transform: scale(0.95);
+    transform: scale(0.96);
 }
 
-/* ACTIVE FILTER PILL: Liquid Glass Illuminated Capsule (NO SOLID WHITE BACKGROUND!) */
+/* ACTIVE FILTER PILL: Liquid Glass Illuminated Capsule */
 .hk-filter-pill.active {
-    background: rgba(255, 255, 255, 0.18) !important;
-    border: 1px solid rgba(255, 255, 255, 0.45) !important;
-    border-top: 1.5px solid rgba(255, 255, 255, 0.85) !important;
+    background: rgba(255, 255, 255, 0.14) !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    border-top: 1.5px solid rgba(255, 255, 255, 0.60) !important;
     color: #ffffff !important;
     font-weight: 600;
     box-shadow: 
-        inset 0 1px 1.5px rgba(255, 255, 255, 0.45),
-        0 4px 16px rgba(0, 0, 0, 0.40),
-        0 0 16px rgba(255, 255, 255, 0.15);
+        inset 0 1px 1px rgba(255, 255, 255, 0.30),
+        0 4px 16px rgba(0, 0, 0, 0.35);
 }
 
 .hk-filter-pill.active .badge {
@@ -1306,6 +1567,43 @@ body::after {
 }
 
 /* ==========================================================================
+   ALERTS & NOTICES (Liquid Glass Feedback Banners)
+   ========================================================================== */
+
+.alert {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-top: 1.5px solid rgba(255, 255, 255, 0.35) !important;
+    border-radius: var(--ios-radius-lg) !important;
+    color: #ffffff !important;
+    box-shadow: var(--ios-glass-inner), var(--ios-glass-shadow);
+    padding: 0.95rem 1.25rem;
+}
+
+.alert-danger {
+    background: rgba(244, 63, 94, 0.12) !important;
+    border-color: rgba(244, 63, 94, 0.30) !important;
+    border-top-color: rgba(244, 63, 94, 0.60) !important;
+    color: #fda4af !important;
+}
+
+.alert-success {
+    background: rgba(52, 211, 153, 0.12) !important;
+    border-color: rgba(52, 211, 153, 0.30) !important;
+    border-top-color: rgba(52, 211, 153, 0.60) !important;
+    color: #6ee7b7 !important;
+}
+
+.alert-info {
+    background: rgba(56, 189, 248, 0.12) !important;
+    border-color: rgba(56, 189, 248, 0.30) !important;
+    border-top-color: rgba(56, 189, 248, 0.60) !important;
+    color: #38bdf8 !important;
+}
+
+/* ==========================================================================
    PAGE HEADERS
    ========================================================================== */
 
@@ -1406,8 +1704,8 @@ body::after {
     margin-top: 5.5rem;
     padding: 4.5rem 0 2.5rem;
     background: linear-gradient(180deg, rgba(14, 19, 34, 0.42) 0%, rgba(7, 9, 16, 0.88) 100%) !important;
-    backdrop-filter: blur(28px) saturate(210%) brightness(110%) !important;
-    -webkit-backdrop-filter: blur(28px) saturate(210%) brightness(110%) !important;
+    backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
     border-top: 1.5px solid rgba(255, 255, 255, 0.55) !important;
     box-shadow: 
         inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.40),
@@ -1560,6 +1858,284 @@ body::after {
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     font-size: 0.8rem;
     color: var(--ios-text-tertiary);
+}
+
+/* ==========================================================================
+   SKIPER-UI: @skiper-ui/skiper103 BOUNCY ACCORDION SYSTEM
+   - Authentic visionOS Glassmorphic Icon Capsules
+   - Tactile Spring Physics (cubic-bezier(0.34, 1.56, 0.64, 1))
+   - Independent Discrete Floating Cards (Separated Gap Geometry)
+   - Zero-Layout-Thrashing Grid Row Spring Height Expansion (0fr -> 1fr)
+   - Prismatic Specular Chamfer Rim & Chromatic Caustic Underglow
+   ========================================================================== */
+
+.bouncy-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    width: 100%;
+}
+
+.bouncy-accordion-item {
+    background: var(--ios-glass-surface) !important;
+    backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
+    border: 1px solid var(--ios-glass-border) !important;
+    border-top: 1.5px solid var(--ios-glass-specular-top) !important;
+    border-left: 1.2px solid var(--ios-glass-specular-left) !important;
+    border-right: 1px solid var(--ios-glass-specular-right) !important;
+    border-bottom: 1px solid var(--ios-glass-specular-bottom) !important;
+    border-radius: var(--ios-radius-lg);
+    box-shadow: var(--ios-glass-inner), var(--ios-glass-shadow);
+    transition: 
+        transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+        border-color 0.25s ease,
+        border-top-color 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+    overflow: hidden;
+    position: relative;
+    user-select: none;
+}
+
+.bouncy-accordion-item:hover {
+    transform: translateY(-2px);
+    border-top-color: rgba(255, 255, 255, 0.75) !important;
+    box-shadow: var(--ios-glass-inner), 0 12px 28px -4px rgba(0, 0, 0, 0.40);
+}
+
+.bouncy-accordion-item.is-open {
+    border-color: rgba(255, 255, 255, 0.20) !important;
+    border-top-color: rgba(255, 255, 255, 0.75) !important;
+    box-shadow: var(--ios-glass-inner), 0 14px 32px -4px rgba(0, 0, 0, 0.45);
+    background: var(--ios-glass-elevated) !important;
+}
+
+/* Accordion Header Trigger */
+.bouncy-accordion-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1.1rem 1.4rem;
+    background: transparent;
+    border: none;
+    color: var(--ios-text-primary);
+    cursor: pointer;
+    text-align: left;
+    gap: 1rem;
+    position: relative;
+    outline: none;
+    transition: background 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bouncy-accordion-header:focus-visible {
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4);
+}
+
+.bouncy-accordion-header:active {
+    transform: scale(0.985);
+}
+
+.bouncy-accordion-header-left {
+    display: flex;
+    align-items: center;
+    gap: 1.05rem;
+    flex: 1;
+    min-width: 0;
+}
+
+/* Glassmorphism Icon Capsule (Crisp Frosted Titanium & Obsidian) */
+.bouncy-accordion-icon {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-top: 1.5px solid rgba(255, 255, 255, 0.60);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35);
+    font-size: 1.15rem;
+    color: #ffffff;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease;
+}
+
+.bouncy-accordion-header:hover .bouncy-accordion-icon {
+    transform: scale(1.1) rotate(3deg);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.06) 100%);
+    border-top-color: #ffffff;
+}
+
+.bouncy-accordion-item.is-open .bouncy-accordion-icon {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.06) 100%);
+}
+
+/* Restrained, Minimalist Semantic Tone Accents */
+.bouncy-accordion-icon.cyan,
+.bouncy-accordion-icon.violet,
+.bouncy-accordion-icon.emerald,
+.bouncy-accordion-icon.amber,
+.bouncy-accordion-icon.rose {
+    color: #ffffff;
+}
+
+/* Title & Subtitle Stack */
+.bouncy-accordion-title-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.bouncy-accordion-title {
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: -0.015em;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.bouncy-accordion-subtitle {
+    font-size: 0.82rem;
+    color: var(--ios-text-secondary);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Glassmorphism Bouncy Chevron Pill */
+.bouncy-accordion-chevron-wrap {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-top: 1px solid rgba(255, 255, 255, 0.45);
+    color: var(--ios-text-secondary);
+    font-size: 0.8rem;
+    transition: 
+        transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.bouncy-accordion-header:hover .bouncy-accordion-chevron-wrap {
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+}
+
+.bouncy-accordion-item.is-open .bouncy-accordion-chevron-wrap {
+    transform: rotate(180deg) scale(1.1);
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: #ffffff;
+}
+
+/* Grid Row Spring Height Expansion (Zero Layout Thrashing) */
+.bouncy-accordion-content {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bouncy-accordion-item.is-open .bouncy-accordion-content {
+    grid-template-rows: 1fr;
+}
+
+.bouncy-accordion-inner {
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-8px) scale(0.985);
+    transition: 
+        opacity 0.3s ease,
+        transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bouncy-accordion-item.is-open .bouncy-accordion-inner {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.bouncy-accordion-body {
+    padding: 0 1.4rem 1.35rem 1.4rem;
+    color: #e2e8f0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: 0.25rem;
+    padding-top: 1.15rem;
+}
+
+/* Pill / Tag inside Bouncy Accordion */
+.bouncy-tag {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--ios-radius-pill);
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    color: #ffffff;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+/* ==========================================================================
+   OMNIPRESENT SCROLL MOTION & INERTIA SYSTEM
+   - Fluid scroll velocity physics: cards dynamically pitch and compress on scroll
+   - Spatial parallax elevation: items shift smoothly based on viewport progress
+   - Reactive specular light slide: physical glass catches light as you scroll past
+   - Smooth Apple visionOS spring settling when scrolling stops
+   ========================================================================== */
+
+/* Universal Scroll-Reactive Glass Surface */
+.stat-card,
+.hk-card,
+.hk-room-tile,
+.bouncy-accordion-item,
+.hk-header-row {
+    --hover-lift: 0px;
+    will-change: transform;
+    transform: 
+        translate3d(0, calc(var(--scroll-parallax-y, 0px) + var(--hover-lift, 0px)), 0)
+        rotateX(var(--scroll-velocity-pitch, 0deg))
+        scale(var(--scroll-velocity-scale, 1));
+    transition: 
+        transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.stat-card:hover,
+.hk-card:hover,
+.hk-room-tile:hover,
+.bouncy-accordion-item:hover {
+    --hover-lift: -3px;
+}
+
+/* Enhanced Top Edge Caustic Scroll Progress Rail */
+.hk-scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.8) 85%, #ffffff 100%);
+    box-shadow: 0 0 14px rgba(255, 255, 255, 0.9), 0 0 28px rgba(255, 255, 255, 0.5);
+    z-index: 10000;
+    pointer-events: none;
+    transition: width 0.08s ease-out;
 }
 
 @media (prefers-reduced-motion: reduce) {

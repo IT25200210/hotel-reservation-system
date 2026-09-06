@@ -13,24 +13,65 @@
 </head>
 <body>
 
-<!-- Apple Frosted Glass Navbar -->
-<nav class="navbar navbar-dark hk-navbar">
-    <div class="container-fluid">
-        <a th:href="@{/housekeeping/tasks}" class="navbar-brand text-decoration-none">
+<!-- SKIPER-UI: @skiper-ui/skiper57 VERCEL-STYLE NAVIGATION + VENGEANCE-UI SPOTLIGHT NAVBAR -->
+<!-- Tier 1: Hotel Name & Global Brand Bar (In natural flow, scrolls away smoothly) -->
+<header class="hk-nav-top">
+    <div class="container-fluid px-3 px-lg-4 d-flex align-items-center justify-content-between">
+        <a th:href="@{/housekeeping/dashboard}" class="hk-brand-link text-decoration-none">
             <span class="hk-brand-crest"><i class="bi bi-buildings"></i></span>
-            <span>The Grand Horizon <span class="badge bg-white text-dark rounded-pill ms-2 fw-semibold" style="font-size: 0.72rem;">Housekeeping</span></span>
+            <div class="d-flex align-items-center">
+                <span class="hk-brand-title">The Grand Horizon</span>
+                <span class="badge bg-white text-dark rounded-pill ms-2 fw-semibold" style="font-size: 0.72rem;">Housekeeping</span>
+            </div>
         </a>
         <div class="d-flex align-items-center gap-2">
-            <a th:href="@{/housekeeping/dashboard}" class="btn btn-sm hk-nav-btn"><i class="bi bi-chart-pie me-1"></i>Analytics</a>
-            <a th:href="@{/housekeeping/tasks}" class="btn btn-sm hk-nav-btn"><i class="bi bi-list-check me-1"></i>Tasks</a>
-            <a th:href="@{/housekeeping/rooms}" class="btn btn-sm hk-nav-btn active"><i class="bi bi-door-open me-1"></i>Room Status</a>
-            <a th:href="@{/housekeeping/maintenance}" class="btn btn-sm hk-nav-btn"><i class="bi bi-tools me-1"></i>Maintenance</a>
-            
-            <div class="hk-user-pill ms-2 d-none d-md-flex">
+            <div class="hk-user-pill d-none d-md-flex">
                 <i class="bi bi-person-circle"></i>
                 <span sec:authentication="name">User</span>
             </div>
-            <a th:href="@{/logout}" class="btn btn-sm btn-outline-light ms-1"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
+            <a th:href="@{/logout}" class="spotlight-logout-btn" title="Logout" aria-label="Logout">
+                <i class="bi bi-box-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</header>
+
+<!-- Tier 2: Sticky Frosted Glass Rail with VengeanceUI Spotlight Navbar (PINNED AT TOP: 0) -->
+<nav class="hk-nav-sticky" id="hkNavSticky">
+    <div class="container-fluid px-3 px-lg-4 d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+            <!-- Dynamic Breadcrumb: Fades & slides in smoothly when Tier 1 scrolls away -->
+            <div class="hk-nav-breadcrumb-wrap">
+                <a th:href="@{/housekeeping/dashboard}" class="hk-nav-breadcrumb-logo text-decoration-none" title="The Grand Horizon">
+                    <i class="bi bi-buildings"></i>
+                </a>
+                <span class="hk-nav-breadcrumb-scope">The Grand Horizon</span>
+                <span class="hk-nav-breadcrumb-sep">/</span>
+                <span class="hk-nav-breadcrumb-current">Room Status</span>
+            </div>
+
+            <!-- VengeanceUI Spotlight Nav Capsule -->
+            <div class="spotlight-nav" id="spotlightNav" aria-label="Housekeeping Navigation">
+                <ul class="spotlight-nav-list">
+                    <li><a th:href="@{/housekeeping/dashboard}" class="spotlight-nav-link" data-index="0"><i class="bi bi-chart-pie me-1"></i><span>Analytics</span></a></li>
+                    <li><a th:href="@{/housekeeping/tasks}" class="spotlight-nav-link" data-index="1"><i class="bi bi-list-check me-1"></i><span>Tasks</span></a></li>
+                    <li><a th:href="@{/housekeeping/rooms}" class="spotlight-nav-link active" data-index="2"><i class="bi bi-door-open me-1"></i><span>Room Status</span></a></li>
+                    <li><a th:href="@{/housekeeping/maintenance}" class="spotlight-nav-link" data-index="3"><i class="bi bi-tools me-1"></i><span>Maintenance</span></a></li>
+                </ul>
+                <div class="spotlight-beam" aria-hidden="true"></div>
+                <div class="ambience-beam" aria-hidden="true"></div>
+            </div>
+        </div>
+
+        <!-- Mini User Pill & Logout Button (Fades in when Tier 1 scrolls away) -->
+        <div class="hk-nav-scrolled-actions d-flex align-items-center gap-2">
+            <div class="hk-user-pill-mini d-none d-md-flex">
+                <i class="bi bi-person-circle"></i>
+                <span sec:authentication="name">User</span>
+            </div>
+            <a th:href="@{/logout}" class="spotlight-logout-btn-mini" title="Logout" aria-label="Logout">
+                <i class="bi bi-box-arrow-right"></i>
+            </a>
         </div>
     </div>
 </nav>
@@ -44,7 +85,7 @@
             <p class="page-subtitle">Real-time room cleanliness and turnover readiness</p>
         </div>
         <div>
-            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#addRoomCollapse" aria-expanded="false">
+            <button class="btn btn-primary" type="button" onclick="const it = document.getElementById('addRoomItem'); it.classList.toggle('is-open'); document.getElementById('addRoomHeader').setAttribute('aria-expanded', it.classList.contains('is-open')); if(it.classList.contains('is-open')) setTimeout(() => document.querySelector('input[name=roomNumber]')?.focus(), 150);">
                 <i class="bi bi-plus-lg me-1"></i>Add Room
             </button>
         </div>
@@ -55,21 +96,44 @@
         <i class="bi bi-exclamation-triangle me-2"></i><span th:text="${error}"></span>
     </div>
 
-    <!-- Expandable Add Room Bar -->
-    <div class="collapse mb-4" id="addRoomCollapse">
-        <div class="card hk-card p-4">
-            <form th:action="@{/housekeeping/rooms/add}" method="post" class="row g-3 align-items-center">
-                <div class="col-md-4">
-                    <label class="form-label text-secondary small"><i class="bi bi-hash me-1"></i>Room Number</label>
-                    <input type="text" name="roomNumber" class="form-control" placeholder="e.g. 105, 201, 304" required>
+    <!-- Expandable Add Room Bar (@skiper-ui/skiper103 Bouncy Accordion) -->
+    <div class="bouncy-accordion mb-4 hk-fade-in delay-1" id="addRoomAccordion">
+        <div class="bouncy-accordion-item" id="addRoomItem">
+            <button class="bouncy-accordion-header" type="button" aria-expanded="false" id="addRoomHeader">
+                <div class="bouncy-accordion-header-left">
+                    <div class="bouncy-accordion-icon cyan">
+                        <i class="bi bi-door-open"></i>
+                    </div>
+                    <div class="bouncy-accordion-title-wrap">
+                        <div class="bouncy-accordion-title">
+                            Add New Hotel Room
+                            <span class="bouncy-tag">Inventory Provisioning</span>
+                        </div>
+                        <div class="bouncy-accordion-subtitle">Register a new room suite into real-time floor monitoring and cleaning dispatch</div>
+                    </div>
                 </div>
-                <div class="col-md-auto align-self-end">
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Save Room</button>
+                <div class="bouncy-accordion-chevron-wrap">
+                    <i class="bi bi-chevron-down"></i>
                 </div>
-                <div class="col-md text-secondary small align-self-end pb-2">
-                    <i class="bi bi-info-circle me-1 text-white"></i>New rooms initialize as <span class="badge badge-dirty">Dirty</span> until inspected.
+            </button>
+            <div class="bouncy-accordion-content">
+                <div class="bouncy-accordion-inner">
+                    <div class="bouncy-accordion-body">
+                        <form th:action="@{/housekeeping/rooms/add}" method="post" class="row g-3 align-items-center">
+                            <div class="col-md-4">
+                                <label class="form-label text-secondary small"><i class="bi bi-hash me-1"></i>Room Number</label>
+                                <input type="text" name="roomNumber" class="form-control" placeholder="e.g. 105, 201, 304" required>
+                            </div>
+                            <div class="col-md-auto align-self-end">
+                                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>Save Room</button>
+                            </div>
+                            <div class="col-md text-secondary small align-self-end pb-2">
+                                <i class="bi bi-info-circle me-1 text-white"></i>New rooms initialize as <span class="badge badge-dirty">Dirty</span> until inspected.
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -297,6 +361,185 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+
+    <!-- Housekeeping SOP & Rapid Turnover Standards (@skiper-ui/skiper103 Bouncy Accordion) -->
+    <div class="mb-5 hk-fade-in delay-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h5 class="text-white fw-bold mb-0">
+                    <i class="bi bi-shield-check text-secondary me-2"></i>Housekeeping Standards & SOP Protocols
+                </h5>
+                <p class="text-secondary small mb-0">Operational benchmarks, inspection checklists, and service level agreements</p>
+            </div>
+            <span class="badge" style="background: rgba(99, 102, 241, 0.18); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.35);">
+                <i class="bi bi-stars me-1"></i>Skiper103 Bouncy Accordion
+            </span>
+        </div>
+
+        <div class="bouncy-accordion" data-accordion-single="true">
+            
+            <!-- Item 1: VIP Turnover -->
+            <div class="bouncy-accordion-item is-open">
+                <button class="bouncy-accordion-header" type="button" aria-expanded="true">
+                    <div class="bouncy-accordion-header-left">
+                        <div class="bouncy-accordion-icon violet">
+                            <i class="bi bi-stars"></i>
+                        </div>
+                        <div class="bouncy-accordion-title-wrap">
+                            <div class="bouncy-accordion-title">
+                                VIP Guest Arrival & Rapid Turnover Protocol
+                                <span class="badge badge-inspected ms-2">Priority 1</span>
+                            </div>
+                            <div class="bouncy-accordion-subtitle">Strict 30-minute turn cycle, bespoke luxury linen staging, climate lock</div>
+                        </div>
+                    </div>
+                    <div class="bouncy-accordion-chevron-wrap">
+                        <i class="bi bi-chevron-down"></i>
+                    </div>
+                </button>
+                <div class="bouncy-accordion-content">
+                    <div class="bouncy-accordion-inner">
+                        <div class="bouncy-accordion-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <h6 class="text-white small fw-bold mb-2"><i class="bi bi-check2-circle text-success me-1"></i>Turnover Mandates:</h6>
+                                    <ul class="text-secondary small mb-0 ps-3">
+                                        <li>Full linen replacement using 400-thread Egyptian cotton with hotel envelope folds.</li>
+                                        <li>Smart climate preset locked to 21°C with ambient air scent diffuser refreshed.</li>
+                                        <li>Replenish premium Acqua di Parma amenities and curated artisanal welcome fruits.</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-white small fw-bold mb-2"><i class="bi bi-stopwatch text-warning me-1"></i>SLA & Verification:</h6>
+                                    <ul class="text-secondary small mb-0 ps-3">
+                                        <li>Maximum turnaround time: <strong>30 minutes</strong> from checkout notification.</li>
+                                        <li>Floor Supervisor must perform physical white-glove inspection before state changes to <span class="badge badge-inspected">Inspected</span>.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 2: Sanitization -->
+            <div class="bouncy-accordion-item">
+                <button class="bouncy-accordion-header" type="button" aria-expanded="false">
+                    <div class="bouncy-accordion-header-left">
+                        <div class="bouncy-accordion-icon emerald">
+                            <i class="bi bi-shield-shaded"></i>
+                        </div>
+                        <div class="bouncy-accordion-title-wrap">
+                            <div class="bouncy-accordion-title">
+                                Hospital-Grade Bio-Sanitization Standards
+                                <span class="badge badge-clean ms-2">CDC Compliant</span>
+                            </div>
+                            <div class="bouncy-accordion-subtitle">UV-C wand touchpoint treatment, HEPA air filtration, EPA hospital disinfectants</div>
+                        </div>
+                    </div>
+                    <div class="bouncy-accordion-chevron-wrap">
+                        <i class="bi bi-chevron-down"></i>
+                    </div>
+                </button>
+                <div class="bouncy-accordion-content">
+                    <div class="bouncy-accordion-inner">
+                        <div class="bouncy-accordion-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <h6 class="text-white small fw-bold mb-2"><i class="bi bi-virus text-info me-1"></i>High-Touch Sterilization Points:</h6>
+                                    <p class="text-secondary small mb-1">Mandatory 60-second contact time with quaternary ammonium disinfectant on door handles, TV remote controls, telephone handsets, light switches, and thermostat dials.</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-white small fw-bold mb-2"><i class="bi bi-wind text-success me-1"></i>Airflow & Filtration:</h6>
+                                    <p class="text-secondary small mb-1">Continuous vacuuming with certified HEPA filtration traps 99.97% of airborne microparticulates. Bathrooms undergo automatic ozone descaling treatment.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 3: Inspection Checklist -->
+            <div class="bouncy-accordion-item">
+                <button class="bouncy-accordion-header" type="button" aria-expanded="false">
+                    <div class="bouncy-accordion-header-left">
+                        <div class="bouncy-accordion-icon cyan">
+                            <i class="bi bi-patch-check"></i>
+                        </div>
+                        <div class="bouncy-accordion-title-wrap">
+                            <div class="bouncy-accordion-title">
+                                Room Inspection Quality Checklist (6-Zone Audit)
+                                <span class="badge" style="background: rgba(0, 199, 190, 0.16); color: #2dd4bf; border: 1px solid rgba(0, 199, 190, 0.35);">Quality Assurance</span>
+                            </div>
+                            <div class="bouncy-accordion-subtitle">Zero hair tolerance, mirror optical clarity, minibar seal integrity</div>
+                        </div>
+                    </div>
+                    <div class="bouncy-accordion-chevron-wrap">
+                        <i class="bi bi-chevron-down"></i>
+                    </div>
+                </button>
+                <div class="bouncy-accordion-content">
+                    <div class="bouncy-accordion-inner">
+                        <div class="bouncy-accordion-body">
+                            <div class="d-flex flex-wrap gap-3 text-secondary small">
+                                <div class="p-2 rounded" style="background: rgba(255,255,255,0.04); flex: 1 1 200px;">
+                                    <span class="text-white fw-semibold d-block"><i class="bi bi-1-circle text-primary me-1"></i>Zone 1: Foyer & Closet</span>
+                                    Hanger spacing equal, safe door open with reset code, laundry bag & shoehorn in place.
+                                </div>
+                                <div class="p-2 rounded" style="background: rgba(255,255,255,0.04); flex: 1 1 200px;">
+                                    <span class="text-white fw-semibold d-block"><i class="bi bi-2-circle text-primary me-1"></i>Zone 2: Bathroom Suite</span>
+                                    Marble chrome polished, mirrors streak-free, toilet seal tape attached, towels folded triple-stack.
+                                </div>
+                                <div class="p-2 rounded" style="background: rgba(255,255,255,0.04); flex: 1 1 200px;">
+                                    <span class="text-white fw-semibold d-block"><i class="bi bi-3-circle text-primary me-1"></i>Zone 3: Bedroom</span>
+                                    Pillow plumping 45-degree angle, bed skirt aligned, under-bed inspection negative for debris.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 4: Maintenance Defect Escalation -->
+            <div class="bouncy-accordion-item">
+                <button class="bouncy-accordion-header" type="button" aria-expanded="false">
+                    <div class="bouncy-accordion-header-left">
+                        <div class="bouncy-accordion-icon rose">
+                            <i class="bi bi-tools"></i>
+                        </div>
+                        <div class="bouncy-accordion-title-wrap">
+                            <div class="bouncy-accordion-title">
+                                Maintenance Defect Escalation & Facilities Dispatch
+                                <span class="badge badge-dirty ms-2">Auto Dispatch</span>
+                            </div>
+                            <div class="bouncy-accordion-subtitle">Rapid dispatch to engineering team for plumbing, HVAC, or electrical issues</div>
+                        </div>
+                    </div>
+                    <div class="bouncy-accordion-chevron-wrap">
+                        <i class="bi bi-chevron-down"></i>
+                    </div>
+                </button>
+                <div class="bouncy-accordion-content">
+                    <div class="bouncy-accordion-inner">
+                        <div class="bouncy-accordion-body">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div>
+                                    <p class="text-secondary small mb-1">Encountered an issue during cleaning? Critical defects (leaks, AC failures, lock issues) trigger priority dispatch directly to engineering personnel.</p>
+                                    <span class="text-white small fw-medium"><i class="bi bi-info-circle me-1 text-warning"></i>Room status is immediately locked until engineering resolution.</span>
+                                </div>
+                                <div>
+                                    <a th:href="@{/housekeeping/maintenance/new}" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-plus-lg me-1"></i>Log Maintenance Defect
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
