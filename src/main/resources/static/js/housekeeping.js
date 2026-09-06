@@ -38,6 +38,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 8. CHART.JS VISUAL ANALYTICS (Apple Neon Palette)
     initVisualCharts();
+
+    // 9. SKIPER-UI: @skiper-ui/skiper106 SMOOTH CARET INPUT (ALL TYPING FUNCTIONS)
+    initSmoothCaretInputs();
+
+    // 10. SKIPER-UI: @skiper-ui/skiper87 SCROLL WITH FADE EFFECT & PROGRESS
+    initScrollAnimations();
 });
 
 /**
@@ -601,5 +607,142 @@ function filterRooms(status, btnElement) {
         } else {
             row.style.display = 'none';
         }
+    });
+}
+
+/**
+ * SKIPER-UI: @skiper-ui/skiper106 Smooth Caret Input
+ * Replaces harsh native browser blinking cursor with a spring-interpolated luminous liquid glass caret
+ * across all typing inputs and textareas.
+ */
+function initSmoothCaretInputs() {
+    const inputs = document.querySelectorAll('input[type="text"], input[type="password"], textarea');
+    if (inputs.length === 0) return;
+
+    const measureCanvas = document.createElement('canvas');
+    const measureCtx = measureCanvas.getContext('2d');
+
+    inputs.forEach((input) => {
+        if (input.dataset.smoothCaretInit) return;
+        input.dataset.smoothCaretInit = 'true';
+
+        // Wrap input in smooth-caret-wrapper if not already wrapped
+        let wrapper = input.parentElement;
+        if (!wrapper.classList.contains('smooth-caret-wrapper')) {
+            wrapper = document.createElement('div');
+            wrapper.className = 'smooth-caret-wrapper';
+            input.parentNode.insertBefore(wrapper, input);
+            wrapper.appendChild(input);
+        }
+
+        const caret = document.createElement('span');
+        caret.className = 'smooth-caret';
+        wrapper.appendChild(caret);
+
+        function updateCaret() {
+            if (document.activeElement !== input) {
+                caret.classList.remove('active');
+                return;
+            }
+
+            caret.classList.add('active');
+            const style = window.getComputedStyle(input);
+            measureCtx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+
+            const val = input.value || '';
+            const selStart = input.selectionStart || 0;
+            const textBefore = val.substring(0, selStart);
+            const textWidth = measureCtx.measureText(textBefore).width;
+
+            const padLeft = parseFloat(style.paddingLeft) || 12;
+            const padTop = parseFloat(style.paddingTop) || 10;
+            const scrollLeft = input.scrollLeft || 0;
+
+            const x = padLeft + textWidth - scrollLeft;
+            const y = padTop;
+
+            caret.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(y)}px, 0)`;
+            caret.style.height = `${Math.round(parseFloat(style.fontSize) * 1.2)}px`;
+        }
+
+        input.addEventListener('input', updateCaret, { passive: true });
+        input.addEventListener('keydown', () => requestAnimationFrame(updateCaret), { passive: true });
+        input.addEventListener('keyup', updateCaret, { passive: true });
+        input.addEventListener('click', updateCaret, { passive: true });
+        input.addEventListener('focus', () => {
+            input.classList.add('typing-active');
+            caret.classList.add('active');
+            updateCaret();
+        }, { passive: true });
+        input.addEventListener('blur', () => {
+            input.classList.remove('typing-active');
+            caret.classList.remove('active');
+        }, { passive: true });
+        input.addEventListener('scroll', updateCaret, { passive: true });
+    });
+}
+
+/**
+ * SKIPER-UI: @skiper-ui/skiper87 Scroll with Fade Effect & Ambient Scroll Progress
+ * - Fixed 3px Apple neon scroll progress indicator along top viewport edge
+ * - Sticky navbar depth elevation upon scrolling past 25px
+ * - Responsive dynamic edge fade masks on scrollable data tables
+ */
+function initScrollAnimations() {
+    // 1. Ambient Top Scroll Progress Rail
+    let progressBar = document.querySelector('.hk-scroll-progress');
+    if (!progressBar) {
+        progressBar = document.createElement('div');
+        progressBar.className = 'hk-scroll-progress';
+        document.body.appendChild(progressBar);
+    }
+
+    const navbar = document.querySelector('.hk-navbar');
+    let scrollRafId = null;
+
+    function handleWindowScroll() {
+        if (scrollRafId) return;
+        scrollRafId = requestAnimationFrame(() => {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = docHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
+            progressBar.style.width = `${progress}%`;
+
+            if (navbar) {
+                if (scrollTop > 25) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            }
+            scrollRafId = null;
+        });
+    }
+
+    window.addEventListener('scroll', handleWindowScroll, { passive: true });
+    handleWindowScroll(); // Initial run
+
+    // 2. Dynamic Edge Fade Masks for Tables & Overflow Containers
+    const scrollContainers = document.querySelectorAll('.table-responsive');
+    scrollContainers.forEach((container) => {
+        function updateTableMask() {
+            const scrollLeft = container.scrollLeft;
+            const maxScroll = container.scrollWidth - container.clientWidth;
+            const fadeLeft = scrollLeft > 12;
+            const fadeRight = scrollLeft < maxScroll - 12;
+
+            if (fadeLeft && fadeRight) {
+                container.style.webkitMaskImage = 'linear-gradient(to right, transparent 0, black 24px, black calc(100% - 24px), transparent 100%)';
+            } else if (fadeLeft) {
+                container.style.webkitMaskImage = 'linear-gradient(to right, transparent 0, black 24px, black 100%)';
+            } else if (fadeRight) {
+                container.style.webkitMaskImage = 'linear-gradient(to right, black 0%, black calc(100% - 24px), transparent 100%)';
+            } else {
+                container.style.webkitMaskImage = 'none';
+            }
+        }
+
+        container.addEventListener('scroll', updateTableMask, { passive: true });
+        updateTableMask();
     });
 }

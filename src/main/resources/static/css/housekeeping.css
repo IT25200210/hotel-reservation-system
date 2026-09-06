@@ -646,18 +646,102 @@ body::after {
 }
 
 /* ==========================================================================
-   SKIPER-UI: @skiper-ui/skiper87 SCROLL FADE MASKS & TABLES
+   SKIPER-UI: @skiper-ui/skiper87 SCROLL WITH FADE EFFECT & PROGRESS
    ========================================================================== */
 
-.hk-scroll-mask {
-    mask-image: linear-gradient(to right, transparent 0, black 24px, black calc(100% - 24px), transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, transparent 0, black 24px, black calc(100% - 24px), transparent 100%);
+/* Ambient Top Scroll Progress Rail */
+.hk-scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, #6366f1 0%, #00c7be 50%, #30d158 100%);
+    box-shadow: 0 0 12px rgba(0, 199, 190, 0.8), 0 0 24px rgba(99, 102, 241, 0.5);
+    z-index: 10000;
+    pointer-events: none;
+    transition: width 0.08s ease-out;
 }
 
+/* Dynamic Edge Fade Masks for Tables & Overflow Containers */
+.hk-scroll-mask,
 .table-responsive {
     border-radius: var(--ios-radius-xl);
     position: relative;
     background: transparent !important;
+    mask-image: linear-gradient(to right, transparent 0, black 16px, black calc(100% - 16px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black 16px, black calc(100% - 16px), transparent 100%);
+}
+
+.hk-scroll-fade-v {
+    mask-image: linear-gradient(to bottom, transparent 0, black 20px, black calc(100% - 20px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 20px, black calc(100% - 20px), transparent 100%);
+}
+
+/* Navbar Elevation on Scroll */
+.hk-navbar.scrolled {
+    background: rgba(8, 11, 20, 0.84) !important;
+    backdrop-filter: blur(28px) saturate(210%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(210%) !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.70), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+}
+
+/* ==========================================================================
+   SKIPER-UI: @skiper-ui/skiper106 SMOOTH CARET INPUT
+   ========================================================================== */
+
+.smooth-caret-wrapper {
+    position: relative;
+    display: inline-flex;
+    width: 100%;
+}
+
+.input-group > .smooth-caret-wrapper {
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+    display: inline-flex;
+}
+
+.smooth-caret-wrapper > .form-control {
+    width: 100%;
+    caret-color: transparent !important; /* Replaced by luminous smooth caret */
+}
+
+.smooth-caret {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2.2px;
+    border-radius: 2px;
+    background: #38bdf8; /* Apple Liquid Cyan */
+    box-shadow: 
+        0 0 8px #38bdf8,
+        0 0 16px rgba(56, 189, 248, 0.7);
+    pointer-events: none;
+    opacity: 0;
+    will-change: transform;
+    transition: transform 0.10s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.15s ease;
+    z-index: 10;
+}
+
+.smooth-caret.active {
+    opacity: 1;
+    animation: skiperCaretBlink 1.05s infinite ease-in-out;
+}
+
+@keyframes skiperCaretBlink {
+    0%, 100% { opacity: 1; transform: scaleY(1); }
+    50% { opacity: 0.25; transform: scaleY(0.94); }
+}
+
+.form-control.typing-active,
+.form-control:focus {
+    border-color: rgba(56, 189, 248, 0.55) !important;
+    box-shadow: 
+        0 0 0 3px rgba(56, 189, 248, 0.20),
+        0 0 20px rgba(56, 189, 248, 0.16),
+        inset 0 1px 1px rgba(255, 255, 255, 0.20) !important;
 }
 
 /* ==========================================================================
