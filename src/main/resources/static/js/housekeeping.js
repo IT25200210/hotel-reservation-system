@@ -688,15 +688,15 @@ function filterRooms(status, btnElement) {
 
 /**
  * SKIPER-UI: @skiper-ui/skiper106 Smooth Caret Input
- * Replaces harsh native browser blinking cursor with a spring-interpolated luminous liquid glass caret
- * across all typing inputs and textareas.
+ * Official implementation adapted from skiper-ui.com/r/skiper106:
+ * - DOM measureSpan with exact font & letterSpacing synchronization
+ * - Vertically centered (top: 50% + translateY(-50%)) so it NEVER floats or clips
+ * - Spring physics interpolation (stiffness: 0.35, damping: 0.65) for smooth caret glide
+ * - Opacity 0 when blurred or selecting text range; active only when focused
  */
 function initSmoothCaretInputs() {
-    const inputs = document.querySelectorAll('input[type="text"], input[type="password"], textarea');
+    const inputs = document.querySelectorAll('input[type="text"], input[type="password"], input:not([type])');
     if (inputs.length === 0) return;
-
-    const measureCanvas = document.createElement('canvas');
-    const measureCtx = measureCanvas.getContext('2d');
 
     inputs.forEach((input) => {
         if (input.dataset.smoothCaretInit) return;
@@ -711,50 +711,158 @@ function initSmoothCaretInputs() {
             wrapper.appendChild(input);
         }
 
-        const caret = document.createElement('span');
-        caret.className = 'smooth-caret';
-        wrapper.appendChild(caret);
+        // Create measurement span (identical to skiper106 measureRef)
+        let measureSpan = wrapper.querySelector('.smooth-caret-measure');
+        if (!measureSpan) {
+            measureSpan = document.createElement('span');
+            measureSpan.className = 'smooth-caret-measure';
+            measureSpan.setAttribute('aria-hidden', 'true');
+            wrapper.appendChild(measureSpan);
+        }
 
-        function updateCaret() {
+        // Create custom smooth caret (identical to skiper106 motion.div caret)
+        let caret = wrapper.querySelector('.smooth-caret');
+        if (!caret) {
+            caret = document.createElement('span');
+            caret.className = 'smooth-caret';
+            wrapper.appendChild(caret);
+        }
+
+        let currentX = null;
+        let targetX = 0;
+        let velocity = 0;
+        let springRafId = null;
+        let typingTimeout = null;
+
+        const syncMeasureSpan = () => {
+            const style = window.getComputedStyle(input);
+            measureSpan.style.fontFamily = style.fontFamily;
+            measureSpan.style.fontSize = style.fontSize;
+            measureSpan.style.fontWeight = style.fontWeight;
+            measureSpan.style.letterSpacing = style.letterSpacing;
+            measureSpan.style.fontStyle = style.fontStyle;
+            measureSpan.style.textTransform = style.textTransform;
+        };
+
+        const computeTargetX = () => {
+            syncMeasureSpan();
+            const caretIndex = input.selectionStart ?? 0;
+            const isPassword = input.type === 'password';
+            const val = input.value || '';
+            const textBefore = isPassword ? '•'.repeat(caretIndex) : val.slice(0, caretIndex);
+
+            measureSpan.textContent = textBefore;
+            const textWidth = textBefore.length > 0 ? measureSpan.getBoundingClientRect().width : 0;
+
+            const style = window.getComputedStyle(input);
+            const padLeft = parseFloat(style.paddingLeft) || 12;
+            const borderLeft = parseFloat(style.borderLeftWidth) || 0;
+            const padRight = parseFloat(style.paddingRight) || 12;
+            const scrollLeft = input.scrollLeft || 0;
+
+            const minX = padLeft + borderLeft;
+            const maxX = input.clientWidth - padRight;
+            const calculatedX = minX + textWidth - scrollLeft;
+            return Math.max(minX, Math.min(maxX, calculatedX));
+        };
+
+        function runSpring() {
+            const stiffness = 0.35;
+            const damping = 0.65;
+            const force = (targetX - currentX) * stiffness;
+            velocity = (velocity + force) * damping;
+            currentX += velocity;
+
+            caret.style.setProperty('--caret-x', `${currentX.toFixed(2)}px`);
+
+            if (Math.abs(targetX - currentX) > 0.1 || Math.abs(velocity) > 0.05) {
+                springRafId = requestAnimationFrame(runSpring);
+            } else {
+                currentX = targetX;
+                caret.style.setProperty('--caret-x', `${currentX.toFixed(2)}px`);
+                springRafId = null;
+            }
+        }
+
+        function updateCaret(instant) {
             if (document.activeElement !== input) {
-                caret.classList.remove('active');
+                caret.classList.remove('active', 'typing');
+                input.classList.remove('typing-active');
                 return;
             }
 
-            caret.classList.add('active');
-            const style = window.getComputedStyle(input);
-            measureCtx.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+            // Hide caret when text is actively selected across a range
+            const hasSelection = (input.selectionStart !== input.selectionEnd);
+            if (hasSelection) {
+                caret.classList.remove('active', 'typing');
+                return;
+            }
 
-            const val = input.value || '';
-            const selStart = input.selectionStart || 0;
-            const textBefore = val.substring(0, selStart);
-            const textWidth = measureCtx.measureText(textBefore).width;
-
-            const padLeft = parseFloat(style.paddingLeft) || 12;
-            const padTop = parseFloat(style.paddingTop) || 10;
-            const scrollLeft = input.scrollLeft || 0;
-
-            const x = padLeft + textWidth - scrollLeft;
-            const y = padTop;
-
-            caret.style.transform = `translate3d(${Math.round(x)}px, ${Math.round(y)}px, 0)`;
-            caret.style.height = `${Math.round(parseFloat(style.fontSize) * 1.2)}px`;
-        }
-
-        input.addEventListener('input', updateCaret, { passive: true });
-        input.addEventListener('keydown', () => requestAnimationFrame(updateCaret), { passive: true });
-        input.addEventListener('keyup', updateCaret, { passive: true });
-        input.addEventListener('click', updateCaret, { passive: true });
-        input.addEventListener('focus', () => {
             input.classList.add('typing-active');
             caret.classList.add('active');
-            updateCaret();
+
+            targetX = computeTargetX();
+
+            if (instant || currentX === null) {
+                if (springRafId) {
+                    cancelAnimationFrame(springRafId);
+                    springRafId = null;
+                }
+                currentX = targetX;
+                velocity = 0;
+                caret.style.setProperty('--caret-x', `${currentX.toFixed(2)}px`);
+            } else if (!springRafId) {
+                springRafId = requestAnimationFrame(runSpring);
+            }
+        }
+
+        function onType() {
+            caret.classList.add('typing');
+            if (typingTimeout) clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                caret.classList.remove('typing');
+            }, 300);
+            updateCaret(false);
+        }
+
+        input.addEventListener('input', onType, { passive: true });
+        input.addEventListener('keydown', () => {
+            requestAnimationFrame(() => updateCaret(false));
         }, { passive: true });
+        input.addEventListener('keyup', () => updateCaret(false), { passive: true });
+        input.addEventListener('click', () => updateCaret(false), { passive: true });
+
+        input.addEventListener('focus', () => {
+            updateCaret(true); // Snap to position on initial focus
+        }, { passive: true });
+
         input.addEventListener('blur', () => {
             input.classList.remove('typing-active');
-            caret.classList.remove('active');
+            caret.classList.remove('active', 'typing');
+            if (springRafId) {
+                cancelAnimationFrame(springRafId);
+                springRafId = null;
+            }
+            if (typingTimeout) clearTimeout(typingTimeout);
+            currentX = null;
         }, { passive: true });
-        input.addEventListener('scroll', updateCaret, { passive: true });
+
+        input.addEventListener('scroll', () => updateCaret(true), { passive: true });
+
+        // Document selectionchange for arrow key cursor navigation & drag selection
+        const onSelectionChange = () => {
+            if (document.activeElement === input) {
+                updateCaret(false);
+            }
+        };
+        document.addEventListener('selectionchange', onSelectionChange, { passive: true });
+
+        // Fonts loading update
+        if (document.fonts) {
+            document.fonts.ready.then(() => {
+                if (document.activeElement === input) updateCaret(true);
+            });
+        }
     });
 }
 
