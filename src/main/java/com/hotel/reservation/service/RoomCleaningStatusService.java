@@ -2,6 +2,8 @@ package com.hotel.reservation.service;
 
 import com.hotel.reservation.entity.RoomCleaningStatus;
 import com.hotel.reservation.repository.RoomCleaningStatusRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -11,9 +13,12 @@ import java.util.List;
 public class RoomCleaningStatusService {
 
     private final RoomCleaningStatusRepository roomStatusRepository;
+    private final AuditLogService auditLogService;
 
-    public RoomCleaningStatusService(RoomCleaningStatusRepository roomStatusRepository) {
+    public RoomCleaningStatusService(RoomCleaningStatusRepository roomStatusRepository,
+                                     AuditLogService auditLogService) {
         this.roomStatusRepository = roomStatusRepository;
+        this.auditLogService = auditLogService;
     }
 
     public List<RoomCleaningStatus> getAllRooms() {
@@ -44,13 +49,27 @@ public class RoomCleaningStatusService {
         if (roomStatusRepository.existsByRoomNumber(roomNumber.trim())) {
             throw new RuntimeException("Room " + roomNumber + " already exists");
         }
-        return ensureRoom(roomNumber.trim());
+        RoomCleaningStatus saved = ensureRoom(roomNumber.trim());
+        auditLogService.log(getCurrentUsername(), "CREATE", "RoomCleaningStatus", saved.getId(),
+                "Added room " + saved.getRoomNumber() + " to housekeeping board");
+        return saved;
     }
 
     public RoomCleaningStatus updateStatus(Long id, String status) {
         RoomCleaningStatus room = getRoomById(id);
         room.setStatus(status);
         room.setUpdatedAt(LocalDateTime.now());
-        return roomStatusRepository.save(room);
+        RoomCleaningStatus saved = roomStatusRepository.save(room);
+        auditLogService.log(getCurrentUsername(), "UPDATE", "RoomCleaningStatus", saved.getId(),
+                "Room " + saved.getRoomNumber() + " cleaning status changed to " + status);
+        return saved;
+    }
+
+    private String getCurrentUsername() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !auth.getName().equals("anonymousUser")) {
+            return auth.getName();
+        }
+        return "system";
     }
 }

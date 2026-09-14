@@ -5,11 +5,14 @@ import com.hotel.reservation.entity.MaintenanceRequest;
 import com.hotel.reservation.service.HousekeepingTaskService;
 import com.hotel.reservation.service.MaintenanceRequestService;
 import com.hotel.reservation.service.RoomCleaningStatusService;
+import com.hotel.reservation.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/housekeeping")
@@ -18,18 +21,28 @@ public class HousekeepingController {
     private final HousekeepingTaskService taskService;
     private final RoomCleaningStatusService roomStatusService;
     private final MaintenanceRequestService maintenanceService;
+    private final UserRepository userRepository;
 
     public HousekeepingController(HousekeepingTaskService taskService,
                                   RoomCleaningStatusService roomStatusService,
-                                  MaintenanceRequestService maintenanceService) {
+                                  MaintenanceRequestService maintenanceService,
+                                  UserRepository userRepository) {
         this.taskService = taskService;
         this.roomStatusService = roomStatusService;
         this.maintenanceService = maintenanceService;
+        this.userRepository = userRepository;
+    }
+
+    // ---------- Root Redirect to Dashboard ----------
+
+    @GetMapping({"", "/"})
+    public String index() {
+        return "redirect:/housekeeping/dashboard";
     }
 
     // ---------- Housekeeping tasks ----------
 
-    @GetMapping({"", "/tasks"})
+    @GetMapping("/tasks")
     public String listTasks(@RequestParam(required = false) String status,
                             @RequestParam(required = false) String roomNumber,
                             Model model) {
@@ -45,6 +58,7 @@ public class HousekeepingController {
     @GetMapping("/tasks/new")
     public String showCreateForm(Model model) {
         model.addAttribute("task", new HousekeepingTask());
+        populateStaffList(model);
         return "housekeeping/task-form";
     }
 
@@ -57,7 +71,19 @@ public class HousekeepingController {
     @GetMapping("/tasks/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         model.addAttribute("task", taskService.getTaskById(id));
+        populateStaffList(model);
         return "housekeeping/task-form";
+    }
+
+    private void populateStaffList(Model model) {
+        List<String> staff = userRepository.findAll().stream()
+                .filter(u -> u.getRole() != null && "ROLE_HOUSEKEEPING".equals(u.getRole().getName()))
+                .map(u -> u.getUsername())
+                .toList();
+        if (staff.isEmpty()) {
+            staff = List.of("housekeeping");
+        }
+        model.addAttribute("staffMembers", staff);
     }
 
     @PostMapping("/tasks/update/{id}")

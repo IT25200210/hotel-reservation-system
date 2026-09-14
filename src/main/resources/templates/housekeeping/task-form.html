@@ -106,8 +106,11 @@
 
                 <div class="mb-3">
                     <label class="form-label"><i class="bi bi-person-badge text-white"></i>Assigned Staff Member</label>
-                    <input type="text" th:field="*{assignedTo}" class="form-control"
-                           placeholder="e.g. hkstaff or Staff Name" required>
+                    <input type="text" th:field="*{assignedTo}" class="form-control" list="staffOptions"
+                           placeholder="e.g. housekeeping" required>
+                    <datalist id="staffOptions">
+                        <option th:each="staff : ${staffMembers}" th:value="${staff}" th:text="${staff}"></option>
+                    </datalist>
                 </div>
 
                 <div class="mb-3">

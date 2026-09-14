@@ -2,6 +2,8 @@ package com.hotel.reservation.service;
 
 import com.hotel.reservation.entity.MaintenanceRequest;
 import com.hotel.reservation.repository.MaintenanceRequestRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,7 +36,7 @@ public class MaintenanceRequestService {
         request.setId(null);
         request.setStatus(MaintenanceRequest.STATUS_OPEN);
         MaintenanceRequest saved = maintenanceRepository.save(request);
-        auditLogService.log("system", "CREATE", "MaintenanceRequest", saved.getId(),
+        auditLogService.log(getCurrentUsername(), "CREATE", "MaintenanceRequest", saved.getId(),
                 "Logged maintenance issue for room " + saved.getRoomNumber());
         return saved;
     }
@@ -47,19 +49,33 @@ public class MaintenanceRequestService {
         if (updated.getStatus() != null && !updated.getStatus().isBlank()) {
             existing.setStatus(updated.getStatus());
         }
-        return maintenanceRepository.save(existing);
+        MaintenanceRequest saved = maintenanceRepository.save(existing);
+        auditLogService.log(getCurrentUsername(), "UPDATE", "MaintenanceRequest", saved.getId(),
+                "Updated maintenance issue for room " + saved.getRoomNumber());
+        return saved;
     }
 
     public MaintenanceRequest updateStatus(Long id, String status) {
         MaintenanceRequest request = getRequestById(id);
         request.setStatus(status);
-        return maintenanceRepository.save(request);
+        MaintenanceRequest saved = maintenanceRepository.save(request);
+        auditLogService.log(getCurrentUsername(), "UPDATE", "MaintenanceRequest", saved.getId(),
+                "Maintenance status changed to " + status + " for room " + saved.getRoomNumber());
+        return saved;
     }
 
     public void deleteRequest(Long id) {
         MaintenanceRequest request = getRequestById(id);
         maintenanceRepository.delete(request);
-        auditLogService.log("system", "DELETE", "MaintenanceRequest", id,
+        auditLogService.log(getCurrentUsername(), "DELETE", "MaintenanceRequest", id,
                 "Deleted maintenance request for room " + request.getRoomNumber());
+    }
+
+    private String getCurrentUsername() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !auth.getName().equals("anonymousUser")) {
+            return auth.getName();
+        }
+        return "system";
     }
 }

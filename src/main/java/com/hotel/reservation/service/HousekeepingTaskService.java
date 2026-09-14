@@ -3,6 +3,8 @@ package com.hotel.reservation.service;
 import com.hotel.reservation.entity.HousekeepingTask;
 import com.hotel.reservation.entity.RoomCleaningStatus;
 import com.hotel.reservation.repository.HousekeepingTaskRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,8 +48,8 @@ public class HousekeepingTaskService {
         // make sure the room exists on the status board as DIRTY
         roomStatusService.ensureRoom(task.getRoomNumber());
         HousekeepingTask saved = taskRepository.save(task);
-        auditLogService.log("system", "CREATE", "HousekeepingTask", saved.getId(),
-                "Created cleaning task for room " + saved.getRoomNumber());
+        auditLogService.log(getCurrentUsername(), "CREATE", "HousekeepingTask", saved.getId(),
+                "Created cleaning task for room " + saved.getRoomNumber() + " assigned to " + saved.getAssignedTo());
         return saved;
     }
 
@@ -60,7 +62,10 @@ public class HousekeepingTaskService {
             existing.setStatus(updated.getStatus());
         }
         syncRoomStatus(existing);
-        return taskRepository.save(existing);
+        HousekeepingTask saved = taskRepository.save(existing);
+        auditLogService.log(getCurrentUsername(), "UPDATE", "HousekeepingTask", saved.getId(),
+                "Updated cleaning task for room " + saved.getRoomNumber());
+        return saved;
     }
 
     public HousekeepingTask updateTaskStatus(Long id, String status) {
@@ -68,7 +73,7 @@ public class HousekeepingTaskService {
         task.setStatus(status);
         syncRoomStatus(task);
         HousekeepingTask saved = taskRepository.save(task);
-        auditLogService.log("system", "UPDATE", "HousekeepingTask", saved.getId(),
+        auditLogService.log(getCurrentUsername(), "UPDATE", "HousekeepingTask", saved.getId(),
                 "Task status changed to " + status + " for room " + saved.getRoomNumber());
         return saved;
     }
@@ -76,7 +81,7 @@ public class HousekeepingTaskService {
     public void deleteTask(Long id) {
         HousekeepingTask task = getTaskById(id);
         taskRepository.delete(task);
-        auditLogService.log("system", "DELETE", "HousekeepingTask", id,
+        auditLogService.log(getCurrentUsername(), "DELETE", "HousekeepingTask", id,
                 "Deleted cleaning task for room " + task.getRoomNumber());
     }
 
@@ -90,5 +95,13 @@ public class HousekeepingTaskService {
             case HousekeepingTask.STATUS_COMPLETED -> roomStatusService.updateStatus(room.getId(), RoomCleaningStatus.STATUS_CLEAN);
             default -> { }
         }
+    }
+
+    private String getCurrentUsername() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !auth.getName().equals("anonymousUser")) {
+            return auth.getName();
+        }
+        return "system";
     }
 }
