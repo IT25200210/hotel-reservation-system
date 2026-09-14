@@ -46,6 +46,20 @@ public class HousekeepingDataLoader implements CommandLineRunner {
         roomStatusService.ensureRoom("103");
         roomStatusService.ensureRoom("104");
 
+        // Ensure official housekeeping user exists
+        if (!userRepository.existsByUsername("housekeeping")) {
+            roleRepository.findByName("ROLE_HOUSEKEEPING").ifPresent(role -> {
+                User hk = new User();
+                hk.setUsername("housekeeping");
+                hk.setPassword(passwordEncoder.encode("hk123"));
+                hk.setFullName("Housekeeping Staff");
+                hk.setEmail("housekeeping@hotel.com");
+                hk.setStatus("ACTIVE");
+                hk.setRole(role);
+                userRepository.save(hk);
+            });
+        }
+
         // Ensure hkstaff exists as a secondary user in addition to dev's "housekeeping"
         if (!userRepository.existsByUsername("hkstaff")) {
             roleRepository.findByName("ROLE_HOUSEKEEPING").ifPresent(role -> {
