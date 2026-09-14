@@ -48,9 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 11. SKIPER-UI: @skiper-ui/skiper103 BOUNCY ACCORDION (SPRING-PHYSICS INTERACTIVE)
     initBouncyAccordion();
 
-    // 12. OMNIPRESENT SCROLL MOTION & FLUID VELOCITY ENGINE (EVERYTHING REACTS TO SCROLL)
-    initOmnipresentScrollMotion();
-
     // 13. INTERACTIVE ARCHITECTURAL CANVAS POINTER BEAM
     window.addEventListener('mousemove', (e) => {
         document.body.style.setProperty('--mouse-x', `${e.clientX}px`);
@@ -143,7 +140,7 @@ function initSpotlightNavbar() {
     setTimeout(updatePositions, 50);
     window.addEventListener('resize', updatePositions, { passive: true });
 
-    // Sticky Nav Scroll state & Dynamic Breadcrumb Reveal (@skiper-ui/skiper57)
+    // Sticky Nav Scroll state (Navbar stays centered, logo scrolls away smoothly)
     const stickyNav = document.getElementById('hkNavSticky') || nav.closest('.hk-nav-sticky') || document.querySelector('.hk-spotlight-header');
     if (stickyNav) {
         let wasScrolled = false;
@@ -156,9 +153,7 @@ function initSpotlightNavbar() {
                 } else {
                     stickyNav.classList.remove('is-scrolled', 'scrolled');
                 }
-                // Recalculate spotlight and ambience center after breadcrumb expansion transition completes
-                setTimeout(updatePositions, 160);
-                setTimeout(updatePositions, 380);
+                updatePositions();
             }
         };
         window.addEventListener('scroll', handleStickyScroll, { passive: true });
@@ -881,7 +876,6 @@ function initScrollAnimations() {
         document.body.appendChild(progressBar);
     }
 
-    const stickyNavs = document.querySelectorAll('.hk-nav-sticky, .hk-navbar');
     let scrollRafId = null;
 
     function handleWindowScroll() {
@@ -891,12 +885,6 @@ function initScrollAnimations() {
             const docHeight = document.documentElement.scrollHeight - window.innerHeight;
             const progress = docHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
             progressBar.style.width = `${progress}%`;
-
-            const isScrolled = scrollTop > 35;
-            stickyNavs.forEach((nav) => {
-                nav.classList.toggle('is-scrolled', isScrolled);
-                nav.classList.toggle('scrolled', isScrolled);
-            });
             scrollRafId = null;
         });
     }

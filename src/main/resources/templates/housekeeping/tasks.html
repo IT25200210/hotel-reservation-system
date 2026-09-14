@@ -13,18 +13,35 @@
 </head>
 <body>
 
-<!-- SKIPER-UI: @skiper-ui/skiper57 VERCEL-STYLE NAVIGATION + VENGEANCE-UI SPOTLIGHT NAVBAR -->
-<!-- Tier 1: Hotel Name & Global Brand Bar (In natural flow, scrolls away smoothly) -->
+<!-- Tier 1: Centered Luxury Brand Bar (In natural flow, scrolls away smoothly) -->
 <header class="hk-nav-top">
-    <div class="container-fluid px-3 px-lg-4 d-flex align-items-center justify-content-between">
-        <a th:href="@{/housekeeping/dashboard}" class="hk-brand-link text-decoration-none">
-            <span class="hk-brand-crest"><i class="bi bi-buildings"></i></span>
-            <div class="d-flex align-items-center">
-                <span class="hk-brand-title">The Grand Horizon</span>
-                <span class="badge bg-white text-dark rounded-pill ms-2 fw-semibold" style="font-size: 0.72rem;">Housekeeping</span>
+    <div class="container-fluid px-3 px-lg-4 position-relative d-flex align-items-center justify-content-center">
+        <!-- Mathematically Centered Luxury Logo & Title -->
+        <a th:href="@{/housekeeping/dashboard}" class="hk-brand-center text-decoration-none">
+            <div class="hk-brand-emblem-wrap">
+                <svg class="hk-brand-svg" width="28" height="28" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 2.5L33.5 11.5V24.5L18 33.5L2.5 24.5V11.5L18 2.5Z" stroke="url(#gh-emblem-grad)" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M18 6.5L29.5 13.2V22.8L18 29.5L6.5 22.8V13.2L18 6.5Z" stroke="rgba(255,255,255,0.22)" stroke-width="1" stroke-linejoin="round"/>
+                    <path d="M7 18H29" stroke="rgba(255,255,255,0.7)" stroke-width="1.2" stroke-linecap="round"/>
+                    <path d="M13.5 13V23M18 10V26M22.5 13V23" stroke="url(#gh-emblem-grad)" stroke-width="1.4" stroke-linecap="round"/>
+                    <path d="M14.5 10L18 6L21.5 10" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <linearGradient id="gh-emblem-grad" x1="2.5" y1="2.5" x2="33.5" y2="33.5" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#ffffff"/>
+                            <stop offset="0.5" stop-color="#cbd5e1"/>
+                            <stop offset="1" stop-color="#94a3b8"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <div class="hk-brand-text text-center">
+                <span class="hk-brand-name">THE GRAND HORIZON</span>
+                <span class="hk-brand-tag">HOTEL & RESIDENCES <span class="hk-tag-dot">•</span> HOUSEKEEPING</span>
             </div>
         </a>
-        <div class="d-flex align-items-center gap-2">
+
+        <!-- Right-Anchored User Info & Logout (Never shifts centered logo) -->
+        <div class="hk-nav-top-actions position-absolute end-0 me-3 me-lg-4 d-flex align-items-center gap-2">
             <div class="hk-user-pill d-none d-md-flex">
                 <i class="bi bi-person-circle"></i>
                 <span sec:authentication="name">User</span>
@@ -36,35 +53,23 @@
     </div>
 </header>
 
-<!-- Tier 2: Sticky Frosted Glass Rail with VengeanceUI Spotlight Navbar (PINNED AT TOP: 0) -->
+<!-- Tier 2: Sticky Frosted Glass Rail with Centered VengeanceUI Spotlight Navbar (PINNED AT TOP: 0) -->
 <nav class="hk-nav-sticky" id="hkNavSticky">
-    <div class="container-fluid px-3 px-lg-4 d-flex align-items-center justify-content-between">
-        <div class="d-flex align-items-center">
-            <!-- Dynamic Breadcrumb: Fades & slides in smoothly when Tier 1 scrolls away -->
-            <div class="hk-nav-breadcrumb-wrap">
-                <a th:href="@{/housekeeping/dashboard}" class="hk-nav-breadcrumb-logo text-decoration-none" title="The Grand Horizon">
-                    <i class="bi bi-buildings"></i>
-                </a>
-                <span class="hk-nav-breadcrumb-scope">The Grand Horizon</span>
-                <span class="hk-nav-breadcrumb-sep">/</span>
-                <span class="hk-nav-breadcrumb-current">Cleaning Tasks</span>
-            </div>
-
-            <!-- VengeanceUI Spotlight Nav Capsule -->
-            <div class="spotlight-nav" id="spotlightNav" aria-label="Housekeeping Navigation">
-                <ul class="spotlight-nav-list">
-                    <li><a th:href="@{/housekeeping/dashboard}" class="spotlight-nav-link" data-index="0"><i class="bi bi-chart-pie me-1"></i><span>Analytics</span></a></li>
-                    <li><a th:href="@{/housekeeping/tasks}" class="spotlight-nav-link active" data-index="1"><i class="bi bi-list-check me-1"></i><span>Tasks</span></a></li>
-                    <li><a th:href="@{/housekeeping/rooms}" class="spotlight-nav-link" data-index="2"><i class="bi bi-door-open me-1"></i><span>Room Status</span></a></li>
-                    <li><a th:href="@{/housekeeping/maintenance}" class="spotlight-nav-link" data-index="3"><i class="bi bi-tools me-1"></i><span>Maintenance</span></a></li>
-                </ul>
-                <div class="spotlight-beam" aria-hidden="true"></div>
-                <div class="ambience-beam" aria-hidden="true"></div>
-            </div>
+    <div class="container-fluid px-3 px-lg-4 position-relative d-flex align-items-center justify-content-center">
+        <!-- VengeanceUI Spotlight Nav Capsule: ALWAYS IN THE EXACT CENTER -->
+        <div class="spotlight-nav" id="spotlightNav" aria-label="Housekeeping Navigation">
+            <ul class="spotlight-nav-list">
+                <li><a th:href="@{/housekeeping/dashboard}" class="spotlight-nav-link" data-index="0"><i class="bi bi-chart-pie me-1"></i><span>Analytics</span></a></li>
+                <li><a th:href="@{/housekeeping/tasks}" class="spotlight-nav-link active" data-index="1"><i class="bi bi-list-check me-1"></i><span>Tasks</span></a></li>
+                <li><a th:href="@{/housekeeping/rooms}" class="spotlight-nav-link" data-index="2"><i class="bi bi-door-open me-1"></i><span>Room Status</span></a></li>
+                <li><a th:href="@{/housekeeping/maintenance}" class="spotlight-nav-link" data-index="3"><i class="bi bi-tools me-1"></i><span>Maintenance</span></a></li>
+            </ul>
+            <div class="spotlight-beam" aria-hidden="true"></div>
+            <div class="ambience-beam" aria-hidden="true"></div>
         </div>
 
-        <!-- Mini User Pill & Logout Button (Fades in when Tier 1 scrolls away) -->
-        <div class="hk-nav-scrolled-actions d-flex align-items-center gap-2">
+        <!-- Scrolled Quick Actions: Positioned absolutely at the right edge, fading in on scroll -->
+        <div class="hk-nav-scrolled-actions position-absolute end-0 me-3 me-lg-4 d-flex align-items-center gap-2">
             <div class="hk-user-pill-mini d-none d-md-flex">
                 <i class="bi bi-person-circle"></i>
                 <span sec:authentication="name">User</span>
