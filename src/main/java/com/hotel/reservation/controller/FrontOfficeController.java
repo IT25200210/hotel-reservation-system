@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/frontoffice")
@@ -34,6 +37,12 @@ public class FrontOfficeController {
     @PostMapping("/{id}/check-out")
     public String checkOut(@PathVariable Long id) {
         desk.checkOut(id);
+        return "redirect:/frontoffice";
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public String handleError(ResponseStatusException ex, RedirectAttributes flash) {
+        flash.addFlashAttribute("error", ex.getReason() == null ? "Action rejected" : ex.getReason());
         return "redirect:/frontoffice";
     }
 
