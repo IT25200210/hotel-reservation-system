@@ -43,7 +43,10 @@
 
     <h2 class="h4">Confirmed reservations</h2>
     <p>Check-in is accepted only on the booked arrival date.</p>
-    <table class="table">
+    <input type="text" id="reservationSearch" class="form-control mb-2"
+           placeholder="Search by guest name or room number..."
+           onkeyup="filterTable('reservationSearch', 'reservationsTable')">
+    <table class="table" id="reservationsTable">
         <thead><tr><th>ID</th><th>Guest</th><th>Room</th><th>Arrival</th><th>Action</th></tr></thead>
         <tbody>
         <tr th:each="r : ${reservations}" th:if="${r.status.name() == 'CONFIRMED'}">
@@ -62,7 +65,7 @@
 
     <h2 class="h4">Stay register</h2>
     <div class="table-responsive">
-        <table class="table table-striped">
+        <table class="table table-striped" id="staysTable">
             <thead><tr><th>Stay</th><th>Room</th><th>Guest</th><th>Departure</th><th>Balance</th><th>Status / action</th></tr></thead>
             <tbody>
             <tr th:each="s : ${stays}">
@@ -81,6 +84,17 @@
             </tbody>
         </table>
     </div>
+
+    <script>
+        function filterTable(inputId, tableId) {
+            const input = document.getElementById(inputId).value.toLowerCase();
+            const rows = document.querySelectorAll("#" + tableId + " tbody tr");
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(input) ? "" : "none";
+            });
+        }
+    </script>
 
 </main>
 </body>
