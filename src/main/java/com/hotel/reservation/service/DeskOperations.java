@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -44,6 +45,15 @@ public class DeskOperations {
                 "Amount must be positive, at most 2 decimals and within limit");
     }
 
+    private String availableRoomsMessage() {
+        String alternatives = rooms.findAllByOrderByNumberAsc().stream()
+                .filter(r -> !r.isOccupied())
+                .map(DeskRoom::getNumber)
+                .collect(Collectors.joining(", "));
+        return alternatives.isEmpty() ? " No other rooms are currently available."
+                : " Available alternatives: " + alternatives;
+    }
+
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('FRONT_OFFICE','RESERVATIONS')")
     public List<DeskRoom> rooms() { return rooms.findAllByOrderByNumberAsc(); }
@@ -66,7 +76,9 @@ public class DeskOperations {
         require(departure != null && departure.isAfter(today), "Departure must be after today");
         money(rate);
         DeskRoom room = rooms.lockById(roomId).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
-        require(!room.isOccupied(), "Room is already occupied");
+        if (room.isOccupied()) {
+            throw new ResponseStatusException(CONFLICT, "Room is already occupied." + availableRoomsMessage());
+        }
         require(!reservationConflict(roomId, today, departure), "Room is reserved during the requested stay");
         BigDecimal total = rate.multiply(BigDecimal.valueOf(ChronoUnit.DAYS.between(today, departure)));
         money(total);
@@ -148,12 +160,24 @@ public class DeskOperations {
     }
 
     @PreAuthorize("hasRole('FRONT_OFFICE')")
-    public DeskStay arriveReservation(Long id) {
+    public DeskStay arriveReservation(Long id, Long chosenRoomId) {
         DeskReservation reservation = reservations.lockById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
         require(reservation.getStatus() == DeskReservation.Status.CONFIRMED, "Reservation is not confirmed");
         require(reservation.getArrival().equals(LocalDate.now()), "Check-in is allowed only on the booked arrival date");
-        DeskRoom room = rooms.lockById(reservation.getRoom().getId()).orElseThrow();
-        require(!room.isOccupied(), "Room is still occupied");
+
+        DeskRoom room;
+        if (chosenRoomId != null && !chosenRoomId.equals(reservation.getRoom().getId())) {
+            room = rooms.lockById(chosenRoomId).orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+            if (room.isOccupied()) {
+                throw new ResponseStatusException(CONFLICT, "Selected room is currently occupied." + availableRoomsMessage());
+            }
+        } else {
+            room = rooms.lockById(reservation.getRoom().getId()).orElseThrow();
+            if (room.isOccupied()) {
+                throw new ResponseStatusException(CONFLICT, "Room is still occupied." + availableRoomsMessage());
+            }
+        }
+
         BigDecimal total = reservation.getNightlyRate().multiply(BigDecimal.valueOf(
                 ChronoUnit.DAYS.between(reservation.getArrival(), reservation.getDeparture())));
         room.setOccupied(true);

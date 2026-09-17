@@ -22,7 +22,8 @@
                 <label for="room" class="form-label">Available room</label>
                 <select id="room" name="roomId" class="form-select" required>
                     <option value="">Select a room</option>
-                    <option th:each="r : ${rooms}" th:if="${!r.occupied}" th:value="${r.id}" th:text="${r.number}"></option>
+                    <option th:each="r : ${rooms}" th:if="${!r.occupied}" th:value="${r.id}"
+                            th:text="|${r.number} - ${r.roomType}|"></option>
                 </select>
             </div>
             <div class="col-md-3">
@@ -37,6 +38,12 @@
                 <label for="rate" class="form-label">Agreed nightly rate</label>
                 <input id="rate" name="rate" type="number" min="0.01" max="9999999999.99" step="0.01" required class="form-control">
             </div>
+            <div class="col-12">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="identityVerified" value="true" required id="walkinVerify">
+                    <label class="form-check-label" for="walkinVerify">I have verified the guest's identity</label>
+                </div>
+            </div>
             <div><button class="btn btn-primary">Check in</button></div>
         </form>
     </section>
@@ -47,15 +54,27 @@
            placeholder="Search by guest name or room number..."
            onkeyup="filterTable('reservationSearch', 'reservationsTable')">
     <table class="table" id="reservationsTable">
-        <thead><tr><th>ID</th><th>Guest</th><th>Room</th><th>Arrival</th><th>Action</th></tr></thead>
+        <thead><tr><th>ID</th><th>Guest</th><th>Room</th><th>Type</th><th>Arrival</th><th>Action</th></tr></thead>
         <tbody>
         <tr th:each="r : ${reservations}" th:if="${r.status.name() == 'CONFIRMED'}">
             <td th:text="${r.id}"></td>
             <td th:text="${r.guestName}"></td>
             <td th:text="${r.room.number}"></td>
+            <td th:text="${r.room.roomType}"></td>
             <td th:text="${r.arrival}"></td>
             <td>
-                <form th:action="@{/frontoffice/reservations/{id}/check-in(id=${r.id})}" method="post">
+                <form th:action="@{/frontoffice/reservations/{id}/check-in(id=${r.id})}" method="post"
+                      class="d-flex flex-wrap gap-2 align-items-center">
+                    <select name="roomId" class="form-select form-select-sm" style="width:auto;">
+                        <option th:each="rm : ${rooms}" th:if="${!rm.occupied}" th:value="${rm.id}"
+                                th:selected="${rm.id == r.room.id}"
+                                th:text="|${rm.number} - ${rm.roomType}|"></option>
+                    </select>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="identityVerified" value="true" required
+                               th:id="${'idcheck' + r.id}">
+                        <label class="form-check-label small" th:for="${'idcheck' + r.id}">ID verified</label>
+                    </div>
                     <button class="btn btn-primary btn-sm">Check in booking</button>
                 </form>
             </td>
@@ -66,12 +85,13 @@
     <h2 class="h4">Stay register</h2>
     <div class="table-responsive">
         <table class="table table-striped" id="staysTable">
-            <thead><tr><th>Stay</th><th>Room</th><th>Guest</th><th>Departure</th><th>Balance</th><th>Status / action</th></tr></thead>
+            <thead><tr><th>Stay</th><th>Room</th><th>Guest</th><th>Checked in</th><th>Departure</th><th>Balance</th><th>Status / action</th></tr></thead>
             <tbody>
             <tr th:each="s : ${stays}">
                 <td th:text="${s.id}"></td>
                 <td th:text="${s.room.number}"></td>
                 <td th:text="${s.guestName}"></td>
+                <td th:text="${s.checkedInAtFormatted}"></td>
                 <td th:text="${s.departure}"></td>
                 <td th:text="${s.balance}"></td>
                 <td>

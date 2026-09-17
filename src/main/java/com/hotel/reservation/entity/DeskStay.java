@@ -3,6 +3,9 @@ package com.hotel.reservation.entity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "desk_stays")
@@ -32,6 +35,9 @@ public class DeskStay {
     @Column(nullable = false)
     private boolean checkedOut;
 
+    @Column
+    private Instant checkedInAt = Instant.now();
+
     protected DeskStay() {}
 
     public DeskStay(DeskRoom room, String guestName, LocalDate arrival, LocalDate departure, BigDecimal total) {
@@ -49,6 +55,14 @@ public class DeskStay {
     public BigDecimal getPaid() { return paid; }
     public BigDecimal getBalance() { return total.subtract(paid); }
     public boolean isCheckedOut() { return checkedOut; }
+    public Instant getCheckedInAt() { return checkedInAt; }
     public void addPayment(BigDecimal amount) { paid = paid.add(amount); }
     public void checkOut() { checkedOut = true; }
+
+    public String getCheckedInAtFormatted() {
+        if (checkedInAt == null) return "";
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+                .withZone(ZoneId.systemDefault())
+                .format(checkedInAt);
+    }
 }
