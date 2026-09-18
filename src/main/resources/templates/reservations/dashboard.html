@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Edit Reservation | The Grand Horizon</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --page: #0d1016;
+            --panel: rgba(31, 36, 46, 0.92);
+            --line: rgba(255, 255, 255, 0.12);
+            --text: #f7f7f9;
+            --muted: #a9b2c3;
+            --field: #303742;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            font-family: "Plus Jakarta Sans", Arial, sans-serif;
+            color: var(--text);
+            background:
+                    linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
+                    radial-gradient(circle at top left, rgba(145,154,171,.18), transparent 36rem),
+                    var(--page);
+            background-size: 32px 32px, 32px 32px, auto;
+        }
+
+        .page-shell {
+            width: min(1450px, calc(100% - 48px));
+            margin: 24px auto 40px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-mark {
+            width: 54px;
+            height: 54px;
+            display: grid;
+            place-items: center;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,.24);
+            background: linear-gradient(145deg, rgba(255,255,255,.18), rgba(255,255,255,.04));
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 18px 42px rgba(0,0,0,.28);
+        }
+
+        .brand-name {
+            margin: 0;
+            font-size: 1.55rem;
+            font-weight: 800;
+        }
+
+        .brand-subtitle {
+            margin: 3px 0 0;
+            color: var(--muted);
+            font-size: .95rem;
+        }
+
+        .btn-ghost,
+        .btn-metal {
+            border-radius: 999px;
+            font-weight: 800;
+            padding: .72rem 1.1rem;
+            border: 1px solid rgba(255,255,255,.18);
+        }
+
+        .btn-ghost {
+            color: var(--text);
+            background: rgba(255,255,255,.07);
+        }
+
+        .btn-metal {
+            color: #171b22;
+            background: linear-gradient(180deg, #f8f9fc, #aeb6c5);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.75), 0 14px 34px rgba(0,0,0,.24);
+        }
+
+        .panel {
+            border: 1px solid var(--line);
+            border-radius: 34px;
+            background: linear-gradient(145deg, var(--panel), rgba(20,24,32,.94));
+            box-shadow: 0 24px 70px rgba(0,0,0,.34);
+            overflow: hidden;
+        }
+
+        .panel-head {
+            padding: 42px 50px 34px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .eyebrow {
+            margin: 0 0 18px;
+            color: #c4cad7;
+            font-size: .85rem;
+            font-weight: 800;
+            letter-spacing: .22rem;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(2rem, 4vw, 3.15rem);
+            font-weight: 800;
+        }
+
+        .description {
+            margin: 18px 0 0;
+            color: #bec7d7;
+            font-size: 1.08rem;
+        }
+
+        .panel-body {
+            padding: 40px 50px 50px;
+        }
+
+        label {
+            margin-bottom: 10px;
+            color: #dce3ef;
+            font-weight: 800;
+        }
+
+        label i {
+            margin-right: 6px;
+            color: #dfe5ef;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 58px;
+            color: #fff;
+            background-color: var(--field);
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 16px;
+            font-weight: 600;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            color: #fff;
+            background-color: #353c48;
+            border-color: rgba(255,255,255,.45);
+            box-shadow: 0 0 0 .22rem rgba(255,255,255,.12);
+        }
+
+        .form-select option {
+            color: #111827;
+            background: #fff;
+        }
+
+        .alert-danger {
+            color: #ffe2e2;
+            background: rgba(255, 107, 107, .14);
+            border-color: rgba(255, 107, 107, .35);
+            border-radius: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .page-shell {
+                width: min(100% - 24px, 1450px);
+                margin-top: 14px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .panel-head,
+            .panel-body {
+                padding: 28px 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<main class="page-shell">
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <div class="brand-mark">
+                <i class="bi bi-pencil-square fs-3"></i>
+            </div>
+
+            <div>
+                <p class="brand-name">The Grand Horizon</p>
+                <p class="brand-subtitle">Reservations management console</p>
+            </div>
+
+        </div>
+
+        <a th:href="@{/reservations}" class="btn btn-ghost">
+            <i class="bi bi-arrow-left me-1"></i>Back
+        </a>
+
+    </header>
+
+    <p th:if="${error}"
+       th:text="${error}"
+       class="alert alert-danger"
+       role="alert"></p>
+
+    <section class="panel">
+
+        <div class="panel-head">
+
+            <p class="eyebrow">Update Booking</p>
+
+            <h1>Edit reservation</h1>
+
+            <p class="description">
+                Change the room, guest, dates, or nightly rate for a confirmed reservation.
+            </p>
+
+        </div>
+
+        <div class="panel-body">
+
+            <form th:action="@{/reservations/{id}/edit(id=${reservation.id})}"
+                  method="post"
+                  class="row g-4">
+
+                <div class="col-xl-3 col-md-6">
+
+                    <label for="room">
+                        <i class="bi bi-door-open"></i>Room
+                    </label>
+
+                    <select id="room"
+                            name="roomId"
+                            required
+                            class="form-select">
+
+                        <option value="">Choose a room</option>
+
+                        <option th:each="r : ${rooms}"
+                                th:value="${r.id}"
+                                th:text="${r.number}"
+                                th:selected="${reservation.room.id == r.id}">
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-xl-3 col-md-6">
+
+                    <label for="guest">
+                        <i class="bi bi-person"></i>Guest
+                    </label>
+
+                    <input id="guest"
+                           name="guest"
+                           maxlength="100"
+                           required
+                           class="form-control"
+                           th:value="${reservation.guestName}">
+
+                </div>
+
+                <div class="col-xl-2 col-md-6">
+
+                    <label for="arrival">
+                        <i class="bi bi-calendar-check"></i>Arrival
+                    </label>
+
+                    <input id="arrival"
+                           name="arrival"
+                           type="date"
+                           required
+                           class="form-control"
+                           th:value="${reservation.arrival}">
+
+                </div>
+
+                <div class="col-xl-2 col-md-6">
+
+                    <label for="departure">
+                        <i class="bi bi-calendar-x"></i>Departure
+                    </label>
+
+                    <input id="departure"
+                           name="departure"
+                           type="date"
+                           required
+                           class="form-control"
+                           th:value="${reservation.departure}">
+
+                </div>
+
+                <div class="col-xl-2 col-md-6">
+
+                    <label for="rate">
+                        <i class="bi bi-cash"></i>Nightly rate
+                    </label>
+
+                    <input id="rate"
+                           name="rate"
+                           type="number"
+                           min="0.01"
+                           step="0.01"
+                           max="9999999999.99"
+                           required
+                           class="form-control"
+                           th:value="${reservation.nightlyRate}">
+
+                </div>
+
+                <div class="col-12">
+
+                    <button class="btn btn-metal" type="submit">
+                        <i class="bi bi-check2-circle me-1"></i>
+                        Save changes
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>
