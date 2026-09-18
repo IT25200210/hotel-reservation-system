@@ -49,7 +49,6 @@ public class DeskReservation {
             LocalDate arrival,
             LocalDate departure,
             BigDecimal nightlyRate) {
-
         this.room = room;
         this.guestName = guestName;
         this.arrival = arrival;
@@ -87,6 +86,19 @@ public class DeskReservation {
 
     public DeskStay getStay() {
         return stay;
+    }
+
+    public void update(
+            DeskRoom room,
+            String guestName,
+            LocalDate arrival,
+            LocalDate departure,
+            BigDecimal nightlyRate) {
+        this.room = room;
+        this.guestName = guestName;
+        this.arrival = arrival;
+        this.departure = departure;
+        this.nightlyRate = nightlyRate;
     }
 
     public void cancel() {
