@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import jakarta.persistence.LockModeType;
 import java.time.LocalDate;
 import java.util.*;
+import java.time.LocalDate;
 
 public interface DeskReservationRepository
         extends JpaRepository<DeskReservation, Long> {
@@ -22,4 +23,12 @@ public interface DeskReservationRepository
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select r from DeskReservation r where r.id = :id")
     Optional<DeskReservation> lockById(@Param("id") Long id);
+    List<DeskReservation> findByGuestNameIgnoreCaseOrderByArrivalDesc(String guestName);
+
+    boolean existsByRoomIdAndStatusAndArrivalLessThanAndDepartureGreaterThanAndIdNot(
+            Long roomId,
+            DeskReservation.Status status,
+            LocalDate end,
+            LocalDate start,
+            Long id);
 }
