@@ -10,7 +10,10 @@ public interface DeskRoomRepository extends JpaRepository<DeskRoom, Long> {
 
     List<DeskRoom> findAllByOrderByNumberAsc();
 
+    boolean existsByNumber(String number);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select x from DeskRoom x where x.id = :id")
     Optional<DeskRoom> lockById(@Param("id") Long id);
+   
 }
