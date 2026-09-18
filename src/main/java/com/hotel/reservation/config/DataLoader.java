@@ -28,7 +28,7 @@ public class DataLoader implements CommandLineRunner {
         createRoleIfNotFound("ROLE_ADMIN", "System Administrator");
         createRoleIfNotFound("ROLE_GM", "General Manager");
         createRoleIfNotFound("ROLE_RESERVATIONS", "Reservations Executive");
-        createRoleIfNotFound("ROLE_FRONT_OFFICE", "Front Office Staff");
+        createRoleIfNotFound("ROLE_INVENTORY", "Inventory Manager");
         createRoleIfNotFound("ROLE_FINANCE", "Finance Manager");
         createRoleIfNotFound("ROLE_HOUSEKEEPING", "Housekeeping Staff");
 
@@ -36,7 +36,7 @@ public class DataLoader implements CommandLineRunner {
         createUserIfNotFound("admin", "admin123", "System Admin", "admin@hotel.com", "ROLE_ADMIN");
         createUserIfNotFound("gm", "gm123", "General Manager", "gm@hotel.com", "ROLE_GM");
         createUserIfNotFound("reservations", "res123", "Reservations Executive", "reservations@hotel.com", "ROLE_RESERVATIONS");
-        createUserIfNotFound("frontoffice", "fo123", "Front Office Staff", "frontoffice@hotel.com", "ROLE_FRONT_OFFICE");
+        createUserIfNotFound("inventory", "inv123", "Inventory Manager", "inventory@hotel.com", "ROLE_INVENTORY");
         createUserIfNotFound("finance", "fin123", "Finance Manager", "finance@hotel.com", "ROLE_FINANCE");
         createUserIfNotFound("housekeeping", "hk123", "Housekeeping Staff", "housekeeping@hotel.com", "ROLE_HOUSEKEEPING");
     }
@@ -66,3 +66,4 @@ public class DataLoader implements CommandLineRunner {
         }
     }
 }
+
