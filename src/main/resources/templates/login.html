@@ -15,7 +15,7 @@
 <div class="hk-login-wrapper">
     <div class="card hk-card hk-login-card border-0 shadow-lg hk-fade-in">
         <div class="card-body p-0 text-center">
-            
+
             <!-- Apple Style Minimalist Crest -->
             <div class="hk-login-crest">
                 <svg width="34" height="34" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -35,33 +35,6 @@
             </div>
             <h3 class="fw-bold text-white mb-1 tracking-tight">The Grand Horizon</h3>
             <p class="text-secondary small mb-4">Operations & Staff Management Console</p>
-
-            <!-- Quick Demo Sign-In Selector -->
-            <div class="hk-demo-credentials-box text-start">
-                <div class="d-flex align-items-center justify-content-between mb-2">
-                    <span class="text-uppercase small fw-semibold text-secondary" style="font-size: 0.72rem; letter-spacing: 0.08em;">
-                        <i class="bi bi-lightning-charge-fill text-white me-1"></i>Demo Accounts
-                    </span>
-                    <span class="text-secondary" style="font-size: 0.7rem;">Click to autofill</span>
-                </div>
-                <div class="d-flex flex-wrap gap-2">
-                    <div class="demo-chip" data-user="admin" data-pass="admin123" title="System Administrator">
-                        <i class="bi bi-shield-lock-fill text-white"></i>
-                        <span>Admin</span>
-                        <code class="text-secondary small ms-1">admin123</code>
-                    </div>
-                    <div class="demo-chip" data-user="gm" data-pass="gm123" title="General Manager">
-                        <i class="bi bi-person-workspace text-warning"></i>
-                        <span>Manager</span>
-                        <code class="text-secondary small ms-1">gm123</code>
-                    </div>
-                    <div class="demo-chip" data-user="housekeeping" data-pass="hk123" title="Housekeeping Staff">
-                        <i class="bi bi-stars text-info"></i>
-                        <span>Housekeeper</span>
-                        <code class="text-secondary small ms-1">hk123</code>
-                    </div>
-                </div>
-            </div>
 
             <!-- Alerts -->
             <div th:if="${param.error}" class="alert alert-danger py-2 px-3 small border-0 mb-3" style="background: rgba(255, 69, 58, 0.18); color: #ff6961;">
@@ -89,12 +62,6 @@
                     <i class="bi bi-arrow-right-circle me-1"></i>Sign In
                 </button>
             </form>
-
-            <div class="mt-4 pt-3 border-top border-white border-opacity-10">
-                <span class="text-secondary small" style="font-size: 0.75rem;">
-                    SE2030 Software Engineering · Group 2026-Y2-S1-MLB-WEB3G1-06
-                </span>
-            </div>
 
         </div>
     </div>
