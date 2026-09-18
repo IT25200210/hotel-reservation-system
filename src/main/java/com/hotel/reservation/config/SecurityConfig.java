@@ -4,6 +4,7 @@ import com.hotel.reservation.security.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,6 +21,7 @@ import java.util.Set;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
@@ -53,13 +55,13 @@ public class SecurityConfig {
                 } else if (roles.contains("ROLE_GM")) {
                     response.sendRedirect("/manager/dashboard");
                 } else if (roles.contains("ROLE_RESERVATIONS")) {
-                    response.sendRedirect("/reservations");          // change if needed
-                } else if (roles.contains("ROLE_FRONT_OFFICE")) {
-                    response.sendRedirect("/frontoffice");           // change if needed
+                    response.sendRedirect("/reservations");
+                } else if (roles.contains("ROLE_INVENTORY")) {
+                    response.sendRedirect("/inventory");
                 } else if (roles.contains("ROLE_FINANCE")) {
-                    response.sendRedirect("/finance");               // change if needed
+                    response.sendRedirect("/finance");
                 } else if (roles.contains("ROLE_HOUSEKEEPING")) {
-                    response.sendRedirect("/housekeeping");          // change if needed
+                    response.sendRedirect("/housekeeping");
                 } else {
                     response.sendRedirect("/login?error");
                 }
@@ -75,12 +77,16 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/manager/**").hasRole("GM")
+                        .requestMatchers("/reservations/**").hasRole("RESERVATIONS")
+                        .requestMatchers("/inventory/**").hasRole("INVENTORY")
+                        .requestMatchers("/finance/**").hasRole("FINANCE")
+                        .requestMatchers("/housekeeping/**").hasRole("HOUSEKEEPING")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        .successHandler(customSuccessHandler())   // ← important
+                        .successHandler(customSuccessHandler())
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -94,3 +100,4 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
