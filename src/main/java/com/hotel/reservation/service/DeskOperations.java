@@ -19,14 +19,18 @@ public class DeskOperations {
     private final DeskRoomRepository rooms;
     private final DeskStayRepository stays;
     private final DeskReservationRepository reservations;
+    private final DeskPaymentRepository payments;
+    private final AuditLogService audit;
     private static final List<String> DEFAULT_ROOM_NUMBERS = List.of(
             "101", "102", "103", "104",
             "201", "202", "203", "204"
     );
 
     public DeskOperations(DeskRoomRepository rooms, DeskStayRepository stays,
-                          DeskReservationRepository reservations) {
+                          DeskReservationRepository reservations,
+                          DeskPaymentRepository payments, AuditLogService audit) {
         this.rooms = rooms; this.stays = stays; this.reservations = reservations;
+        this.payments = payments; this.audit = audit;
     }
 
     private String actor() {
@@ -65,9 +69,45 @@ public class DeskOperations {
     }
 
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAnyRole('RESERVATIONS','FRONT_OFFICE')")
+    @PreAuthorize("hasAnyRole('RESERVATIONS','FRONT_OFFICE','FINANCE')")
     public List<DeskReservation> reservations() {
         return reservations.findAllByOrderByIdDesc();
+    }
+
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyRole('FRONT_OFFICE','FINANCE')")
+    public List<DeskStay> stays() { return stays.findAllByOrderByIdDesc(); }
+
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasRole('FINANCE')")
+    public List<DeskPayment> payments() {
+        return payments.findTop100ByOrderByIdDesc();
+    }
+
+    @PreAuthorize("hasRole('FINANCE')")
+    public void pay(Long stayId, BigDecimal amount, String key) {
+        money(amount);
+        try { key = UUID.fromString(key).toString(); }
+        catch (IllegalArgumentException | NullPointerException ex) {
+            throw new ResponseStatusException(CONFLICT, "Invalid request key");
+        }
+        DeskStay stay = stays.lockById(stayId)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+        Optional<DeskPayment> previous = payments.findByRequestKey(key);
+        if (previous.isPresent()) {
+            require(previous.get().getStay().getId().equals(stayId)
+                    && previous.get().getAmount().compareTo(amount) == 0,
+                    "Request key was used for a different payment");
+            return;
+        }
+        require(!stay.isCheckedOut(), "Stay is already checked out");
+        require(amount.compareTo(stay.getBalance()) <= 0,
+                "Payment exceeds outstanding balance");
+        DeskPayment payment = payments.save(
+                new DeskPayment(stay, amount, key, actor()));
+        stay.addPayment(amount);
+        audit.log(actor(), "PAYMENT", "DeskPayment", payment.getId(),
+                "Payment recorded for stay " + stayId);
     }
 
     @Transactional(readOnly = true)
@@ -135,6 +175,30 @@ public class DeskOperations {
 
         reservation.update(room, guest.trim(), arrival, departure, rate);
         return reservation;
+    }
+
+    @PreAuthorize("hasRole('FINANCE')")
+    public DeskStay checkInReservation(Long reservationId) {
+        DeskReservation reservation = reservations.lockById(reservationId)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+        require(reservation.getStatus() == DeskReservation.Status.CONFIRMED,
+                "Reservation is not confirmed");
+        require(!reservation.getArrival().isAfter(LocalDate.now()),
+                "Check-in is allowed only on or after the arrival date");
+        require(reservation.getDeparture().isAfter(LocalDate.now()),
+                "Reservation departure has already passed");
+        DeskRoom room = rooms.lockById(reservation.getRoom().getId()).orElseThrow();
+        require(!room.isOccupied(), "Room is still occupied");
+        BigDecimal total = reservation.getNightlyRate().multiply(BigDecimal.valueOf(
+                ChronoUnit.DAYS.between(reservation.getArrival(), reservation.getDeparture())));
+        money(total);
+        room.setOccupied(true);
+        DeskStay stay = stays.save(new DeskStay(room, reservation.getGuestName(),
+                reservation.getArrival(), reservation.getDeparture(), total));
+        reservation.checkIn(stay);
+        audit.log(actor(), "CHECK_IN", "DeskStay", stay.getId(),
+                "Check-in from reservation " + reservationId + " by Finance (no Front Office)");
+        return stay;
     }
 
     @PreAuthorize("hasRole('RESERVATIONS')")
