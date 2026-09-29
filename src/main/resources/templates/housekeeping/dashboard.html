@@ -46,9 +46,7 @@
                 <i class="bi bi-person-circle"></i>
                 <span sec:authentication="name">User</span>
             </div>
-            <a th:href="@{/logout}" class="spotlight-logout-btn" title="Logout" aria-label="Logout">
-                <i class="bi bi-box-arrow-right"></i>
-            </a>
+            <form th:action="@{/logout}" method="post" style="display:inline"><button type="submit" class="spotlight-logout-btn" title="Logout" aria-label="Logout" style="cursor:pointer"><i class="bi bi-box-arrow-right"></i></button></form>
         </div>
     </div>
 </header>
@@ -74,9 +72,7 @@
                 <i class="bi bi-person-circle"></i>
                 <span sec:authentication="name">User</span>
             </div>
-            <a th:href="@{/logout}" class="spotlight-logout-btn-mini" title="Logout" aria-label="Logout">
-                <i class="bi bi-box-arrow-right"></i>
-            </a>
+            <form th:action="@{/logout}" method="post" style="display:inline"><button type="submit" class="spotlight-logout-btn-mini" title="Logout" aria-label="Logout" style="cursor:pointer"><i class="bi bi-box-arrow-right"></i></button></form>
         </div>
     </div>
 </nav>

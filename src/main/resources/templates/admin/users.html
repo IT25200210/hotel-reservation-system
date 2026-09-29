@@ -83,7 +83,7 @@
                 <stop offset="1" stop-color="#94a3b8"/>
             </linearGradient>
         </defs>
-    </svg></div><div><div class="brand-name">The Grand Horizon</div><p class="subtitle">Operations &amp; Staff Management Console</p></div></div><div class="brand-actions"><span class="role">Administrator</span><a th:href="@{/logout}" class="action secondary small"><i class="bi bi-box-arrow-right" aria-hidden="true"></i>Logout</a></div></header>
+    </svg></div><div><div class="brand-name">The Grand Horizon</div><p class="subtitle">Operations &amp; Staff Management Console</p></div></div><div class="brand-actions"><span class="role">Administrator</span><form th:action="@{/logout}" method="post" style="display:inline"><button type="submit" class="action secondary small" style="cursor:pointer"><i class="bi bi-box-arrow-right" aria-hidden="true"></i>Logout</button></form></div></header>
     <main class="panel"><div class="panel-head"><div><div class="eyebrow">Administration</div><h1>User accounts</h1><p class="description">Manage staff access, roles and account status.</p></div><a th:href="@{/admin/users/new}" class="action"><i class="bi bi-plus-lg" aria-hidden="true"></i>Add User</a></div><div class="table-wrap"><table class="admin-table">
         <thead >
         <tr>
