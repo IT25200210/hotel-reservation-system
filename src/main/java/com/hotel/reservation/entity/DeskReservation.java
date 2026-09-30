@@ -3,6 +3,8 @@ package com.hotel.reservation.entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.math.BigDecimal;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 @Entity
 @Table(name = "desk_reservations")
@@ -31,7 +33,10 @@ public class DeskReservation {
     private LocalDate departure;
 
     @Column(nullable = false, precision = 12, scale = 2)
-    private BigDecimal nightlyRate;
+    private BigDecimal totalRate;
+
+    @Column(nullable = false, unique = true, length = 20)
+    private String reference;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -43,17 +48,33 @@ public class DeskReservation {
     protected DeskReservation() {
     }
 
-    public DeskReservation(
-            DeskRoom room,
-            String guestName,
-            LocalDate arrival,
-            LocalDate departure,
-            BigDecimal nightlyRate) {
+    public DeskReservation(DeskRoom room,
+                           String guestName,
+                           LocalDate arrival,
+                           LocalDate departure,
+                           BigDecimal nightlyRate) {
+
         this.room = room;
         this.guestName = guestName;
         this.arrival = arrival;
         this.departure = departure;
-        this.nightlyRate = nightlyRate;
+
+        long numberOfNights =
+                ChronoUnit.DAYS.between(arrival, departure);
+
+        this.totalRate =
+                nightlyRate.multiply(BigDecimal.valueOf(numberOfNights));
+
+        this.reference = generateReference();
+    }
+
+    private String generateReference() {
+        return "GH-" +
+                UUID.randomUUID()
+                        .toString()
+                        .replace("-", "")
+                        .substring(0, 8)
+                        .toUpperCase();
     }
 
     public Long getId() {
@@ -76,8 +97,12 @@ public class DeskReservation {
         return departure;
     }
 
-    public BigDecimal getNightlyRate() {
-        return nightlyRate;
+    public BigDecimal getTotalRate() {
+        return totalRate;
+    }
+
+    public String getReference() {
+        return reference;
     }
 
     public Status getStatus() {
@@ -88,17 +113,22 @@ public class DeskReservation {
         return stay;
     }
 
-    public void update(
-            DeskRoom room,
-            String guestName,
-            LocalDate arrival,
-            LocalDate departure,
-            BigDecimal nightlyRate) {
+    public void update(DeskRoom room,
+                       String guestName,
+                       LocalDate arrival,
+                       LocalDate departure,
+                       BigDecimal nightlyRate) {
+
         this.room = room;
         this.guestName = guestName;
         this.arrival = arrival;
         this.departure = departure;
-        this.nightlyRate = nightlyRate;
+
+        long numberOfNights =
+                ChronoUnit.DAYS.between(arrival, departure);
+
+        this.totalRate =
+                nightlyRate.multiply(BigDecimal.valueOf(numberOfNights));
     }
 
     public void cancel() {
