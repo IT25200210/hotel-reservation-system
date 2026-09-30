@@ -1,7 +1,9 @@
 package com.hotel.reservation.controller;
 
+import com.hotel.reservation.entity.DeskRoom;
 import com.hotel.reservation.entity.Employee;
 import com.hotel.reservation.service.EmployeeService;
+import com.hotel.reservation.service.RoomService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,36 +15,36 @@ import org.springframework.web.bind.annotation.*;
 public class GeneralManagerController {
 
     private final EmployeeService employeeService;
+    private final RoomService roomService;
 
-    public GeneralManagerController(EmployeeService employeeService) {
+    public GeneralManagerController(EmployeeService employeeService, RoomService roomService) {
         this.employeeService = employeeService;
+        this.roomService = roomService;
     }
 
-    // READ: View all employees
     @GetMapping("/dashboard")
     public String showManagerDashboard(Model model) {
         model.addAttribute("employees", employeeService.getAllEmployees());
         return "manager/dashboard";
     }
 
-    // CREATE: Show the form
     @GetMapping("/employee/new")
     public String showCreateForm(Model model) {
         model.addAttribute("employee", new Employee());
         return "manager/employee-form";
     }
 
-    // CREATE & UPDATE: Save data
     @PostMapping("/employee/save")
-    public String saveEmployee(@Valid @ModelAttribute("employee") Employee employee, BindingResult result) {
+    public String saveEmployee(@Valid @ModelAttribute("employee") Employee employee,
+                               BindingResult result) {
         if (result.hasErrors()) {
             return "manager/employee-form";
         }
+
         employeeService.saveEmployee(employee);
         return "redirect:/manager/dashboard";
     }
 
-    // UPDATE: Show the form with existing data
     @GetMapping("/employee/edit/{id}")
     public String showUpdateForm(@PathVariable("id") Long id, Model model) {
         Employee employee = employeeService.getEmployeeById(id);
@@ -50,10 +52,55 @@ public class GeneralManagerController {
         return "manager/employee-form";
     }
 
-    // DELETE: Remove an employee
     @GetMapping("/employee/delete/{id}")
     public String deleteEmployee(@PathVariable("id") Long id) {
         employeeService.deleteEmployee(id);
         return "redirect:/manager/dashboard";
+    }
+
+    @GetMapping("/rooms")
+    public String showRooms(Model model) {
+        model.addAttribute("rooms", roomService.getAllRooms());
+        return "manager/rooms";
+    }
+
+    @GetMapping("/room/new")
+    public String showCreateRoomForm(Model model) {
+        model.addAttribute("room", new DeskRoom());
+        model.addAttribute("roomTypes", DeskRoom.RoomType.values());
+        return "manager/room-form";
+    }
+
+    @GetMapping("/room/edit/{id}")
+    public String showEditRoomForm(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("room", roomService.getRoomById(id));
+        model.addAttribute("roomTypes", DeskRoom.RoomType.values());
+        return "manager/room-form";
+    }
+
+    @PostMapping("/room/save")
+    public String saveRoom(@Valid @ModelAttribute("room") DeskRoom room,
+                           BindingResult result,
+                           Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("roomTypes", DeskRoom.RoomType.values());
+            return "manager/room-form";
+        }
+
+        try {
+            roomService.saveRoom(room);
+        } catch (RuntimeException ex) {
+            model.addAttribute("roomTypes", DeskRoom.RoomType.values());
+            model.addAttribute("error", ex.getMessage());
+            return "manager/room-form";
+        }
+
+        return "redirect:/manager/rooms";
+    }
+
+    @GetMapping("/room/delete/{id}")
+    public String deleteRoom(@PathVariable("id") Long id) {
+        roomService.deactivateRoom(id);
+        return "redirect:/manager/rooms";
     }
 }

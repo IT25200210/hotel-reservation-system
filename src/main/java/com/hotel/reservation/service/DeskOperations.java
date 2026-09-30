@@ -21,10 +21,7 @@ public class DeskOperations {
     private final DeskReservationRepository reservations;
     private final DeskPaymentRepository payments;
     private final AuditLogService audit;
-    private static final List<String> DEFAULT_ROOM_NUMBERS = List.of(
-            "101", "102", "103", "104",
-            "201", "202", "203", "204"
-    );
+
 
     public DeskOperations(DeskRoomRepository rooms, DeskStayRepository stays,
                           DeskReservationRepository reservations,
@@ -47,21 +44,12 @@ public class DeskOperations {
                 "Amount must be positive, at most 2 decimals and within limit");
     }
 
-    @PreAuthorize("hasAnyRole('RESERVATIONS','FRONT_OFFICE')")
+    @PreAuthorize("hasAnyRole('RESERVATIONS','GM')")
     public List<DeskRoom> rooms() {
-        seedDefaultRoomsIfEmpty();
-        return rooms.findAllByOrderByNumberAsc();
+        return rooms.findByActiveTrueOrderByNumberAsc();
     }
 
-    private void seedDefaultRoomsIfEmpty() {
-        if (rooms.count() > 0) return;
 
-        for (String number : DEFAULT_ROOM_NUMBERS) {
-            if (!rooms.existsByNumber(number)) {
-                rooms.save(new DeskRoom(number));
-            }
-        }
-    }
 
     private boolean reservationConflict(Long roomId, LocalDate start, LocalDate end) {
         return reservations.existsByRoomIdAndStatusAndArrivalLessThanAndDepartureGreaterThan(

@@ -302,7 +302,10 @@
                     <label for="room"><i class="bi bi-door-open"></i>Room</label>
                     <select id="room" name="roomId" required class="form-select">
                         <option value="">Choose a room</option>
-                        <option th:each="r : ${rooms}" th:value="${r.id}" th:text="${r.number}"></option>
+                        <option th:each="r : ${rooms}"
+                                th:value="${r.id}"
+                                th:text="${r.number + ' - ' + r.type + ' - Rs. ' + r.nightlyRate}">
+                        </option>
                     </select>
                     <div th:if="${#lists.isEmpty(rooms)}" class="helper mt-2">
                         No rooms found. Restart the app once after updating the reservation files.
