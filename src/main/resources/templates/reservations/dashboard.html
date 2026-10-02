@@ -456,6 +456,38 @@
         <div class="panel-body">
 
             <form th:action="@{/reservations}"
+                  method="get"
+                  class="row g-4 mb-4">
+
+                <div class="col-xl-3 col-md-6">
+
+                    <label for="type">
+                        <i class="bi bi-funnel"></i>
+                        Filter rooms by type
+                    </label>
+
+                    <select id="type"
+                            name="type"
+                            class="form-select"
+                            onchange="this.form.submit()">
+
+                        <option value="">
+                            All types
+                        </option>
+
+                        <option th:each="t : ${types}"
+                                th:value="${t}"
+                                th:text="${t}"
+                                th:selected="${t == selectedType}">
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </form>
+
+            <form th:action="@{/reservations}"
                   method="post"
                   class="row g-4">
 
@@ -479,7 +511,7 @@
 
                         <option th:each="r : ${rooms}"
                                 th:value="${r.id}"
-                                th:text="${r.number}">
+                                th:text="${r.number + ' - ' + r.type + ' - ' + r.nightlyRate + '/night'}">
                         </option>
 
                     </select>

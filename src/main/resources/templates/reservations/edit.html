@@ -190,7 +190,7 @@
         <div class="panel-head">
             <p class="eyebrow">Update Booking</p>
             <h1>Edit reservation</h1>
-            <p class="description">Change the room, guest, dates, or nightly rate for a confirmed reservation.</p>
+            <p class="description">Change the room, guest, or dates for a confirmed reservation. The nightly rate is fixed per room.</p>
         </div>
 
         <div class="panel-body">
@@ -226,8 +226,9 @@
 
                 <div class="col-xl-2 col-md-6">
                     <label for="rate"><i class="bi bi-cash"></i>Nightly rate</label>
-                    <input id="rate" name="rate" type="number" min="0.01" step="0.01" max="9999999999.99"
-                           required class="form-control" th:value="${reservation.nightlyRate}">
+                    <input id="rate" type="number" class="form-control"
+                           th:value="${reservation.room.nightlyRate}" readonly disabled>
+                    <div class="helper mt-2">Fixed per room — recalculated on save.</div>
                 </div>
 
                 <div class="col-12">

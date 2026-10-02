@@ -105,6 +105,10 @@ public class DeskReservation {
         return reference;
     }
 
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
+
     public Status getStatus() {
         return status;
     }

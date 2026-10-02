@@ -20,6 +20,8 @@ public interface DeskReservationRepository extends JpaRepository<DeskReservation
 
     List<DeskReservation> findByGuestNameIgnoreCaseOrderByArrivalDesc(String guestName);
 
+    Optional<DeskReservation> findByReferenceIgnoreCase(String reference);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select r from DeskReservation r where r.id = :id")
     Optional<DeskReservation> lockById(@Param("id") Long id);

@@ -10,7 +10,15 @@ public interface DeskRoomRepository extends JpaRepository<DeskRoom, Long> {
 
     List<DeskRoom> findAllByOrderByNumberAsc();
 
+    List<DeskRoom> findByActiveTrueOrderByNumberAsc();
+
+    List<DeskRoom> findByTypeOrderByNumberAsc(DeskRoom.RoomType type);
+
+    List<DeskRoom> findByActiveTrueAndTypeOrderByNumberAsc(DeskRoom.RoomType type);
+
     boolean existsByNumber(String number);
+
+    boolean existsByNumberAndIdNot(String number, Long id);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select x from DeskRoom x where x.id = :id")

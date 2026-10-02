@@ -1,5 +1,6 @@
 package com.hotel.reservation.controller;
 
+import com.hotel.reservation.entity.DeskRoom;
 import com.hotel.reservation.service.DeskOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,8 +23,15 @@ public class ReservationsController {
 
     // READ - dashboard
     @GetMapping
-    public String dashboard(Model model) {
-        model.addAttribute("rooms", desk.rooms());
+    public String dashboard(@RequestParam(required = false) DeskRoom.RoomType type,
+                            Model model) {
+        if (type == null) {
+            model.addAttribute("rooms", desk.rooms());
+        } else {
+            model.addAttribute("rooms", desk.roomsByType(type));
+        }
+        model.addAttribute("types", DeskRoom.RoomType.values());
+        model.addAttribute("selectedType", type);
         model.addAttribute("reservations", desk.reservations());
         return "reservations/dashboard";
     }

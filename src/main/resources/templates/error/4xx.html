@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>404 Not Found | The Grand Horizon</title>
+    <title>Request Error | The Grand Horizon</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -251,27 +251,31 @@
           </div>
           <div>
             <div class="brand-name">The Grand Horizon</div>
-            <p class="subtitle">Page not found</p>
+            <p class="subtitle">There was a problem with the request</p>
           </div>
         </div>
       </header>
       <main class="panel">
         <div class="panel-head">
-          <div class="eyebrow">Not found</div>
-          <h1>404 — Page not found</h1>
-          <p class="description">
-            The URL does not match any page. Common cause: app was not restarted
-            after adding a new controller, or typo in the link.
-          </p>
+          <div class="eyebrow">Request error</div>
+          <h1>
+            <span th:text="${status}">400</span> —
+            <span th:text="${error}">Bad Request</span>
+          </h1>
+          <p class="description">Check the details below and try again.</p>
         </div>
         <div class="panel-content">
           <dl class="detail">
             <dt>Status</dt>
-            <dd>404 (Not Found)</dd>
+            <dd>
+              <span th:text="${status}">400</span> (<span th:text="${error}"
+                >Bad Request</span
+              >)
+            </dd>
             <dt>Path</dt>
-            <dd class="mono" th:text="${path}">/unknown</dd>
+            <dd class="mono" th:text="${path}">-</dd>
             <dt>Message</dt>
-            <dd th:text="${message}">No handler</dd>
+            <dd th:text="${message}">Bad request</dd>
             <dt>Time</dt>
             <dd class="mono" th:text="${timestamp}">-</dd>
           </dl>
