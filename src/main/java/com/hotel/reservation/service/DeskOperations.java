@@ -333,19 +333,19 @@ public class DeskOperations {
                 reservation.getStatus() == DeskReservation.Status.CONFIRMED,
                 "Reservation is not confirmed"
         );
-        require(
-                !reservation.getArrival().isAfter(LocalDate.now()),
-                "Check-in is allowed only on or after the arrival date"
-        );
-        require(
-                reservation.getDeparture().isAfter(LocalDate.now()),
-                "Reservation departure has already passed"
-        );
+        // Demo mode (viva): check-in is allowed on any day, regardless
+        // of arrival/departure vs today. Only CONFIRMED status matters.
         DeskRoom room = rooms.lockById(reservation.getRoom().getId())
                 .orElseThrow(
                         () -> new ResponseStatusException(NOT_FOUND, "Room not found")
                 );
-        require(!room.isOccupied(), "Room is still occupied");
+        // A room is truly occupied only when an active (not checked out)
+        // stay overlaps these dates. The plain occupied flag goes stale
+        // because nothing ever cleared it, so it must not block check-in
+        // when the overlapping stay is already past/checked out.
+        require(!stays.existsByRoomIdAndCheckedOutFalseAndArrivalLessThanAndDepartureGreaterThan(
+                        room.getId(), reservation.getDeparture(), reservation.getArrival()),
+                "Room is still occupied");
         BigDecimal total = room.getNightlyRate().multiply(BigDecimal.valueOf(
                 ChronoUnit.DAYS.between(reservation.getArrival(), reservation.getDeparture())));
         money(total);
@@ -356,6 +356,26 @@ public class DeskOperations {
         audit.log(actor(), "CHECK_IN", "DeskStay", stay.getId(),
                 "Check-in from reservation " + reservationId);
         return stay;
+    }
+
+    // CHECK-OUT stay -> frees the room (finance)
+    @PreAuthorize("hasRole('FINANCE')")
+    public void checkoutStay(Long stayId) {
+        DeskStay stay = stays.lockById(stayId)
+                .orElseThrow(
+                        () -> new ResponseStatusException(NOT_FOUND, "Stay not found")
+                );
+        require(!stay.isCheckedOut(), "Stay is already checked out");
+        stay.checkOut();
+        DeskRoom room = rooms.lockById(stay.getRoom().getId())
+                .orElseThrow(
+                        () -> new ResponseStatusException(NOT_FOUND, "Room not found")
+                );
+        if (!stays.existsByRoomIdAndCheckedOutFalse(room.getId())) {
+            room.setOccupied(false);
+        }
+        audit.log(actor(), "CHECK_OUT", "DeskStay", stay.getId(),
+                "Check-out stay " + stayId);
     }
 
     // CANCEL reservation

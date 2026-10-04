@@ -37,4 +37,9 @@ public class FinanceController {
         desk.checkInReservation(reservationId);
         return "redirect:/finance";
     }
+    @PostMapping("/checkout")
+    public String checkout(@RequestParam Long stayId) {
+        desk.checkoutStay(stayId);
+        return "redirect:/finance";
+    }
 }

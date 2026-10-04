@@ -12,6 +12,8 @@ public interface DeskStayRepository extends JpaRepository<DeskStay, Long> {
     boolean existsByRoomIdAndCheckedOutFalseAndArrivalLessThanAndDepartureGreaterThan(
             Long roomId, java.time.LocalDate end, java.time.LocalDate start);
 
+    boolean existsByRoomIdAndCheckedOutFalse(Long roomId);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select x from DeskStay x where x.id = :id")
     Optional<DeskStay> lockById(@Param("id") Long id);
