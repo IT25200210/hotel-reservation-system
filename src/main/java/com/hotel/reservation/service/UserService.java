@@ -4,6 +4,8 @@ import com.hotel.reservation.entity.Role;
 import com.hotel.reservation.entity.User;
 import com.hotel.reservation.repository.RoleRepository;
 import com.hotel.reservation.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +45,7 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus("ACTIVE");
         User saved = userRepository.save(user);
-        auditLogService.log("system", "CREATE", "User", saved.getId(),
+        auditLogService.log(actor(), "CREATE", "User", saved.getId(),
                 "Created user: " + saved.getUsername());
         return saved;
     }
@@ -61,14 +63,17 @@ public class UserService {
         if (updated.getPassword() != null && !updated.getPassword().isBlank()) {
             existing.setPassword(passwordEncoder.encode(updated.getPassword()));
         }
-        return userRepository.save(existing);
+        User saved = userRepository.save(existing);
+        auditLogService.log(actor(), "UPDATE", "User", saved.getId(),
+                "Updated user: " + saved.getUsername());
+        return saved;
     }
 
     public void deactivateUser(Long id) {
         User user = getUserById(id);
         user.setStatus("DEACTIVATED");
         userRepository.save(user);
-        auditLogService.log("system", "DEACTIVATE", "User", id,
+        auditLogService.log(actor(), "DEACTIVATE", "User", id,
                 "Deactivated user id: " + id);
     }
 
@@ -76,5 +81,15 @@ public class UserService {
         User user = getUserById(id);
         user.setStatus("ACTIVE");
         userRepository.save(user);
+        auditLogService.log(actor(), "ACTIVATE", "User", id,
+                "Activated user id: " + id);
+    }
+
+    private String actor() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
+            return auth.getName();
+        }
+        return "system";
     }
 }

@@ -3,6 +3,8 @@ package com.hotel.reservation.service;
 import com.hotel.reservation.entity.DeskRoom;
 import com.hotel.reservation.repository.DeskRoomRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,7 +45,7 @@ public class RoomService {
             roomCleaningStatusService.ensureRoom(saved.getNumber());
         }
 
-        auditLogService.log("general-manager", "SAVE", "DeskRoom", saved.getId(),
+        auditLogService.log(actor(), "SAVE", "DeskRoom", saved.getId(),
                 "Saved room " + saved.getNumber());
 
         return saved;
@@ -55,8 +57,16 @@ public class RoomService {
         room.setActive(false);
         roomRepository.save(room);
 
-        auditLogService.log("general-manager", "DEACTIVATE", "DeskRoom", room.getId(),
+        auditLogService.log(actor(), "DEACTIVATE", "DeskRoom", room.getId(),
                 "Deactivated room " + room.getNumber());
+    }
+
+    private String actor() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
+            return auth.getName();
+        }
+        return "system";
     }
 
     private void validateRoomNumber(DeskRoom room) {

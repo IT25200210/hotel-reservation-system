@@ -38,7 +38,10 @@ public class RoomCleaningStatusService {
                     RoomCleaningStatus room = new RoomCleaningStatus();
                     room.setRoomNumber(roomNumber);
                     room.setStatus(RoomCleaningStatus.STATUS_DIRTY);
-                    return roomStatusRepository.save(room);
+                    RoomCleaningStatus saved = roomStatusRepository.save(room);
+                    auditLogService.log(getCurrentUsername(), "CREATE", "RoomCleaningStatus",
+                            saved.getId(), "Ensured room " + roomNumber + " on housekeeping board");
+                    return saved;
                 });
     }
 

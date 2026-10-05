@@ -7,6 +7,8 @@ import com.hotel.reservation.repository.DeskRoomRepository;
 import com.hotel.reservation.repository.DeskStayRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
@@ -28,19 +30,30 @@ public class GuestBookingService {
     private final DeskRoomRepository rooms;
     private final DeskStayRepository stays;
     private final DeskReservationRepository reservations;
+    private final AuditLogService audit;
 
     public GuestBookingService(DeskRoomRepository rooms,
                                DeskStayRepository stays,
-                               DeskReservationRepository reservations) {
+                               DeskReservationRepository reservations,
+                               AuditLogService audit) {
         this.rooms = rooms;
         this.stays = stays;
         this.reservations = reservations;
+        this.audit = audit;
     }
 
     private void require(boolean condition, String message) {
         if (!condition) {
             throw new ResponseStatusException(CONFLICT, message);
         }
+    }
+
+    private String actor(String guest) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
+            return auth.getName();
+        }
+        return guest != null && !guest.isBlank() ? "guest:" + guest.trim() : "guest";
     }
 
     private void money(BigDecimal value) {
@@ -105,6 +118,8 @@ public class GuestBookingService {
                 reservations.save(new DeskReservation(room, guest.trim(), arrival, departure, rate));
         // Simple non-production reference: GH-0001, GH-0002, ...
         created.setReference(String.format("GH-%04d", created.getId()));
+        audit.log(actor(guest), "CREATE", "DeskReservation", created.getId(),
+                "Guest booking " + created.getReference() + " for room " + room.getNumber());
         return created;
     }
 
@@ -140,6 +155,8 @@ public class GuestBookingService {
         require(!conflict, "Room has an overlapping confirmed reservation");
 
         reservation.update(room, guest.trim(), arrival, departure, rate);
+        audit.log(actor(guest), "UPDATE", "DeskReservation", reservation.getId(),
+                "Guest booking " + reservation.getReference() + " modified");
         return reservation;
     }
 
@@ -150,5 +167,7 @@ public class GuestBookingService {
         require(reservation.getStatus() == DeskReservation.Status.CONFIRMED,
                 "Only confirmed reservations can be cancelled");
         reservation.cancel();
+        audit.log(actor(reservation.getGuestName()), "CANCEL", "DeskReservation", reservation.getId(),
+                "Guest booking " + reservation.getReference() + " cancelled");
     }
 }

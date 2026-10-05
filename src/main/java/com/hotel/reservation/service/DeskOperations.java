@@ -249,6 +249,9 @@ public class DeskOperations {
         );
         // Simple non-production reference: GH-0001, GH-0002, ...
         created.setReference(String.format("GH-%04d", created.getId()));
+        audit.log(actor(), "CREATE", "DeskReservation", created.getId(),
+                "Created reservation " + created.getReference()
+                        + " for room " + room.getNumber());
         return created;
     }
 
@@ -318,6 +321,8 @@ public class DeskOperations {
                 departure,
                 rate
         );
+        audit.log(actor(), "UPDATE", "DeskReservation", reservation.getId(),
+                "Updated reservation " + reservation.getReference());
 
         return reservation;
     }
@@ -394,5 +399,7 @@ public class DeskOperations {
         );
 
         reservation.cancel();
+        audit.log(actor(), "CANCEL", "DeskReservation", reservation.getId(),
+                "Cancelled reservation " + reservation.getReference());
     }
 }
