@@ -1,19 +1,24 @@
 package com.hotel.reservation.config;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
 import java.io.IOException;
 import java.util.Set;
 
@@ -29,25 +34,46 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationSuccessHandler customSuccessHandler() {
+
         return new AuthenticationSuccessHandler() {
+
             @Override
-            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                                Authentication authentication) throws IOException {
-                Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+            public void onAuthenticationSuccess(
+                    HttpServletRequest request,
+                    HttpServletResponse response,
+                    Authentication authentication) throws IOException {
+
+                Set<String> roles =
+                        AuthorityUtils.authorityListToSet(
+                                authentication.getAuthorities()
+                        );
 
                 if (roles.contains("ROLE_ADMIN")) {
+
                     response.sendRedirect("/admin/users");
+
                 } else if (roles.contains("ROLE_GM")) {
+
                     response.sendRedirect("/manager/dashboard");
+
                 } else if (roles.contains("ROLE_RESERVATIONS")) {
+
                     response.sendRedirect("/reservations");
+
                 } else if (roles.contains("ROLE_INVENTORY")) {
+
                     response.sendRedirect("/inventory");
+
                 } else if (roles.contains("ROLE_FINANCE")) {
+
                     response.sendRedirect("/finance");
+
                 } else if (roles.contains("ROLE_HOUSEKEEPING")) {
+
                     response.sendRedirect("/housekeeping");
+
                 } else {
+
                     response.sendRedirect("/login?error");
                 }
             }
@@ -56,28 +82,63 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/css/**", "/js/**", "/book", "/book/**", "/error").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/manager/**").hasRole("GM")
-                        .requestMatchers("/reservations/**").hasRole("RESERVATIONS")
-                        .requestMatchers("/inventory/**").hasRole("INVENTORY")
-                        .requestMatchers("/finance/**").hasRole("FINANCE")
-                        .requestMatchers("/housekeeping/**").hasRole("HOUSEKEEPING")
-                        .anyRequest().authenticated()
+
+                        .requestMatchers(
+                                "/login",
+                                "/css/**",
+                                "/js/**",
+                                "/book",
+                                "/book/**",
+                                "/error"
+                        )
+                        .permitAll()
+
+                        .requestMatchers("/admin/**")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers("/manager/**")
+                        .hasRole("GM")
+
+                        .requestMatchers("/reservations/**")
+                        .hasRole("RESERVATIONS")
+
+                        .requestMatchers("/inventory/**")
+                        .hasRole("INVENTORY")
+
+                        .requestMatchers("/finance/**")
+                        .hasRole("FINANCE")
+
+                        .requestMatchers("/housekeeping/**")
+                        .hasRole("HOUSEKEEPING")
+
+                        .anyRequest()
+                        .authenticated()
                 )
+
                 .formLogin(form -> form
+
                         .loginPage("/login")
+
                         .loginProcessingUrl("/login")
+
                         .successHandler(customSuccessHandler())
+
                         .permitAll()
                 )
+
                 .logout(logout -> logout
+
                         .logoutUrl("/logout")
+
                         .logoutSuccessUrl("/login?logout")
+
                         .invalidateHttpSession(true)
+
                         .deleteCookies("JSESSIONID")
+
                         .permitAll()
                 );
 

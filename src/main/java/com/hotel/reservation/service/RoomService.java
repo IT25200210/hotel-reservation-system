@@ -2,6 +2,9 @@ package com.hotel.reservation.service;
 
 import com.hotel.reservation.entity.DeskRoom;
 import com.hotel.reservation.repository.DeskRoomRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,24 +22,37 @@ public class RoomService {
     public RoomService(DeskRoomRepository roomRepository,
                        RoomCleaningStatusService roomCleaningStatusService,
                        AuditLogService auditLogService) {
+
         this.roomRepository = roomRepository;
         this.roomCleaningStatusService = roomCleaningStatusService;
         this.auditLogService = auditLogService;
     }
 
+    // Keep existing non-paginated method
     @PreAuthorize("hasRole('GM')")
     public List<DeskRoom> getAllRooms() {
         return roomRepository.findAllByOrderByNumberAsc();
     }
 
+    // NEW - Paginated rooms
+    @PreAuthorize("hasRole('GM')")
+    public Page<DeskRoom> getRoomsPaginated(int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return roomRepository.findAllByOrderByNumberAsc(pageable);
+    }
+
     @PreAuthorize("hasRole('GM')")
     public DeskRoom getRoomById(Long id) {
+
         return roomRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Room not found"));
     }
 
     @PreAuthorize("hasRole('GM')")
     public DeskRoom saveRoom(DeskRoom room) {
+
         validateRoomNumber(room);
 
         DeskRoom saved = roomRepository.save(room);
@@ -45,31 +61,52 @@ public class RoomService {
             roomCleaningStatusService.ensureRoom(saved.getNumber());
         }
 
-        auditLogService.log(actor(), "SAVE", "DeskRoom", saved.getId(),
-                "Saved room " + saved.getNumber());
+        auditLogService.log(
+                actor(),
+                "SAVE",
+                "DeskRoom",
+                saved.getId(),
+                "Saved room " + saved.getNumber()
+        );
 
         return saved;
     }
 
     @PreAuthorize("hasRole('GM')")
     public void deactivateRoom(Long id) {
+
         DeskRoom room = getRoomById(id);
+
         room.setActive(false);
+
         roomRepository.save(room);
 
-        auditLogService.log(actor(), "DEACTIVATE", "DeskRoom", room.getId(),
-                "Deactivated room " + room.getNumber());
+        auditLogService.log(
+                actor(),
+                "DEACTIVATE",
+                "DeskRoom",
+                room.getId(),
+                "Deactivated room " + room.getNumber()
+        );
     }
 
     private String actor() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
+
+        Authentication auth =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth != null
+                && auth.isAuthenticated()
+                && !"anonymousUser".equals(auth.getName())) {
+
             return auth.getName();
         }
+
         return "system";
     }
 
     private void validateRoomNumber(DeskRoom room) {
+
         String number = room.getNumber();
 
         if (number == null || number.isBlank()) {
@@ -78,11 +115,17 @@ public class RoomService {
 
         room.setNumber(number.trim());
 
-        if (room.getId() == null && roomRepository.existsByNumber(room.getNumber())) {
+        if (room.getId() == null
+                && roomRepository.existsByNumber(room.getNumber())) {
+
             throw new RuntimeException("Room number already exists");
         }
 
-        if (room.getId() != null && roomRepository.existsByNumberAndIdNot(room.getNumber(), room.getId())) {
+        if (room.getId() != null
+                && roomRepository.existsByNumberAndIdNot(
+                room.getNumber(),
+                room.getId())) {
+
             throw new RuntimeException("Room number already exists");
         }
     }
