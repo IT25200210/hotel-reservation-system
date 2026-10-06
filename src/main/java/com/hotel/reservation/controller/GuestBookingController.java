@@ -49,8 +49,10 @@ public class GuestBookingController {
         if (arrival != null && departure != null && departure.isAfter(arrival)) {
             long nights = ChronoUnit.DAYS.between(arrival, departure);
             model.addAttribute("nights", nights);
+
             Map<Long, Boolean> availability = new HashMap<>();
             Map<Long, BigDecimal> totals = new HashMap<>();
+
             for (DeskRoom room : rooms) {
                 boolean free = false;
                 try {
@@ -63,6 +65,7 @@ public class GuestBookingController {
                 totals.put(room.getId(),
                         room.getNightlyRate().multiply(BigDecimal.valueOf(nights)));
             }
+
             model.addAttribute("availability", availability);
             model.addAttribute("totals", totals);
         }
