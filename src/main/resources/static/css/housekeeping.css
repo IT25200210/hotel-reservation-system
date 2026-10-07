@@ -34,28 +34,28 @@
     --ios-bg: #090c13;
     --ios-surface-solid: #111622;
     
-    /* Authentic Frosted Glass Material (Soft Atmospheric Diffusion & Specular Sheen) */
-    --ios-glass-surface: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 35%, rgba(18, 24, 38, 0.55) 70%, rgba(12, 16, 26, 0.72) 100%);
-    --ios-glass-surface-hover: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.07) 35%, rgba(22, 30, 48, 0.62) 70%, rgba(15, 20, 32, 0.78) 100%);
-    --ios-glass-elevated: linear-gradient(135deg, rgba(255, 255, 255, 0.20) 0%, rgba(255, 255, 255, 0.08) 35%, rgba(24, 34, 54, 0.68) 70%, rgba(16, 22, 36, 0.82) 100%);
+    /* Authentic Frosted Glass Material (Slightly Blurred Diffusion matching reference concept) */
+    --ios-glass-surface: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.02) 35%, rgba(12, 16, 26, 0.38) 70%, rgba(8, 12, 20, 0.48) 100%);
+    --ios-glass-surface-hover: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 35%, rgba(15, 20, 32, 0.44) 70%, rgba(10, 15, 24, 0.55) 100%);
+    --ios-glass-elevated: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 35%, rgba(16, 22, 34, 0.48) 70%, rgba(12, 16, 26, 0.58) 100%);
 
     /* Fine Specular Chamfer Edges (Crisp 1px Light Catch matching Spotlight Navbar) */
-    --ios-glass-border: rgba(255, 255, 255, 0.16);
+    --ios-glass-border: rgba(255, 255, 255, 0.18);
     --ios-glass-border-hover: rgba(255, 255, 255, 0.35);
-    --ios-glass-specular-top: rgba(255, 255, 255, 0.55);
-    --ios-glass-specular-left: rgba(255, 255, 255, 0.28);
-    --ios-glass-specular-right: rgba(255, 255, 255, 0.10);
-    --ios-glass-specular-bottom: rgba(0, 0, 0, 0.35);
+    --ios-glass-specular-top: rgba(255, 255, 255, 0.50);
+    --ios-glass-specular-left: rgba(255, 255, 255, 0.22);
+    --ios-glass-specular-right: rgba(255, 255, 255, 0.08);
+    --ios-glass-specular-bottom: rgba(0, 0, 0, 0.30);
 
     /* Authentic Edge Distortion & Multi-Stop Lens Refraction Rim */
     --ios-glass-inner: 
-        inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.45),
-        inset 0 0 16px 0 rgba(255, 255, 255, 0.04),
-        inset 0 -2.5px 6px 0 rgba(0, 0, 0, 0.45),
-        inset 2.5px 0 6px 0 rgba(255, 255, 255, 0.08),
-        inset -2.5px 0 6px 0 rgba(0, 0, 0, 0.30);
-    --ios-glass-shadow: 0 14px 34px -4px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06);
-    --ios-glass-shadow-hover: 0 20px 42px -4px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.22), 0 0 24px rgba(255, 255, 255, 0.08);
+        inset 0 1.2px 1.2px 0 rgba(255, 255, 255, 0.38),
+        inset 0 0 12px 0 rgba(255, 255, 255, 0.03),
+        inset 0 -2px 5px 0 rgba(0, 0, 0, 0.35),
+        inset 1.5px 0 4px 0 rgba(255, 255, 255, 0.07),
+        inset -1.5px 0 4px 0 rgba(0, 0, 0, 0.22);
+    --ios-glass-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.06);
+    --ios-glass-shadow-hover: 0 18px 36px -4px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.20), 0 0 18px rgba(255, 255, 255, 0.06);
 
     /* Apple System Typography */
     --ios-text-primary: #ffffff;
@@ -212,8 +212,8 @@ body::after {
 .form-card,
 .hk-room-tile {
     background: var(--ios-glass-surface) !important;
-    backdrop-filter: blur(24px) saturate(160%) brightness(105%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(160%) brightness(105%) !important;
+    backdrop-filter: blur(14px) saturate(140%) brightness(103%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(140%) brightness(103%) !important;
     border: 1px solid var(--ios-glass-border) !important;
     border-top: 1.5px solid var(--ios-glass-specular-top) !important;
     border-left: 1.2px solid var(--ios-glass-specular-left) !important;
@@ -250,9 +250,9 @@ body::after {
     border-radius: inherit;
     pointer-events: none;
     background: 
-        radial-gradient(130% 120% at 0% 0%, rgba(255, 255, 255, 0.12) 0%, transparent 45%),
-        radial-gradient(100% 100% at 100% 100%, rgba(0, 0, 0, 0.35) 0%, transparent 55%),
-        linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
+        radial-gradient(130% 120% at 0% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 45%),
+        radial-gradient(100% 100% at 100% 100%, rgba(0, 0, 0, 0.22) 0%, transparent 55%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, transparent 60%);
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
     z-index: 1;
 }
@@ -305,8 +305,8 @@ body::after {
     width: 100%;
     padding: 1.15rem 0 0.95rem 0;
     background: rgba(8, 11, 18, 0.72);
-    backdrop-filter: blur(20px) saturate(150%) brightness(104%);
-    -webkit-backdrop-filter: blur(20px) saturate(150%) brightness(104%);
+    backdrop-filter: blur(14px) saturate(140%) brightness(103%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%) brightness(103%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     transition: opacity 0.25s ease;
 }
@@ -386,8 +386,8 @@ body::after {
     width: 100%;
     padding: 0.55rem 0;
     background: rgba(8, 11, 18, 0.72);
-    backdrop-filter: blur(24px) saturate(160%) brightness(105%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%) brightness(105%);
+    backdrop-filter: blur(14px) saturate(140%) brightness(103%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%) brightness(103%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.10);
     box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45);
     transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
@@ -460,8 +460,8 @@ body::after {
     height: 42px;
     border-radius: 9999px;
     background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(20px) saturate(150%) brightness(105%);
-    -webkit-backdrop-filter: blur(20px) saturate(150%) brightness(105%);
+    backdrop-filter: blur(14px) saturate(140%) brightness(103%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%) brightness(103%);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-top: 1px solid rgba(255, 255, 255, 0.45);
     box-shadow: 
@@ -1370,8 +1370,8 @@ body::after {
 
 .hk-toolbar-card {
     background: var(--ios-glass-surface) !important;
-    backdrop-filter: blur(24px) saturate(160%) brightness(105%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(160%) brightness(105%) !important;
+    backdrop-filter: blur(14px) saturate(140%) brightness(103%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(140%) brightness(103%) !important;
     border: 1px solid var(--ios-glass-border) !important;
     border-top: 1.5px solid var(--ios-glass-specular-top) !important;
     border-left: 1.2px solid var(--ios-glass-specular-left) !important;
@@ -1788,8 +1788,8 @@ body::after {
     position: relative;
     border-radius: var(--ios-radius-xl);
     background: var(--ios-glass-surface) !important;
-    backdrop-filter: blur(24px) saturate(160%) brightness(105%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(160%) brightness(105%) !important;
+    backdrop-filter: blur(14px) saturate(140%) brightness(103%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(140%) brightness(103%) !important;
     border: 1px solid var(--ios-glass-border) !important;
     border-top: 1.5px solid var(--ios-glass-specular-top) !important;
     box-shadow: var(--ios-glass-inner), var(--ios-glass-shadow);
@@ -1811,8 +1811,8 @@ body::after {
     margin-top: 5.5rem;
     padding: 4.5rem 0 2.5rem;
     background: linear-gradient(180deg, rgba(14, 19, 34, 0.65) 0%, rgba(7, 9, 16, 0.92) 100%) !important;
-    backdrop-filter: blur(24px) saturate(140%) brightness(104%) !important;
-    -webkit-backdrop-filter: blur(24px) saturate(140%) brightness(104%) !important;
+    backdrop-filter: blur(14px) saturate(140%) brightness(103%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(140%) brightness(103%) !important;
     border-top: 1.5px solid rgba(255, 255, 255, 0.55) !important;
     box-shadow: 
         inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.40),
