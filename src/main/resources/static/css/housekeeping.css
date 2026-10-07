@@ -34,28 +34,28 @@
     --ios-bg: #090c13;
     --ios-surface-solid: #111622;
     
-    /* Authentic Frosted Glass Material (Slightly Blurred Diffusion matching reference concept) */
-    --ios-glass-surface: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.02) 35%, rgba(12, 16, 26, 0.38) 70%, rgba(8, 12, 20, 0.48) 100%);
-    --ios-glass-surface-hover: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 35%, rgba(15, 20, 32, 0.44) 70%, rgba(10, 15, 24, 0.55) 100%);
-    --ios-glass-elevated: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 35%, rgba(16, 22, 34, 0.48) 70%, rgba(12, 16, 26, 0.58) 100%);
+    /* Authentic Frosted Glass Material (Slightly Blurred White Diffusion with Edge Distortion) */
+    --ios-glass-surface: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.08) 100%);
+    --ios-glass-surface-hover: linear-gradient(135deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.12) 100%);
+    --ios-glass-elevated: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.10) 100%);
 
-    /* Fine Specular Chamfer Edges (Crisp 1px Light Catch matching Spotlight Navbar) */
-    --ios-glass-border: rgba(255, 255, 255, 0.18);
-    --ios-glass-border-hover: rgba(255, 255, 255, 0.35);
-    --ios-glass-specular-top: rgba(255, 255, 255, 0.50);
-    --ios-glass-specular-left: rgba(255, 255, 255, 0.22);
-    --ios-glass-specular-right: rgba(255, 255, 255, 0.08);
-    --ios-glass-specular-bottom: rgba(0, 0, 0, 0.30);
+    /* Fine Specular Chamfer Edges (Crisp Light Catch & Refractive Boundary) */
+    --ios-glass-border: rgba(255, 255, 255, 0.28);
+    --ios-glass-border-hover: rgba(255, 255, 255, 0.45);
+    --ios-glass-specular-top: rgba(255, 255, 255, 0.65);
+    --ios-glass-specular-left: rgba(255, 255, 255, 0.35);
+    --ios-glass-specular-right: rgba(255, 255, 255, 0.18);
+    --ios-glass-specular-bottom: rgba(255, 255, 255, 0.12);
 
     /* Authentic Edge Distortion & Multi-Stop Lens Refraction Rim */
     --ios-glass-inner: 
-        inset 0 1.2px 1.2px 0 rgba(255, 255, 255, 0.38),
-        inset 0 0 12px 0 rgba(255, 255, 255, 0.03),
-        inset 0 -2px 5px 0 rgba(0, 0, 0, 0.35),
-        inset 1.5px 0 4px 0 rgba(255, 255, 255, 0.07),
-        inset -1.5px 0 4px 0 rgba(0, 0, 0, 0.22);
-    --ios-glass-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.06);
-    --ios-glass-shadow-hover: 0 18px 36px -4px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.20), 0 0 18px rgba(255, 255, 255, 0.06);
+        inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.45),
+        inset 0 0 16px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -2px 6px 0 rgba(0, 0, 0, 0.35),
+        inset 1.5px 0 4px 0 rgba(255, 255, 255, 0.10),
+        inset -1.5px 0 4px 0 rgba(0, 0, 0, 0.25);
+    --ios-glass-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.12);
+    --ios-glass-shadow-hover: 0 18px 40px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.30), 0 0 24px rgba(255, 255, 255, 0.12);
 
     /* Apple System Typography */
     --ios-text-primary: #ffffff;
@@ -210,10 +210,11 @@ body::after {
 .card.stat-card,
 .card.hk-card,
 .form-card,
-.hk-room-tile {
+.hk-room-tile,
+.frosted-glass {
     background: var(--ios-glass-surface) !important;
-    backdrop-filter: blur(14px) saturate(140%) brightness(103%) !important;
-    -webkit-backdrop-filter: blur(14px) saturate(140%) brightness(103%) !important;
+    backdrop-filter: blur(12px) saturate(140%) brightness(104%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(140%) brightness(104%) !important;
     border: 1px solid var(--ios-glass-border) !important;
     border-top: 1.5px solid var(--ios-glass-specular-top) !important;
     border-left: 1.2px solid var(--ios-glass-specular-left) !important;
@@ -228,6 +229,16 @@ body::after {
         background 0.25s ease;
     position: relative;
     overflow: visible; /* Never clip content or text */
+}
+
+/* Direct Frosted Glass Implementation (Google Reference) */
+.frosted-glass {
+    background: rgba(255, 255, 255, 0.15) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(140%) !important;
+    backdrop-filter: blur(10px) saturate(140%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.30) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.20), inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.45) !important;
 }
 
 /* Ensure inner interactive elements remain sharply readable above frosted layers */
@@ -1788,8 +1799,8 @@ body::after {
     position: relative;
     border-radius: var(--ios-radius-xl);
     background: var(--ios-glass-surface) !important;
-    backdrop-filter: blur(14px) saturate(140%) brightness(103%) !important;
-    -webkit-backdrop-filter: blur(14px) saturate(140%) brightness(103%) !important;
+    backdrop-filter: blur(12px) saturate(140%) brightness(104%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(140%) brightness(104%) !important;
     border: 1px solid var(--ios-glass-border) !important;
     border-top: 1.5px solid var(--ios-glass-specular-top) !important;
     box-shadow: var(--ios-glass-inner), var(--ios-glass-shadow);
