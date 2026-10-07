@@ -34,23 +34,28 @@
     --ios-bg: #090c13;
     --ios-surface-solid: #111622;
     
-    /* VengeanceUI Inspired Crystal Liquid Glass (Monochrome Obsidian Translucency) */
-    --ios-glass-surface: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(10, 14, 24, 0.32);
-    --ios-glass-surface-hover: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%), rgba(13, 18, 30, 0.40);
-    --ios-glass-elevated: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.02) 100%), rgba(12, 16, 26, 0.45);
+    /* Authentic Frosted Glass Material (Soft Atmospheric Diffusion & Specular Sheen) */
+    --ios-glass-surface: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 35%, rgba(18, 24, 38, 0.55) 70%, rgba(12, 16, 26, 0.72) 100%);
+    --ios-glass-surface-hover: linear-gradient(135deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.07) 35%, rgba(22, 30, 48, 0.62) 70%, rgba(15, 20, 32, 0.78) 100%);
+    --ios-glass-elevated: linear-gradient(135deg, rgba(255, 255, 255, 0.20) 0%, rgba(255, 255, 255, 0.08) 35%, rgba(24, 34, 54, 0.68) 70%, rgba(16, 22, 36, 0.82) 100%);
 
     /* Fine Specular Chamfer Edges (Crisp 1px Light Catch matching Spotlight Navbar) */
-    --ios-glass-border: rgba(255, 255, 255, 0.12);
-    --ios-glass-border-hover: rgba(255, 255, 255, 0.26);
-    --ios-glass-specular-top: rgba(255, 255, 255, 0.35);
-    --ios-glass-specular-left: rgba(255, 255, 255, 0.18);
-    --ios-glass-specular-right: rgba(255, 255, 255, 0.06);
-    --ios-glass-specular-bottom: rgba(0, 0, 0, 0.20);
+    --ios-glass-border: rgba(255, 255, 255, 0.16);
+    --ios-glass-border-hover: rgba(255, 255, 255, 0.35);
+    --ios-glass-specular-top: rgba(255, 255, 255, 0.55);
+    --ios-glass-specular-left: rgba(255, 255, 255, 0.28);
+    --ios-glass-specular-right: rgba(255, 255, 255, 0.10);
+    --ios-glass-specular-bottom: rgba(0, 0, 0, 0.35);
 
-    /* Soft Diffused Ambient Rim & Clean Drop Shadow (No Muddy Heavy Bevels) */
-    --ios-glass-inner: inset 0 1px 1px 0 rgba(255, 255, 255, 0.18);
-    --ios-glass-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.40);
-    --ios-glass-shadow-hover: 0 14px 32px -4px rgba(0, 0, 0, 0.50), 0 0 1px 1px rgba(255, 255, 255, 0.18);
+    /* Authentic Edge Distortion & Multi-Stop Lens Refraction Rim */
+    --ios-glass-inner: 
+        inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.45),
+        inset 0 0 16px 0 rgba(255, 255, 255, 0.04),
+        inset 0 -2.5px 6px 0 rgba(0, 0, 0, 0.45),
+        inset 2.5px 0 6px 0 rgba(255, 255, 255, 0.08),
+        inset -2.5px 0 6px 0 rgba(0, 0, 0, 0.30);
+    --ios-glass-shadow: 0 14px 34px -4px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06);
+    --ios-glass-shadow-hover: 0 20px 42px -4px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.22), 0 0 24px rgba(255, 255, 255, 0.08);
 
     /* Apple System Typography */
     --ios-text-primary: #ffffff;
@@ -197,7 +202,7 @@ body::after {
 }
 
 /* ==========================================================================
-   AUTHENTIC APPLE LIQUID GLASS MATERIAL (VisionOS Flat-Glass Optics)
+   AUTHENTIC FROSTED GLASS MATERIAL (Soft Gaussian Diffusion & Optical Edge Distortion)
    ========================================================================== */
 
 .hk-card,
@@ -207,9 +212,8 @@ body::after {
 .form-card,
 .hk-room-tile {
     background: var(--ios-glass-surface) !important;
-    background-color: rgba(10, 14, 24, 0.32) !important;
-    backdrop-filter: blur(8px) saturate(125%) brightness(103%) !important;
-    -webkit-backdrop-filter: blur(8px) saturate(125%) brightness(103%) !important;
+    backdrop-filter: blur(24px) saturate(160%) brightness(105%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(160%) brightness(105%) !important;
     border: 1px solid var(--ios-glass-border) !important;
     border-top: 1.5px solid var(--ios-glass-specular-top) !important;
     border-left: 1.2px solid var(--ios-glass-specular-left) !important;
@@ -226,6 +230,33 @@ body::after {
     overflow: visible; /* Never clip content or text */
 }
 
+/* Ensure inner interactive elements remain sharply readable above frosted layers */
+.hk-card > *,
+.stat-card > *,
+.hk-room-tile > *,
+.form-card > * {
+    position: relative;
+    z-index: 3;
+}
+
+/* Frosted Surface Texture & Optical Edge Vignette (Simulates curved glass distortion) */
+.hk-card::before,
+.stat-card::before,
+.hk-room-tile::before,
+.form-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: 
+        radial-gradient(130% 120% at 0% 0%, rgba(255, 255, 255, 0.12) 0%, transparent 45%),
+        radial-gradient(100% 100% at 100% 100%, rgba(0, 0, 0, 0.35) 0%, transparent 55%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    z-index: 1;
+}
+
 /* Interactive Cursor Specular Sheen (VengeanceUI Glare Hotspot) */
 .hk-card::after,
 .stat-card::after,
@@ -235,7 +266,7 @@ body::after {
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    background: radial-gradient(350px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03) 40%, transparent 70%);
+    background: radial-gradient(350px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04) 40%, transparent 70%);
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: 2;
@@ -273,10 +304,10 @@ body::after {
     z-index: 100;
     width: 100%;
     padding: 1.15rem 0 0.95rem 0;
-    background: rgba(7, 9, 14, 0.55);
-    backdrop-filter: blur(8px) saturate(130%) brightness(104%);
-    -webkit-backdrop-filter: blur(8px) saturate(130%) brightness(104%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(8, 11, 18, 0.72);
+    backdrop-filter: blur(20px) saturate(150%) brightness(104%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%) brightness(104%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     transition: opacity 0.25s ease;
 }
 
@@ -301,17 +332,17 @@ body::after {
     width: 46px;
     height: 46px;
     border-radius: 14px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-top: 1.5px solid rgba(255, 255, 255, 0.65);
-    box-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 0.35), 0 6px 20px rgba(0, 0, 0, 0.45);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.03) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.20);
+    border-top: 1.5px solid rgba(255, 255, 255, 0.70);
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.40), 0 8px 24px rgba(0, 0, 0, 0.50);
     transition: all 0.25s ease;
 }
 
 .hk-brand-center:hover .hk-brand-emblem-wrap {
-    border-color: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.40);
     border-top-color: #ffffff;
-    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.50), 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 18px rgba(255, 255, 255, 0.18);
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.60), 0 10px 28px rgba(0, 0, 0, 0.60), 0 0 20px rgba(255, 255, 255, 0.22);
 }
 
 .hk-brand-name {
@@ -354,17 +385,18 @@ body::after {
     z-index: 1000;
     width: 100%;
     padding: 0.55rem 0;
-    background: rgba(7, 9, 14, 0.55);
-    backdrop-filter: blur(8px) saturate(130%) brightness(104%);
-    -webkit-backdrop-filter: blur(8px) saturate(130%) brightness(104%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(8, 11, 18, 0.72);
+    backdrop-filter: blur(24px) saturate(160%) brightness(105%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%) brightness(105%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45);
     transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .hk-nav-sticky.is-scrolled {
-    background: rgba(7, 9, 14, 0.88);
-    border-bottom-color: rgba(255, 255, 255, 0.14);
-    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.60), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    background: rgba(8, 11, 18, 0.90);
+    border-bottom-color: rgba(255, 255, 255, 0.16);
+    box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.12);
     padding: 0.55rem 0;
 }
 
@@ -384,11 +416,11 @@ body::after {
 }
 
 .hk-user-pill-mini {
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(8px) saturate(120%);
-    -webkit-backdrop-filter: blur(8px) saturate(120%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px) saturate(130%);
+    -webkit-backdrop-filter: blur(16px) saturate(130%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-top: 1px solid rgba(255, 255, 255, 0.35);
     padding: 0.28rem 0.75rem;
     border-radius: var(--ios-radius-pill);
     font-size: 0.78rem;
@@ -402,11 +434,11 @@ body::after {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(8px) saturate(120%);
-    -webkit-backdrop-filter: blur(8px) saturate(120%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px) saturate(130%);
+    -webkit-backdrop-filter: blur(16px) saturate(130%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-top: 1px solid rgba(255, 255, 255, 0.35);
     color: var(--ios-text-secondary);
     display: inline-flex;
     align-items: center;
@@ -417,7 +449,7 @@ body::after {
 }
 
 .spotlight-logout-btn-mini:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.20);
     color: #ffffff;
     transform: scale(1.06);
 }
@@ -427,14 +459,14 @@ body::after {
     position: relative;
     height: 42px;
     border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(8px) saturate(130%) brightness(104%);
-    -webkit-backdrop-filter: blur(8px) saturate(130%) brightness(104%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-top: 1px solid rgba(255, 255, 255, 0.30);
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px) saturate(150%) brightness(105%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%) brightness(105%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-top: 1px solid rgba(255, 255, 255, 0.45);
     box-shadow: 
-        inset 0 1px 1px rgba(255, 255, 255, 0.20),
-        0 8px 24px -4px rgba(0, 0, 0, 0.40);
+        inset 0 1px 1px rgba(255, 255, 255, 0.25),
+        0 8px 24px -4px rgba(0, 0, 0, 0.45);
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     display: inline-flex;
@@ -647,9 +679,8 @@ body::after {
 /* Fluid Hover State */
 .stat-card:hover {
     background: var(--ios-glass-surface-hover) !important;
-    background-color: rgba(13, 18, 30, 0.40) !important;
     border-color: var(--ios-glass-border-hover) !important;
-    border-top-color: rgba(255, 255, 255, 0.85) !important;
+    border-top-color: rgba(255, 255, 255, 0.90) !important;
     box-shadow: 
         var(--ios-glass-inner),
         var(--ios-glass-shadow-hover);
@@ -803,10 +834,11 @@ body::after {
 
 .hk-room-tile:hover {
     background: var(--ios-glass-surface-hover) !important;
-    border-top-color: rgba(255, 255, 255, 0.75) !important;
+    border-color: var(--ios-glass-border-hover) !important;
+    border-top-color: rgba(255, 255, 255, 0.90) !important;
     box-shadow: 
         var(--ios-glass-inner),
-        0 12px 28px -4px rgba(0, 0, 0, 0.40);
+        var(--ios-glass-shadow-hover);
     z-index: 5;
 }
 
@@ -1263,57 +1295,57 @@ body::after {
 
 /* VengeanceUI Style Liquid Glass Action Button */
 .btn-primary {
-    background: rgba(255, 255, 255, 0.15) !important;
-    backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
-    -webkit-backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.22) !important;
-    border-top: 1.5px solid rgba(255, 255, 255, 0.65) !important;
+    background: rgba(255, 255, 255, 0.18) !important;
+    backdrop-filter: blur(16px) saturate(140%) brightness(105%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(140%) brightness(105%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    border-top: 1.5px solid rgba(255, 255, 255, 0.75) !important;
     color: #ffffff !important;
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35), 0 8px 24px -4px rgba(0, 0, 0, 0.45) !important;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.40), 0 8px 24px -4px rgba(0, 0, 0, 0.45) !important;
 }
 
 .btn-primary:hover {
-    background: rgba(255, 255, 255, 0.24) !important;
-    border-color: rgba(255, 255, 255, 0.38) !important;
+    background: rgba(255, 255, 255, 0.26) !important;
+    border-color: rgba(255, 255, 255, 0.42) !important;
     border-top-color: #ffffff !important;
     color: #ffffff !important;
     transform: translateY(-2px);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.50), 0 12px 30px -4px rgba(0, 0, 0, 0.60), 0 0 16px rgba(255, 255, 255, 0.20) !important;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.55), 0 12px 30px -4px rgba(0, 0, 0, 0.60), 0 0 16px rgba(255, 255, 255, 0.20) !important;
 }
 
 .btn-outline-primary {
     color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.20) !important;
-    border-top: 1.2px solid rgba(255, 255, 255, 0.45) !important;
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(8px) saturate(120%) !important;
-    -webkit-backdrop-filter: blur(8px) saturate(120%) !important;
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    border-top: 1.2px solid rgba(255, 255, 255, 0.50) !important;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(14px) saturate(130%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(130%) !important;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.18);
 }
 
 .btn-outline-primary:hover {
-    background: rgba(255, 255, 255, 0.16);
-    border-color: rgba(255, 255, 255, 0.35) !important;
-    border-top-color: rgba(255, 255, 255, 0.70) !important;
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.38) !important;
+    border-top-color: rgba(255, 255, 255, 0.75) !important;
     color: #ffffff;
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 16px rgba(255, 255, 255, 0.18);
 }
 
 .btn-outline-light {
     color: var(--ios-text-secondary) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.28) !important;
-    background: rgba(255, 255, 255, 0.05) !important;
-    backdrop-filter: blur(8px) saturate(120%) !important;
-    -webkit-backdrop-filter: blur(8px) saturate(120%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.35) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    backdrop-filter: blur(14px) saturate(130%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(130%) !important;
 }
 
 .btn-outline-light:hover {
     color: #ffffff !important;
-    border-color: rgba(255, 255, 255, 0.26) !important;
-    border-top-color: rgba(255, 255, 255, 0.60) !important;
-    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.30) !important;
+    border-top-color: rgba(255, 255, 255, 0.70) !important;
+    background: rgba(255, 255, 255, 0.15) !important;
     transform: translateY(-1px);
 }
 
@@ -1338,8 +1370,8 @@ body::after {
 
 .hk-toolbar-card {
     background: var(--ios-glass-surface) !important;
-    backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
-    -webkit-backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
+    backdrop-filter: blur(24px) saturate(160%) brightness(105%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(160%) brightness(105%) !important;
     border: 1px solid var(--ios-glass-border) !important;
     border-top: 1.5px solid var(--ios-glass-specular-top) !important;
     border-left: 1.2px solid var(--ios-glass-specular-left) !important;
@@ -1354,22 +1386,22 @@ body::after {
     gap: 0.55rem;
     flex-wrap: wrap;
     align-items: center;
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(8px) saturate(120%);
-    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(16px) saturate(130%);
+    -webkit-backdrop-filter: blur(16px) saturate(130%);
     padding: 4px 6px;
     border-radius: var(--ios-radius-pill);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.10);
 }
 
 /* Inactive Filter Pill */
 .hk-filter-pill {
-    background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(6px) saturate(120%);
-    -webkit-backdrop-filter: blur(6px) saturate(120%);
-    border: 1px solid rgba(255, 255, 255, 0.10);
-    border-top: 1px solid rgba(255, 255, 255, 0.22);
-    color: rgba(255, 255, 255, 0.60);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(14px) saturate(130%);
+    -webkit-backdrop-filter: blur(14px) saturate(130%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-top: 1px solid rgba(255, 255, 255, 0.30);
+    color: rgba(255, 255, 255, 0.70);
     padding: 0.40rem 1rem;
     border-radius: var(--ios-radius-pill);
     font-size: 0.82rem;
@@ -1379,16 +1411,16 @@ body::after {
     align-items: center;
     gap: 0.45rem;
     transition: all 0.2s var(--ios-spring);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15);
 }
 
 .hk-filter-pill:hover {
     color: #ffffff;
-    background: rgba(255, 255, 255, 0.09);
-    backdrop-filter: blur(8px) saturate(130%);
-    -webkit-backdrop-filter: blur(8px) saturate(130%);
-    border-color: rgba(255, 255, 255, 0.22);
-    border-top-color: rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border-color: rgba(255, 255, 255, 0.26);
+    border-top-color: rgba(255, 255, 255, 0.60);
     transform: translateY(-1px);
 }
 
@@ -1398,16 +1430,16 @@ body::after {
 
 /* ACTIVE FILTER PILL: Liquid Glass Illuminated Capsule */
 .hk-filter-pill.active {
-    background: rgba(255, 255, 255, 0.16) !important;
-    backdrop-filter: blur(10px) saturate(140%) brightness(106%) !important;
-    -webkit-backdrop-filter: blur(10px) saturate(140%) brightness(106%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.24) !important;
-    border-top: 1.5px solid rgba(255, 255, 255, 0.65) !important;
+    background: rgba(255, 255, 255, 0.20) !important;
+    backdrop-filter: blur(18px) saturate(150%) brightness(108%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(150%) brightness(108%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.30) !important;
+    border-top: 1.5px solid rgba(255, 255, 255, 0.80) !important;
     color: #ffffff !important;
     font-weight: 600;
     box-shadow: 
-        inset 0 1px 1px rgba(255, 255, 255, 0.35),
-        0 4px 16px rgba(0, 0, 0, 0.35);
+        inset 0 1px 1px rgba(255, 255, 255, 0.45),
+        0 4px 16px rgba(0, 0, 0, 0.40);
 }
 
 .hk-filter-pill.active .badge {
@@ -1416,11 +1448,11 @@ body::after {
 
 /* View Switcher Controls */
 .hk-view-switch {
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(8px) saturate(120%);
-    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(16px) saturate(130%);
+    -webkit-backdrop-filter: blur(16px) saturate(130%);
     border: 1px solid var(--ios-glass-border);
-    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    border-top: 1px solid rgba(255, 255, 255, 0.30);
     border-radius: var(--ios-radius-md);
     padding: 4px;
     display: inline-flex;
@@ -1612,11 +1644,11 @@ body::after {
 
 .form-control,
 .form-select {
-    background-color: rgba(255, 255, 255, 0.075) !important;
-    backdrop-filter: blur(8px) saturate(120%) !important;
-    -webkit-backdrop-filter: blur(8px) saturate(120%) !important;
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(16px) saturate(130%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(130%) !important;
     border: 1px solid var(--ios-glass-border) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.25) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.35) !important;
     border-radius: var(--ios-radius-md) !important;
     color: #ffffff !important;
     padding: 0.72rem 1.05rem;
@@ -1646,11 +1678,11 @@ body::after {
    ========================================================================== */
 
 .alert {
-    background: rgba(255, 255, 255, 0.05) !important;
-    backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
-    -webkit-backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    border-top: 1.5px solid rgba(255, 255, 255, 0.35) !important;
+    background: rgba(255, 255, 255, 0.07) !important;
+    backdrop-filter: blur(20px) saturate(140%) brightness(105%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(140%) brightness(105%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    border-top: 1.5px solid rgba(255, 255, 255, 0.45) !important;
     border-radius: var(--ios-radius-lg) !important;
     color: #ffffff !important;
     box-shadow: var(--ios-glass-inner), var(--ios-glass-shadow);
@@ -1756,9 +1788,8 @@ body::after {
     position: relative;
     border-radius: var(--ios-radius-xl);
     background: var(--ios-glass-surface) !important;
-    background-color: rgba(10, 14, 24, 0.32) !important;
-    backdrop-filter: blur(8px) saturate(125%) brightness(103%) !important;
-    -webkit-backdrop-filter: blur(8px) saturate(125%) brightness(103%) !important;
+    backdrop-filter: blur(24px) saturate(160%) brightness(105%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(160%) brightness(105%) !important;
     border: 1px solid var(--ios-glass-border) !important;
     border-top: 1.5px solid var(--ios-glass-specular-top) !important;
     box-shadow: var(--ios-glass-inner), var(--ios-glass-shadow);
@@ -1767,7 +1798,7 @@ body::after {
 
 .bento-card:hover {
     transform: translateY(-4px);
-    border-color: rgba(255, 255, 255, 0.35) !important;
+    border-color: rgba(255, 255, 255, 0.40) !important;
     box-shadow: var(--ios-glass-inner), var(--ios-glass-shadow-hover);
 }
 
@@ -1779,9 +1810,9 @@ body::after {
     position: relative;
     margin-top: 5.5rem;
     padding: 4.5rem 0 2.5rem;
-    background: linear-gradient(180deg, rgba(14, 19, 34, 0.42) 0%, rgba(7, 9, 16, 0.88) 100%) !important;
-    backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
-    -webkit-backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
+    background: linear-gradient(180deg, rgba(14, 19, 34, 0.65) 0%, rgba(7, 9, 16, 0.92) 100%) !important;
+    backdrop-filter: blur(24px) saturate(140%) brightness(104%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(140%) brightness(104%) !important;
     border-top: 1.5px solid rgba(255, 255, 255, 0.55) !important;
     box-shadow: 
         inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.40),
@@ -1954,8 +1985,8 @@ body::after {
 
 .bouncy-accordion-item {
     background: var(--ios-glass-surface) !important;
-    backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
-    -webkit-backdrop-filter: blur(8px) saturate(130%) brightness(104%) !important;
+    backdrop-filter: blur(20px) saturate(140%) brightness(105%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(140%) brightness(105%) !important;
     border: 1px solid var(--ios-glass-border) !important;
     border-top: 1.5px solid var(--ios-glass-specular-top) !important;
     border-left: 1.2px solid var(--ios-glass-specular-left) !important;
