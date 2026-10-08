@@ -119,6 +119,19 @@
         gap: 20px;
         flex-wrap: wrap;
       }
+      .panel-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .table-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
       .eyebrow {
         font-size: 11px;
         font-weight: 700;
@@ -547,11 +560,15 @@
               Manage staff access, roles and account status.
             </p>
           </div>
-          <a th:href="@{/admin/users/new}" class="action">
-            <i class="bi bi-plus-lg" aria-hidden="true"></i>
-            Add User
-          </a>
-          <a th:href="@{/admin/audit-logs}" class="action">Audit Logs</a>
+          <div class="panel-actions">
+            <a th:href="@{/admin/users/new}" class="action">
+              <i class="bi bi-plus-lg" aria-hidden="true"></i>
+              Add User
+            </a>
+            <a th:href="@{/admin/audit-logs}" class="action secondary">
+              <i class="bi bi-clock-history" aria-hidden="true"></i>Audit Logs</a
+            >
+          </div>
         </div>
         <div class="table-wrap">
           <table class="admin-table">
@@ -586,25 +603,27 @@
                   >
                 </td>
                 <td>
-                  <a
-                    th:href="@{/admin/users/edit/{id}(id=${u.id})}"
-                    class="action secondary small"
-                    >Edit</a
-                  >
-                  <a
-                    th:if="${u.status == 'ACTIVE'}"
-                    th:href="@{/admin/users/deactivate/{id}(id=${u.id})}"
-                    class="action danger small"
-                    onclick="return confirm('Deactivate this user?');"
-                    >Deactivate</a
-                  >
-                  <a
-                    th:if="${u.status != 'ACTIVE'}"
-                    th:href="@{/admin/users/activate/{id}(id=${u.id})}"
-                    class="action secondary small"
-                    onclick="return confirm('Activate this user?');"
-                    >Activate</a
-                  >
+                  <div class="table-actions">
+                    <a
+                      th:href="@{/admin/users/edit/{id}(id=${u.id})}"
+                      class="action secondary small"
+                      >Edit</a
+                    >
+                    <a
+                      th:if="${u.status == 'ACTIVE'}"
+                      th:href="@{/admin/users/deactivate/{id}(id=${u.id})}"
+                      class="action danger small"
+                      onclick="return confirm('Deactivate this user?');"
+                      >Deactivate</a
+                    >
+                    <a
+                      th:if="${u.status != 'ACTIVE'}"
+                      th:href="@{/admin/users/activate/{id}(id=${u.id})}"
+                      class="action secondary small"
+                      onclick="return confirm('Activate this user?');"
+                      >Activate</a
+                    >
+                  </div>
                 </td>
               </tr>
               <tr th:if="${#lists.isEmpty(users)}">

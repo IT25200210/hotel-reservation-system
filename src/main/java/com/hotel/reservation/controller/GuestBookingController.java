@@ -30,6 +30,7 @@ public class GuestBookingController {
 
     @GetMapping
     public String page(
+            jakarta.servlet.http.HttpServletRequest request,
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate arrival,
             @RequestParam(required = false)
@@ -38,6 +39,12 @@ public class GuestBookingController {
             @RequestParam(required = false) String lookupRef,
             @RequestParam(required = false) String receiptRef,
             Model model) {
+
+        // Create session early: Thymeleaf th:action needs a CSRF token which
+        // creates a session. Without this, rendering the large rooms table
+        // commits the response before the booking form is processed, causing
+        // "Cannot create a session after the response has been committed".
+        request.getSession(true);
 
         List<DeskRoom> rooms = guests.listRooms(type);
         model.addAttribute("rooms", rooms);

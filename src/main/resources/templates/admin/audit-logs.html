@@ -119,6 +119,12 @@
         gap: 20px;
         flex-wrap: wrap;
       }
+      .panel-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
       .eyebrow {
         font-size: 11px;
         font-weight: 700;
@@ -540,6 +546,11 @@
             <p class="description">
               Review recorded actions and changes across the hotel.
             </p>
+          </div>
+          <div class="panel-actions">
+            <a th:href="@{/admin/users}" class="action secondary"
+              ><i class="bi bi-arrow-left" aria-hidden="true"></i>Back to Users</a
+            >
           </div>
         </div>
         <div class="table-wrap">
