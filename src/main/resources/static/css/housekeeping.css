@@ -34,14 +34,14 @@
     --ios-bg: #090c13;
     --ios-surface-solid: #111622;
     
-    /* Authentic Frosted Glass Material (Exact Navigation Bar Capsule Glass Texture) */
-    --ios-glass-surface: rgba(255, 255, 255, 0.06);
-    --ios-glass-surface-hover: rgba(255, 255, 255, 0.10);
-    --ios-glass-elevated: rgba(255, 255, 255, 0.08);
+    /* Authentic Frosted Glass Material (Rich Dark Slate Frosted Glass) */
+    --ios-glass-surface: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%), rgba(11, 15, 25, 0.78);
+    --ios-glass-surface-hover: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%), rgba(14, 19, 32, 0.84);
+    --ios-glass-elevated: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.03) 100%), rgba(13, 17, 28, 0.82);
 
     /* Fine Specular Chamfer Edges (Crisp Light Catch matching Navbar Capsule) */
     --ios-glass-border: rgba(255, 255, 255, 0.15);
-    --ios-glass-border-hover: rgba(255, 255, 255, 0.25);
+    --ios-glass-border-hover: rgba(255, 255, 255, 0.28);
     --ios-glass-specular-top: rgba(255, 255, 255, 0.45);
     --ios-glass-specular-left: rgba(255, 255, 255, 0.18);
     --ios-glass-specular-right: rgba(255, 255, 255, 0.12);
@@ -49,8 +49,8 @@
 
     /* Navbar Glass Inner Glow & Drop Shadow */
     --ios-glass-inner: inset 0 1px 1px rgba(255, 255, 255, 0.25);
-    --ios-glass-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.45);
-    --ios-glass-shadow-hover: 0 12px 30px -4px rgba(0, 0, 0, 0.55), 0 0 16px rgba(255, 255, 255, 0.08);
+    --ios-glass-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.55);
+    --ios-glass-shadow-hover: 0 16px 36px -4px rgba(0, 0, 0, 0.65), 0 0 16px rgba(255, 255, 255, 0.08);
 
     /* Apple System Typography */
     --ios-text-primary: #ffffff;
@@ -208,8 +208,8 @@ body::after {
 .hk-room-tile,
 .frosted-glass {
     background: var(--ios-glass-surface) !important;
-    backdrop-filter: blur(14px) saturate(140%) brightness(103%) !important;
-    -webkit-backdrop-filter: blur(14px) saturate(140%) brightness(103%) !important;
+    backdrop-filter: blur(16px) saturate(140%) brightness(103%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(140%) brightness(103%) !important;
     border: 1px solid var(--ios-glass-border) !important;
     border-top: 1.5px solid var(--ios-glass-specular-top) !important;
     border-left: 1px solid var(--ios-glass-border) !important;
@@ -226,15 +226,15 @@ body::after {
     overflow: visible; /* Never clip content or text */
 }
 
-/* Direct Frosted Glass Implementation (Matches Navigation Bar Capsule Texture) */
+/* Direct Frosted Glass Implementation */
 .frosted-glass {
-    background: rgba(255, 255, 255, 0.06) !important;
-    -webkit-backdrop-filter: blur(14px) saturate(140%) brightness(103%) !important;
-    backdrop-filter: blur(14px) saturate(140%) brightness(103%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    border-top: 1.5px solid rgba(255, 255, 255, 0.45) !important;
+    background: var(--ios-glass-surface) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(140%) brightness(103%) !important;
+    backdrop-filter: blur(16px) saturate(140%) brightness(103%) !important;
+    border: 1px solid var(--ios-glass-border) !important;
+    border-top: 1.5px solid var(--ios-glass-specular-top) !important;
     border-radius: var(--ios-radius-xl);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.25), 0 8px 24px -4px rgba(0, 0, 0, 0.45) !important;
+    box-shadow: var(--ios-glass-inner), var(--ios-glass-shadow) !important;
 }
 
 /* Ensure inner interactive elements remain sharply readable above frosted layers */
