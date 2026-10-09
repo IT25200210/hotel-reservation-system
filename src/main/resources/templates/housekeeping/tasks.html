@@ -359,9 +359,13 @@
                 type="text"
                 name="roomNumber"
                 class="form-control border-start-0"
+                list="roomFilterOptions"
                 placeholder="Filter by Room..."
                 th:value="${roomFilter}"
               />
+              <datalist id="roomFilterOptions">
+                <option th:each="r : ${availableRooms}" th:value="${r.number}" th:text="'Room ' + ${r.number} + ' (' + ${r.type} + ')'"></option>
+              </datalist>
             </div>
           </div>
           <div class="col-auto">

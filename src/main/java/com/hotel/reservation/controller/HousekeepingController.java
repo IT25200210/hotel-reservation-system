@@ -1,7 +1,9 @@
 package com.hotel.reservation.controller;
 
+import com.hotel.reservation.entity.DeskRoom;
 import com.hotel.reservation.entity.HousekeepingTask;
 import com.hotel.reservation.entity.MaintenanceRequest;
+import com.hotel.reservation.repository.DeskRoomRepository;
 import com.hotel.reservation.service.HousekeepingTaskService;
 import com.hotel.reservation.service.MaintenanceRequestService;
 import com.hotel.reservation.service.RoomCleaningStatusService;
@@ -22,15 +24,18 @@ public class HousekeepingController {
     private final RoomCleaningStatusService roomStatusService;
     private final MaintenanceRequestService maintenanceService;
     private final UserRepository userRepository;
+    private final DeskRoomRepository deskRoomRepository;
 
     public HousekeepingController(HousekeepingTaskService taskService,
                                   RoomCleaningStatusService roomStatusService,
                                   MaintenanceRequestService maintenanceService,
-                                  UserRepository userRepository) {
+                                  UserRepository userRepository,
+                                  DeskRoomRepository deskRoomRepository) {
         this.taskService = taskService;
         this.roomStatusService = roomStatusService;
         this.maintenanceService = maintenanceService;
         this.userRepository = userRepository;
+        this.deskRoomRepository = deskRoomRepository;
     }
 
     // ---------- Root Redirect to Dashboard ----------
@@ -52,6 +57,7 @@ public class HousekeepingController {
         model.addAttribute("pendingCount", taskService.getTasks("PENDING", null).size());
         model.addAttribute("inProgressCount", taskService.getTasks("IN_PROGRESS", null).size());
         model.addAttribute("completedCount", taskService.getTasks("COMPLETED", null).size());
+        populateRoomList(model);
         return "housekeeping/tasks";
     }
 
@@ -59,6 +65,7 @@ public class HousekeepingController {
     public String showCreateForm(Model model) {
         model.addAttribute("task", new HousekeepingTask());
         populateStaffList(model);
+        populateRoomList(model);
         return "housekeeping/task-form";
     }
 
@@ -72,7 +79,13 @@ public class HousekeepingController {
     public String showEditForm(@PathVariable Long id, Model model) {
         model.addAttribute("task", taskService.getTaskById(id));
         populateStaffList(model);
+        populateRoomList(model);
         return "housekeeping/task-form";
+    }
+
+    private void populateRoomList(Model model) {
+        List<DeskRoom> rooms = deskRoomRepository.findByActiveTrueOrderByNumberAsc();
+        model.addAttribute("availableRooms", rooms);
     }
 
     private void populateStaffList(Model model) {
@@ -152,6 +165,7 @@ public class HousekeepingController {
             request.setReportedBy(authentication.getName());
         }
         model.addAttribute("request", request);
+        populateRoomList(model);
         return "housekeeping/maintenance-form";
     }
 
@@ -164,6 +178,7 @@ public class HousekeepingController {
     @GetMapping("/maintenance/edit/{id}")
     public String showEditMaintenanceForm(@PathVariable Long id, Model model) {
         model.addAttribute("request", maintenanceService.getRequestById(id));
+        populateRoomList(model);
         return "housekeeping/maintenance-form";
     }
 
