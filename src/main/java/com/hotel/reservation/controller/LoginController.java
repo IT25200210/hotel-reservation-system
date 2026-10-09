@@ -15,26 +15,40 @@ import java.util.Set;
 @Controller
 public class LoginController {
 
+    @GetMapping("/")
+    public String root(Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()
+                && !(authentication instanceof AnonymousAuthenticationToken)) {
+            return redirectToUserDashboard(authentication);
+        }
+        return "redirect:/login";
+    }
+
     @GetMapping("/login")
     public String login(Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()
                 && !(authentication instanceof AnonymousAuthenticationToken)) {
-            Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-            if (roles.contains("ROLE_ADMIN")) {
-                return "redirect:/admin/users";
-            } else if (roles.contains("ROLE_GM")) {
-                return "redirect:/manager/dashboard";
-            } else if (roles.contains("ROLE_RESERVATIONS")) {
-                return "redirect:/reservations";
-            } else if (roles.contains("ROLE_INVENTORY")) {
-                return "redirect:/inventory";
-            } else if (roles.contains("ROLE_FINANCE")) {
-                return "redirect:/finance";
-            } else if (roles.contains("ROLE_HOUSEKEEPING")) {
-                return "redirect:/housekeeping";
-            }
+            return redirectToUserDashboard(authentication);
         }
         return "login";
+    }
+
+    private String redirectToUserDashboard(Authentication authentication) {
+        Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+        if (roles.contains("ROLE_ADMIN")) {
+            return "redirect:/admin/users";
+        } else if (roles.contains("ROLE_GM")) {
+            return "redirect:/manager/dashboard";
+        } else if (roles.contains("ROLE_RESERVATIONS")) {
+            return "redirect:/reservations";
+        } else if (roles.contains("ROLE_INVENTORY")) {
+            return "redirect:/inventory";
+        } else if (roles.contains("ROLE_FINANCE")) {
+            return "redirect:/finance";
+        } else if (roles.contains("ROLE_HOUSEKEEPING")) {
+            return "redirect:/housekeeping";
+        }
+        return "redirect:/housekeeping";
     }
 
     @GetMapping("/logout")
