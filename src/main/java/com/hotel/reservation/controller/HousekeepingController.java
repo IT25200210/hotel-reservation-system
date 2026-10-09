@@ -87,6 +87,15 @@ public class HousekeepingController {
         model.addAttribute("availableRooms", rooms);
     }
 
+    public static final List<String> STAFF_TYPES = List.of(
+            "Room Attendant",
+            "Deep Clean Specialist",
+            "Linen & Laundry Attendant",
+            "VIP & Turndown Attendant",
+            "Floor Supervisor",
+            "General Duty Housekeeper"
+    );
+
     private void populateStaffList(Model model) {
         List<String> staff = userRepository.findAll().stream()
                 .filter(u -> u.getRole() != null && "ROLE_HOUSEKEEPING".equals(u.getRole().getName()))
@@ -96,6 +105,7 @@ public class HousekeepingController {
             staff = List.of("housekeeping");
         }
         model.addAttribute("staffMembers", staff);
+        model.addAttribute("staffTypes", STAFF_TYPES);
     }
 
     @PostMapping("/tasks/update/{id}")

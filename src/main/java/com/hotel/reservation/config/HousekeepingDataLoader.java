@@ -93,7 +93,8 @@ public class HousekeepingDataLoader implements CommandLineRunner {
         if (taskRepository.count() == 0) {
             HousekeepingTask task = new HousekeepingTask();
             task.setRoomNumber("101");
-            task.setAssignedTo("housekeeping");
+            task.setAssignedTo("Maria Santos");
+            task.setStaffType("Room Attendant");
             task.setNotes("Checkout cleaning - change linens, restock minibar");
             taskRepository.save(task);
         }

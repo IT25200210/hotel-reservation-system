@@ -22,6 +22,9 @@ public class HousekeepingTask {
     @Column(nullable = false)
     private String assignedTo;
 
+    @Column
+    private String staffType;
+
     @Column(nullable = false)
     private String status = STATUS_PENDING; // PENDING, IN_PROGRESS, COMPLETED
 
@@ -37,6 +40,8 @@ public class HousekeepingTask {
     public void setRoomNumber(String roomNumber) { this.roomNumber = roomNumber; }
     public String getAssignedTo() { return assignedTo; }
     public void setAssignedTo(String assignedTo) { this.assignedTo = assignedTo; }
+    public String getStaffType() { return staffType; }
+    public void setStaffType(String staffType) { this.staffType = staffType; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
     public String getNotes() { return notes; }

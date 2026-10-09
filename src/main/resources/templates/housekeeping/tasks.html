@@ -428,10 +428,18 @@
                     ></span>
                   </td>
                   <td>
-                    <span class="hk-staff-badge">
-                      <i class="bi bi-person"></i>
-                      <span th:text="${t.assignedTo}"></span>
-                    </span>
+                    <div class="d-inline-flex flex-column align-items-start gap-1">
+                      <span class="hk-staff-badge">
+                        <i class="bi bi-person"></i>
+                        <span th:text="${t.assignedTo}"></span>
+                      </span>
+                      <span
+                        th:if="${t.staffType != null and !t.staffType.isEmpty()}"
+                        class="badge bg-secondary bg-opacity-25 text-white-50"
+                        style="font-size: 0.68rem; font-weight: 500; letter-spacing: 0.02em;"
+                        th:text="${t.staffType}"
+                      ></span>
+                    </div>
                   </td>
                   <td>
                     <span

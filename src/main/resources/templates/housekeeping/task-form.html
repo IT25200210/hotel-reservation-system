@@ -231,7 +231,7 @@
               </label>
               <select
                 th:field="*{roomNumber}"
-                class="form-select font-monospace"
+                class="form-select"
                 required
               >
                 <option value="" disabled th:selected="${task.roomNumber == null || task.roomNumber.isEmpty()}">
@@ -246,25 +246,61 @@
             </div>
 
             <div class="mb-3">
-              <label class="form-label"
-                ><i class="bi bi-person-badge text-white"></i>Assigned Staff
-                Member</label
+              <label class="form-label">
+                <i class="bi bi-tag text-white"></i>Staff Duty Type / Role
+              </label>
+              <select
+                th:field="*{staffType}"
+                class="form-select"
+                id="staffTypeSelect"
               >
-              <input
-                type="text"
-                th:field="*{assignedTo}"
-                class="form-control"
-                list="staffOptions"
-                placeholder="e.g. housekeeping"
-                required
-              />
-              <datalist id="staffOptions">
+                <option value="" th:selected="${task.staffType == null || task.staffType.isEmpty()}">
+                  -- Select Staff Type / Role --
+                </option>
                 <option
-                  th:each="staff : ${staffMembers}"
-                  th:value="${staff}"
-                  th:text="${staff}"
+                  th:each="type : ${staffTypes}"
+                  th:value="${type}"
+                  th:text="${type}"
                 ></option>
-              </datalist>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">
+                <i class="bi bi-person-badge text-white"></i>Assigned Staff Member
+              </label>
+              <select
+                th:field="*{assignedTo}"
+                class="form-select"
+                id="assignedToSelect"
+                required
+              >
+                <option value="" disabled th:selected="${task.assignedTo == null || task.assignedTo.isEmpty()}">
+                  -- Select Assigned Staff Member --
+                </option>
+                <optgroup label="Room Attendants (Daily Turnover)">
+                  <option value="Maria Santos" data-role="Room Attendant">Maria Santos — Room Attendant</option>
+                  <option value="David Chen" data-role="Room Attendant">David Chen — Room Attendant</option>
+                  <option value="Amina Yusuf" data-role="Room Attendant">Amina Yusuf — Room Attendant</option>
+                </optgroup>
+                <optgroup label="Deep Clean Specialists">
+                  <option value="Carlos Ortiz" data-role="Deep Clean Specialist">Carlos Ortiz — Deep Clean Specialist</option>
+                  <option value="John Miller" data-role="Deep Clean Specialist">John Miller — Sanitation Specialist</option>
+                </optgroup>
+                <optgroup label="Linen &amp; Laundry Attendants">
+                  <option value="Elena Rostova" data-role="Linen &amp; Laundry Attendant">Elena Rostova — Linen &amp; Laundry</option>
+                </optgroup>
+                <optgroup label="VIP &amp; Turndown Attendants">
+                  <option value="Sarah Jenkins" data-role="VIP &amp; Turndown Attendant">Sarah Jenkins — VIP Turndown</option>
+                </optgroup>
+                <optgroup label="Floor Supervisors">
+                  <option value="Michael Chang" data-role="Floor Supervisor">Michael Chang — Floor Supervisor</option>
+                </optgroup>
+                <optgroup label="General Housekeeping Accounts">
+                  <option value="housekeeping" data-role="General Duty Housekeeper">housekeeping — Duty Housekeeper</option>
+                  <option value="hkstaff" data-role="General Duty Housekeeper">hkstaff — Housekeeping Staff</option>
+                </optgroup>
+              </select>
             </div>
 
             <div class="mb-3">
@@ -323,5 +359,18 @@
     </div>
 
     <script th:src="@{/js/housekeeping.js}"></script>
+    <script>
+      const staffSelect = document.getElementById('assignedToSelect');
+      const roleSelect = document.getElementById('staffTypeSelect');
+      if (staffSelect && roleSelect) {
+        staffSelect.addEventListener('change', function () {
+          const selectedOption = staffSelect.options[staffSelect.selectedIndex];
+          const role = selectedOption.getAttribute('data-role');
+          if (role) {
+            roleSelect.value = role;
+          }
+        });
+      }
+    </script>
   </body>
 </html>

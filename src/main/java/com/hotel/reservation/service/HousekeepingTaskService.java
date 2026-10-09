@@ -57,6 +57,7 @@ public class HousekeepingTaskService {
         HousekeepingTask existing = getTaskById(id);
         existing.setRoomNumber(updated.getRoomNumber());
         existing.setAssignedTo(updated.getAssignedTo());
+        existing.setStaffType(updated.getStaffType());
         existing.setNotes(updated.getNotes());
         if (updated.getStatus() != null && !updated.getStatus().isBlank()) {
             existing.setStatus(updated.getStatus());
