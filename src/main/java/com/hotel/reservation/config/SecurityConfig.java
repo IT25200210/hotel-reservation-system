@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.csrf.CsrfException;
 
 import java.io.IOException;
 import java.util.Set;
@@ -130,16 +131,22 @@ public class SecurityConfig {
                 )
 
                 .logout(logout -> logout
-
                         .logoutUrl("/logout")
-
                         .logoutSuccessUrl("/login?logout")
-
                         .invalidateHttpSession(true)
-
                         .deleteCookies("JSESSIONID")
-
                         .permitAll()
+                )
+
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            if (accessDeniedException instanceof CsrfException
+                                    || "/login".equals(request.getRequestURI())) {
+                                response.sendRedirect("/login?expired");
+                                return;
+                            }
+                            response.sendRedirect("/error");
+                        })
                 );
 
         return http.build();

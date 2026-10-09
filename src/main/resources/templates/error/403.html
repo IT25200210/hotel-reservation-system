@@ -289,15 +289,8 @@
             <span class="mono">inventory</span>.
           </p>
           <div class="actions">
-            <a th:href="@{/login}" class="action">Switch user</a>
-            <form th:action="@{/logout}" method="post" style="display: inline">
-              <input
-                type="hidden"
-                th:if="${_csrf != null}"
-                th:name="${_csrf.parameterName}"
-                th:value="${_csrf.token}"
-              /><button class="action secondary">Logout</button>
-            </form>
+            <a th:href="@{/logout}" class="action">Switch user / Re-login</a>
+            <a th:href="@{/logout}" class="action secondary">Logout</a>
             <a href="javascript:history.back()" class="action secondary"
               >Go back</a
             >
