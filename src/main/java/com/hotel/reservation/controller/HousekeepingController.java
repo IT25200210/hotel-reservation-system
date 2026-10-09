@@ -12,7 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -121,6 +120,9 @@ public class HousekeepingController {
 
     @GetMapping("/rooms")
     public String roomStatusBoard(Model model) {
+        deskRoomRepository.findByActiveTrueOrderByNumberAsc().forEach(dr -> {
+            roomStatusService.ensureRoom(dr.getNumber());
+        });
         var rooms = roomStatusService.getAllRooms();
         model.addAttribute("rooms", rooms);
         model.addAttribute("dirtyCount", rooms.stream().filter(r -> "DIRTY".equals(r.getStatus())).count());
@@ -128,16 +130,6 @@ public class HousekeepingController {
         model.addAttribute("cleanCount", rooms.stream().filter(r -> "CLEAN".equals(r.getStatus())).count());
         model.addAttribute("inspectedCount", rooms.stream().filter(r -> "INSPECTED".equals(r.getStatus())).count());
         return "housekeeping/rooms";
-    }
-
-    @PostMapping("/rooms/add")
-    public String addRoom(@RequestParam String roomNumber, RedirectAttributes redirectAttributes) {
-        try {
-            roomStatusService.createRoom(roomNumber);
-        } catch (RuntimeException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-        }
-        return "redirect:/housekeeping/rooms";
     }
 
     @GetMapping("/rooms/status/{id}/{status}")

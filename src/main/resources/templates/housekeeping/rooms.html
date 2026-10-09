@@ -206,107 +206,9 @@
       </p>
     </div>
     <div>
-      <button
-              class="btn btn-primary"
-              type="button"
-              onclick="
-              const it = document.getElementById('addRoomItem');
-              it.classList.toggle('is-open');
-              document
-                .getElementById('addRoomHeader')
-                .setAttribute(
-                  'aria-expanded',
-                  it.classList.contains('is-open'),
-                );
-              if (it.classList.contains('is-open'))
-                setTimeout(
-                  () =>
-                    document.querySelector('input[name=roomNumber]')?.focus(),
-                  150,
-                );
-            "
-      >
-        <i class="bi bi-plus-lg me-1"></i>Add Room
-      </button>
-    </div>
-  </div>
-
-  <!-- Error Alert -->
-  <div
-          th:if="${error}"
-          class="alert alert-danger border-0 shadow-sm mb-4"
-          style="background: rgba(255, 69, 58, 0.18); color: #ff6961"
-  >
-    <i class="bi bi-exclamation-triangle me-2"></i
-    ><span th:text="${error}"></span>
-  </div>
-
-  <!-- Expandable Add Room Bar (@skiper-ui/skiper103 Bouncy Accordion) -->
-  <div
-          class="bouncy-accordion mb-4 hk-fade-in delay-1"
-          id="addRoomAccordion"
-  >
-    <div class="bouncy-accordion-item" id="addRoomItem">
-      <button
-              class="bouncy-accordion-header"
-              type="button"
-              aria-expanded="false"
-              id="addRoomHeader"
-      >
-        <div class="bouncy-accordion-header-left">
-          <div class="bouncy-accordion-icon cyan">
-            <i class="bi bi-door-open"></i>
-          </div>
-          <div class="bouncy-accordion-title-wrap">
-            <div class="bouncy-accordion-title">
-              Add New Hotel Room
-              <span class="bouncy-tag">Inventory Provisioning</span>
-            </div>
-            <div class="bouncy-accordion-subtitle">
-              Register a new room suite into real-time floor monitoring and
-              cleaning dispatch
-            </div>
-          </div>
-        </div>
-        <div class="bouncy-accordion-chevron-wrap">
-          <i class="bi bi-chevron-down"></i>
-        </div>
-      </button>
-      <div class="bouncy-accordion-content">
-        <div class="bouncy-accordion-inner">
-          <div class="bouncy-accordion-body">
-            <form
-                    th:action="@{/housekeeping/rooms/add}"
-                    method="post"
-                    class="row g-3 align-items-center"
-            >
-              <div class="col-md-4">
-                <label class="form-label text-secondary small"
-                ><i class="bi bi-hash me-1"></i>Room Number</label
-                >
-                <input
-                        type="text"
-                        name="roomNumber"
-                        class="form-control"
-                        placeholder="e.g. 105, 201, 304"
-                        required
-                />
-              </div>
-              <div class="col-md-auto align-self-end">
-                <button type="submit" class="btn btn-primary">
-                  <i class="bi bi-check-lg me-1"></i>Save Room
-                </button>
-              </div>
-              <div class="col-md text-secondary small align-self-end pb-2">
-                <i class="bi bi-info-circle me-1 text-white"></i>New rooms
-                initialize as
-                <span class="badge badge-dirty">Dirty</span> until
-                inspected.
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
+      <a th:href="@{/housekeeping/tasks/new}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i>Assign Task
+      </a>
     </div>
   </div>
 
@@ -532,7 +434,7 @@
       <i class="bi bi-door-closed text-secondary fs-1 mb-2"></i>
       <h5 class="text-white">No rooms currently recorded</h5>
       <p class="text-secondary small">
-        Add your first hotel room above to track cleaning status.
+        Rooms configured by General Manager in inventory will appear here.
       </p>
     </div>
 
