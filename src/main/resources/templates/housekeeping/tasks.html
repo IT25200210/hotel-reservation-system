@@ -348,25 +348,25 @@
             </select>
           </div>
           <div class="col-auto">
-            <div class="input-group input-group-sm">
-              <span
-                class="input-group-text bg-transparent border-end-0 text-secondary"
-                style="border-color: var(--ios-glass-border)"
+            <select
+              name="roomNumber"
+              class="form-select form-select-sm"
+              onchange="this.form.submit()"
+            >
+              <option
+                value=""
+                th:selected="${roomFilter == null or roomFilter.isEmpty()}"
               >
-                <i class="bi bi-door-closed"></i>
-              </span>
-              <input
-                type="text"
-                name="roomNumber"
-                class="form-control border-start-0"
-                list="roomFilterOptions"
-                placeholder="Filter by Room..."
-                th:value="${roomFilter}"
-              />
-              <datalist id="roomFilterOptions">
-                <option th:each="r : ${availableRooms}" th:value="${r.number}" th:text="'Room ' + ${r.number} + ' (' + ${r.type} + ')'"></option>
-              </datalist>
-            </div>
+                All Rooms
+              </option>
+              <option
+                th:each="r : ${availableRooms}"
+                th:value="${r.number}"
+                th:text="'Room ' + ${r.number} + ' (' + ${r.type} + ')'"
+                th:selected="${roomFilter == r.number}"
+              >
+              </option>
+            </select>
           </div>
           <div class="col-auto">
             <button type="submit" class="btn btn-sm btn-outline-primary">
