@@ -130,18 +130,6 @@ Spring's `DispatcherServlet` is the single entry point; `@Controller` classes wi
 - `src/main/java/com/hotel/reservation/controller/DeskErrorAdvice.java:6-7` —
   `@ControllerAdvice(assignableTypes = {FinanceController.class, ReservationsController.class})`
 
-## Explicitly not patterned: room-price calculation
-
-There is no `PricingStrategy` / Factory for pricing. The total is computed inline as `nightlyRate.multiply(BigDecimal.valueOf(nights))` with
-`ChronoUnit.DAYS.between(arrival, departure)`, duplicated across layers, plus a copy-pasted `money()` validator. This is the seam to introduce a Strategy
-if seasonal, weekend, or member pricing is ever needed.
-
-- `src/main/java/com/hotel/reservation/entity/DeskReservation.java:62-66` (constructor)
-- `src/main/java/com/hotel/reservation/entity/DeskReservation.java:131-135` (`update()`)
-- `src/main/java/com/hotel/reservation/service/GuestBookingService.java:59-65` (`money()`),
-  `:105-106` (total check)
-- `src/main/java/com/hotel/reservation/service/DeskOperations.java:210-215`, `:354-355`
-- `src/main/java/com/hotel/reservation/controller/GuestBookingController.java:57-66` (display totals)
 
 ## Summary table
 
