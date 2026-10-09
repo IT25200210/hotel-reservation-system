@@ -109,14 +109,15 @@ public class HousekeepingDataLoader implements CommandLineRunner {
     }
 
     private void ensureDeskRoom(String number, DeskRoom.RoomType type, BigDecimal rate, int capacity) {
-        if (!deskRoomRepository.existsByNumber(number)) {
-            DeskRoom room = new DeskRoom();
-            room.setNumber(number);
-            room.setType(type);
-            room.setNightlyRate(rate);
-            room.setCapacity(capacity);
-            room.setActive(true);
-            deskRoomRepository.save(room);
-        }
+        DeskRoom room = deskRoomRepository.findByNumber(number)
+                .orElseGet(DeskRoom::new);
+
+        room.setNumber(number);
+        room.setType(type);
+        room.setNightlyRate(rate);
+        room.setCapacity(capacity);
+        room.setActive(true);
+
+        deskRoomRepository.save(room);
     }
 }

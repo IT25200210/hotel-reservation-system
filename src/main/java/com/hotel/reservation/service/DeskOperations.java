@@ -59,16 +59,16 @@ public class DeskOperations {
         );
     }
 
-    // READ - get rooms from database
+    // READ - get active rooms from database
     @PreAuthorize("hasRole('RESERVATIONS')")
     public List<DeskRoom> rooms() {
-        return rooms.findAllByOrderByNumberAsc();
+        return rooms.findByActiveTrueOrderByNumberAsc();
     }
 
-    // READ - rooms filtered by type
+    // READ - active rooms filtered by type
     @PreAuthorize("hasRole('RESERVATIONS')")
     public List<DeskRoom> roomsByType(DeskRoom.RoomType type) {
-        return rooms.findByTypeOrderByNumberAsc(type);
+        return rooms.findByActiveTrueAndTypeOrderByNumberAsc(type);
     }
 
     private boolean reservationConflict(Long roomId,
@@ -84,11 +84,11 @@ public class DeskOperations {
                 );
     }
 
-    // READ - reservations
+    // READ - reservations with room loaded for Thymeleaf
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('RESERVATIONS','FINANCE')")
     public List<DeskReservation> reservations() {
-        return reservations.findAllByOrderByIdDesc();
+        return reservations.findAllWithRoomOrderByIdDesc();
     }
 
     // READ - stays (finance)
@@ -114,8 +114,10 @@ public class DeskOperations {
         } catch (IllegalArgumentException | NullPointerException ex) {
             throw new ResponseStatusException(CONFLICT, "Invalid request key");
         }
+
         DeskStay stay = stays.lockById(stayId)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Stay not found"));
+
         Optional<DeskPayment> previous = payments.findByRequestKey(key);
         if (previous.isPresent()) {
             require(previous.get().getStay().getId().equals(stayId)
@@ -123,11 +125,14 @@ public class DeskOperations {
                     "Request key was used for a different payment");
             return;
         }
+
         require(!stay.isCheckedOut(), "Stay is already checked out");
         require(amount.compareTo(stay.getBalance()) <= 0,
                 "Payment exceeds outstanding balance");
+
         DeskPayment payment = payments.save(new DeskPayment(stay, amount, key, actor()));
         stay.addPayment(amount);
+
         audit.log(actor(), "PAYMENT", "DeskPayment", payment.getId(),
                 "Payment recorded for stay " + stayId);
     }
@@ -164,10 +169,9 @@ public class DeskOperations {
                 "Guest name is required"
         );
 
-        return reservations
-                .findByGuestNameIgnoreCaseOrderByArrivalDesc(
-                        guestName.trim()
-                );
+        return reservations.findByGuestNameIgnoreCaseOrderByArrivalDesc(
+                guestName.trim()
+        );
     }
 
     // CREATE reservation
@@ -193,33 +197,18 @@ public class DeskOperations {
                 "Arrival must be today or later; departure must be after arrival"
         );
 
-        // Get the selected room from the database
         DeskRoom room = rooms.lockById(roomId)
-                .orElseThrow(
-                        () -> new ResponseStatusException(NOT_FOUND)
-                );
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
 
-        // Get the fixed nightly rate of that room
         BigDecimal rate = room.getNightlyRate();
-
-        // Validate room rate
         money(rate);
 
-        // Calculate total rate
-        long numberOfNights =
-                ChronoUnit.DAYS.between(arrival, departure);
-
-        BigDecimal totalRate =
-                rate.multiply(BigDecimal.valueOf(numberOfNights));
-
+        long numberOfNights = ChronoUnit.DAYS.between(arrival, departure);
+        BigDecimal totalRate = rate.multiply(BigDecimal.valueOf(numberOfNights));
         money(totalRate);
 
         require(
-                !reservationConflict(
-                        roomId,
-                        arrival,
-                        departure
-                ),
+                !reservationConflict(roomId, arrival, departure),
                 "Room has an overlapping confirmed reservation"
         );
 
@@ -233,8 +222,7 @@ public class DeskOperations {
         );
 
         require(
-                !arrival.equals(LocalDate.now())
-                        || !room.isOccupied(),
+                !arrival.equals(LocalDate.now()) || !room.isOccupied(),
                 "Room is currently occupied"
         );
 
@@ -247,11 +235,13 @@ public class DeskOperations {
                         rate
                 )
         );
-        // Simple non-production reference: GH-0001, GH-0002, ...
+
         created.setReference(String.format("GH-%04d", created.getId()));
+
         audit.log(actor(), "CREATE", "DeskReservation", created.getId(),
                 "Created reservation " + created.getReference()
                         + " for room " + room.getNumber());
+
         return created;
     }
 
@@ -280,24 +270,17 @@ public class DeskOperations {
         );
 
         DeskReservation reservation = reservations.lockById(id)
-                .orElseThrow(
-                        () -> new ResponseStatusException(NOT_FOUND)
-                );
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
 
         require(
-                reservation.getStatus()
-                        == DeskReservation.Status.CONFIRMED,
+                reservation.getStatus() == DeskReservation.Status.CONFIRMED,
                 "Only confirmed reservations can be modified"
         );
 
         DeskRoom room = rooms.lockById(roomId)
-                .orElseThrow(
-                        () -> new ResponseStatusException(NOT_FOUND)
-                );
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
 
-        // Get the selected room's fixed nightly rate
         BigDecimal rate = room.getNightlyRate();
-
         money(rate);
 
         boolean conflict = reservations
@@ -321,6 +304,7 @@ public class DeskOperations {
                 departure,
                 rate
         );
+
         audit.log(actor(), "UPDATE", "DeskReservation", reservation.getId(),
                 "Updated reservation " + reservation.getReference());
 
@@ -331,35 +315,46 @@ public class DeskOperations {
     @PreAuthorize("hasRole('FINANCE')")
     public DeskStay checkInReservation(Long reservationId) {
         DeskReservation reservation = reservations.lockById(reservationId)
-                .orElseThrow(
-                        () -> new ResponseStatusException(NOT_FOUND, "Booking not found")
-                );
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Booking not found"));
+
         require(
                 reservation.getStatus() == DeskReservation.Status.CONFIRMED,
                 "Reservation is not confirmed"
         );
-        // Demo mode (viva): check-in is allowed on any day, regardless
-        // of arrival/departure vs today. Only CONFIRMED status matters.
+
         DeskRoom room = rooms.lockById(reservation.getRoom().getId())
-                .orElseThrow(
-                        () -> new ResponseStatusException(NOT_FOUND, "Room not found")
-                );
-        // A room is truly occupied only when an active (not checked out)
-        // stay overlaps these dates. The plain occupied flag goes stale
-        // because nothing ever cleared it, so it must not block check-in
-        // when the overlapping stay is already past/checked out.
-        require(!stays.existsByRoomIdAndCheckedOutFalseAndArrivalLessThanAndDepartureGreaterThan(
-                        room.getId(), reservation.getDeparture(), reservation.getArrival()),
-                "Room is still occupied");
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Room not found"));
+
+        require(
+                !stays.existsByRoomIdAndCheckedOutFalseAndArrivalLessThanAndDepartureGreaterThan(
+                        room.getId(),
+                        reservation.getDeparture(),
+                        reservation.getArrival()
+                ),
+                "Room is still occupied"
+        );
+
         BigDecimal total = room.getNightlyRate().multiply(BigDecimal.valueOf(
-                ChronoUnit.DAYS.between(reservation.getArrival(), reservation.getDeparture())));
+                ChronoUnit.DAYS.between(reservation.getArrival(), reservation.getDeparture())
+        ));
+
         money(total);
+
         room.setOccupied(true);
-        DeskStay stay = stays.save(new DeskStay(room, reservation.getGuestName(),
-                reservation.getArrival(), reservation.getDeparture(), total));
+
+        DeskStay stay = stays.save(new DeskStay(
+                room,
+                reservation.getGuestName(),
+                reservation.getArrival(),
+                reservation.getDeparture(),
+                total
+        ));
+
         reservation.checkIn(stay);
+
         audit.log(actor(), "CHECK_IN", "DeskStay", stay.getId(),
                 "Check-in from reservation " + reservationId);
+
         return stay;
     }
 
@@ -367,18 +362,19 @@ public class DeskOperations {
     @PreAuthorize("hasRole('FINANCE')")
     public void checkoutStay(Long stayId) {
         DeskStay stay = stays.lockById(stayId)
-                .orElseThrow(
-                        () -> new ResponseStatusException(NOT_FOUND, "Stay not found")
-                );
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Stay not found"));
+
         require(!stay.isCheckedOut(), "Stay is already checked out");
+
         stay.checkOut();
+
         DeskRoom room = rooms.lockById(stay.getRoom().getId())
-                .orElseThrow(
-                        () -> new ResponseStatusException(NOT_FOUND, "Room not found")
-                );
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Room not found"));
+
         if (!stays.existsByRoomIdAndCheckedOutFalse(room.getId())) {
             room.setOccupied(false);
         }
+
         audit.log(actor(), "CHECK_OUT", "DeskStay", stay.getId(),
                 "Check-out stay " + stayId);
     }
@@ -388,17 +384,15 @@ public class DeskOperations {
     public void cancelReservation(Long id) {
 
         DeskReservation reservation = reservations.lockById(id)
-                .orElseThrow(
-                        () -> new ResponseStatusException(NOT_FOUND)
-                );
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
 
         require(
-                reservation.getStatus()
-                        == DeskReservation.Status.CONFIRMED,
+                reservation.getStatus() == DeskReservation.Status.CONFIRMED,
                 "Only confirmed reservations can be cancelled"
         );
 
         reservation.cancel();
+
         audit.log(actor(), "CANCEL", "DeskReservation", reservation.getId(),
                 "Cancelled reservation " + reservation.getReference());
     }

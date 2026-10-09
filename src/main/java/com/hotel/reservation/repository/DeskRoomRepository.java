@@ -12,10 +12,8 @@ import java.util.Optional;
 
 public interface DeskRoomRepository extends JpaRepository<DeskRoom, Long> {
 
-    // Normal list - keep this because other parts of the system may use it
     List<DeskRoom> findAllByOrderByNumberAsc();
 
-    // Paginated list - used by General Manager Room Management
     Page<DeskRoom> findAllByOrderByNumberAsc(Pageable pageable);
 
     List<DeskRoom> findByActiveTrueOrderByNumberAsc();
@@ -23,6 +21,8 @@ public interface DeskRoomRepository extends JpaRepository<DeskRoom, Long> {
     List<DeskRoom> findByTypeOrderByNumberAsc(DeskRoom.RoomType type);
 
     List<DeskRoom> findByActiveTrueAndTypeOrderByNumberAsc(DeskRoom.RoomType type);
+
+    Optional<DeskRoom> findByNumber(String number);
 
     boolean existsByNumber(String number);
 

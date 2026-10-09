@@ -5,12 +5,23 @@ import com.hotel.reservation.entity.DeskReservation.Status;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import jakarta.persistence.LockModeType;
+
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 public interface DeskReservationRepository extends JpaRepository<DeskReservation, Long> {
 
     List<DeskReservation> findAllByOrderByIdDesc();
+
+    @Query("""
+           select r
+           from DeskReservation r
+           join fetch r.room
+           left join fetch r.stay
+           order by r.id desc
+           """)
+    List<DeskReservation> findAllWithRoomOrderByIdDesc();
 
     boolean existsByRoomIdAndStatusAndArrivalLessThanAndDepartureGreaterThan(
             Long roomId, Status status, LocalDate end, LocalDate start);
